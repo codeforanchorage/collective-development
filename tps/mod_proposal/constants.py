@@ -1,0 +1,11 @@
+# Place within a proposal life cycle
+LIFE_ORIGIN = 1
+LIFE_PLANNING = 2
+LIFE_CLASS = 3
+LIFE_FINISHED = 4
+
+# Source of a proposal
+SOURCE_UNKNOWN = 0
+SOURCE_WEBSITE = 1
+SOURCE_API = 2
+SOURCE_OFFLINE = 3

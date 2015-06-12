@@ -1,0 +1,37 @@
+{% from "macros/_form.html" import render_form %}
+
+{% set page_title = "Add a class event" %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}{% endblock %}
+
+{% block body %}
+<h2>Add event</h2>
+<div class="container">
+    {{ render_form(request.url, form)}}
+</div>
+{% endblock %}
+
+{# extra JS and CSS for the datepicker #}
+{% block css_style %}
+<style type="text/css">
+	.form-group {
+		position: relative;
+	}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/vendor/moment.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/vendor/bootstrap-datetimepicker.min.js') }}"></script>
+<script>
+$(function () {
+	$('#start').datetimepicker({
+		'sideBySide':true,
+		'format':'lll',
+		'extraFormats': [ 'YYYY-MM-DD HH:mm:ss' ]
+	});
+});
+</script>    
+{% endblock %}

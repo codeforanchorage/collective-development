@@ -1,0 +1,74 @@
+{% from "proposal/_macros.html" import interested_counter, show_stage, list_users with context %}
+{% from "school/_macros.html" import list_schools %}
+
+{% set page_title = proposal.title %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}proposal{% endblock %}
+
+{# setting variables for permissions #}
+{% set can_edit = can_edit_proposal(proposal) %}
+{% set can_organize = can_organize_proposal(proposal) %}
+
+{% block body %}
+	{# administrative links #}
+	{% if can_edit or can_organize %}
+		<ul>
+		{% if can_edit %}
+		<li><a href="{{ url_for('proposals.edit', id=proposal.id) }}">EDIT</a></li>
+		{% endif %}
+		{% if can_organize %}
+		<li><a href="{{ url_for('proposals.organize', id=proposal.id) }}">ORGANIZE</a></li>
+		{% endif %}
+		</ul>
+	{% endif %}
+	{# end admin section #}
+
+	{{ interested_counter(proposal) }}
+	<h2>{{ proposal.title }}</h2>
+	<p><em>{{ proposal.description }}</em></p>
+	<dl>
+		<dt>Proposed by:</dt>
+		<dd>{{ proposal.proposer.display_name }}</dd>
+
+		<dt>Proposed:</dt>
+		<dd>{{ proposal.created }}</dd>
+
+		<dt>Proposed to:</dt>
+		<dd>{{ list_schools(proposal.schools) }}</dd>
+
+		<dt>Updated:</dt>
+		<dd>{{ proposal.updated }}</dd>
+
+		<dt>Tags:</dt>
+		<dd>{{ proposal.tags | join(', ') }}</dd>
+
+		<dt>Num. interested</dt>
+		<dd><span class="counter {{ proposal.id }}">{{ proposal.num_interested }}</span></dd>
+
+		<dt>Interested users</dt>
+		<dd>{{ list_users(proposal.interested_users) }}</dd>
+
+		<dt>Stage</dt>
+		<dd>{{ show_stage(proposal) }}</dd>
+
+		{% if events or can_organize %}
+		<dt>Classes:</dt>
+		<dd>
+			<ul>
+				<li><a href="{{ url_for('events.create', proposal_id=proposal.id) }}">add a class event</a></li>
+			{% for event in events %}
+				<li>
+					<a href="{{ url_for('events.detail', id=event.id) }}">{{ event.start | datetime }}</a>
+					{% if event.title %}
+					{{ event.title }}
+					{% endif %}
+				</li>
+			{% endfor %}
+			</ul>
+		</dd>
+		{% endif %}
+
+	</dl>
+{% endblock %}

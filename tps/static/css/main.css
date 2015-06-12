@@ -1,0 +1,42 @@
+/* body classes */
+body {
+	font-family: 'Lora', serif;
+}
+
+body.proposal {
+	background-color: #EFFFFF;
+}
+
+body.event {
+	background-color: #FFEFFF;
+}
+
+/* navbar */
+.navbar {
+	font-family: 'Open Sans', sans-serif;
+}
+.navbar-brand {
+	font-weight: 800;
+}
+
+/* interested button */
+.interested div {
+	display: inline-block;
+	padding-left: 10px;
+}
+.interested .counter {
+	font-size: 1.5em;
+}
+.interested .add,
+.interested .remove {
+	color: #CCC;
+}
+.interested .add.button,
+.interested .remove.button {
+	cursor: pointer;
+	color: blue;
+}
+.interested .add.button::after,
+.interested .remove.button::after {
+	content: '!';
+}

@@ -1,0 +1,7 @@
+{% macro list_schools(schools) %}
+<ul>
+	{% for school in schools %}
+		<li>{{ school.name }}</li>
+	{% endfor %}
+</ul>
+{% endmacro %}

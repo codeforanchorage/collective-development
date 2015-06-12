@@ -1,0 +1,14 @@
+{% from "macros/_form.html" import render_form %}
+
+{% set page_title = "Make a proposal" %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}{% endblock %}
+
+{% block body %}
+<h2>Propose</h2>
+<div>
+    {{ render_form(url_for('proposals.make'), form)}}
+</div>
+{% endblock %}

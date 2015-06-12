@@ -1,0 +1,13 @@
+{% from "proposal/_macros.html" import proposals_list, interested_counter with context %}
+
+{% set page_title = "Proposals" %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}{% endblock %}
+
+{% block body %}
+	<a href="{{ url_for('proposals.list') }}">{{ _('see all proposals') }}</a>
+	<h2>{{ school.name }}</h2>
+	This is the school homepage
+{% endblock %}

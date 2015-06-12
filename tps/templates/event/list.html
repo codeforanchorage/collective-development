@@ -1,0 +1,12 @@
+{% from "event/_macros.html" import events_list %}
+
+{% set page_title = "Classes" %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}event{% endblock %}
+
+{% block body %}
+	<h2>Classes</h2>
+	{{ events_list(events) }}
+{% endblock %}

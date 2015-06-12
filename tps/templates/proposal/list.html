@@ -1,0 +1,12 @@
+{% from "proposal/_macros.html" import proposals_list, interested_counter with context %}
+
+{% set page_title = "Proposals" %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}proposal{% endblock %}
+
+{% block body %}
+	<h2>Proposals</h2>
+	{{ proposals_list(proposals) }}
+{% endblock %}

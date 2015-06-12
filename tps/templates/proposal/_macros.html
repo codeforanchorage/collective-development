@@ -1,0 +1,61 @@
+{% macro interested_counter(proposal) %}
+<div class="interested" proposal-id="{{ proposal.id }}">
+	<div class="counter">{{proposal.num_interested}}</div>
+	{% if proposal.user_is_interested(current_user) %}
+	<div class="add">add me</div>
+	<div class="remove button">remove me</div>
+	{% else %}
+	<div class="add button">add me</div>
+	<div class="remove">remove me</div>
+	{% endif %}
+</div>
+{% endmacro %}
+
+
+{% macro proposals_list_item(proposal) %}
+<li>
+	<p>{{ interested_counter(proposal) }}</p>
+	<h4><a href="{{url_for('proposals.detail', id=proposal.id)}}">{{proposal.title}}</a></h4>
+	<p>{{proposal.description}}</p>
+</li>
+{% endmacro %}
+
+
+{% macro proposals_list(proposals) %}
+<ul>
+	{% for proposal in proposals %}
+		{{ proposals_list_item(proposal) }}
+	{% endfor %}
+</ul>
+{% endmacro %}
+
+
+{% macro list_users(users) %}
+<ul>
+	{% for user in users %}
+		<li>{{ user.display_name }}</li>
+	{% endfor %}
+</ul>
+{% endmacro %}
+
+
+{% macro show_stage(proposal) %}
+	{% set d=proposal.current_stage.pretty_date %}
+	{% if proposal.stage.value==LIFE_ORIGIN %}
+		{% trans d %}
+			Proposed {{ d }}.
+		{% endtrans %}
+	{% elif proposal.stage.value==LIFE_PLANNING %}
+		{% trans d %}
+			Planning began {{ d }} to make this into a class.
+		{% endtrans %}
+	{% elif proposal.stage.value==LIFE_CLASS %}
+		{% trans d %}
+			Class in progress since {{ d }}.
+		{% endtrans %}
+	{% elif proposal.stage.value==LIFE_FINISHED %}
+		{% trans d %}
+			Class finished {{ d }}.
+		{% endtrans %}
+	{% endif %}
+{% endmacro %}

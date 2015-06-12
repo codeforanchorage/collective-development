@@ -1,0 +1,3 @@
+# roles
+ROLE_USER = 1
+ROLE_ADMIN = 100

@@ -1,0 +1,19 @@
+{% from "macros/_form.html" import render_form %}
+
+{% set page_title = "Make a proposal" %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}{% endblock %}
+
+{% block body %}
+<h2>Which school?</h2>
+<div>
+    <p>Which school do you want to propose the class to?</p>
+    <ul>
+    {% for school in schools %}
+    	<li><a href="{{ url_for_school('proposals.make', school=school) }}">{{ school.name }}</a></li>
+    {% endfor %}
+	  </ul>
+</div>
+{% endblock %}

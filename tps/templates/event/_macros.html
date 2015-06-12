@@ -1,0 +1,33 @@
+
+{% macro events_list_item(event) %}
+<li>
+	<h3>{{ event.start | datetime }}</h3>
+	<h4><a href="{{url_for('events.detail', id=event.id)}}">{{ event.full_title() }}</a></h4>
+	<p>{{event.short_description}}</p>
+</li>
+{% endmacro %}
+
+
+{% macro events_list(events) %}
+<ul>
+	{% for event in events %}
+		{{ events_list_item(event) }}
+	{% endfor %}
+</ul>
+{% endmacro %}
+
+
+{% macro places_list_item(place) %}
+<li>
+	{{ place.name }}
+</li>
+{% endmacro %}
+
+
+{% macro places_list(places) %}
+<ul>
+	{% for place in places %}
+		{{ places_list_item(place) }}
+	{% endfor %}
+</ul>
+{% endmacro %}
