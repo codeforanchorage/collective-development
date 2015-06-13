@@ -50,7 +50,8 @@ At this point, you can start the server and play around. That is simply:
 python wsgi.py
 ```
 
----
+Now visit http://localhost:5000/
+
 
 # Configuring things
 
