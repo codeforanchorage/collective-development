@@ -15,6 +15,7 @@
 
 {# extra JS and CSS for the datepicker #}
 {% block css_style %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
 <style type="text/css">
 	.form-group {
 		position: relative;
@@ -23,6 +24,7 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 <script src="{{ url_for('static', filename='js/vendor/moment.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/vendor/bootstrap-datetimepicker.min.js') }}"></script>
 <script>
@@ -37,6 +39,8 @@ $(function () {
 		'format':'lll',
 		'extraFormats': [ 'YYYY-MM-DD HH:mm:ss' ]
 	});
+	$('#places').select2();
+	$('#schools').select2();
 });
 </script>    
 {% endblock %}
