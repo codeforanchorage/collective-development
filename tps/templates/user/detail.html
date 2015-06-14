@@ -1,0 +1,11 @@
+{% from "macros/_form.html" import render_form %}
+
+{% set page_title = user.display_name %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}{% endblock %}
+
+{% block body %}
+<h2>{{ user.display_name }}</h2>
+{% endblock %}

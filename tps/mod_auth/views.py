@@ -3,6 +3,7 @@ from flask.ext.login import login_required, login_user, logout_user, current_use
 from flask.ext.babel import gettext as _
 
 from tps.mod_auth import authenticate_user
+from tps.mod_school import get_school_context
 from .forms import LoginForm
 
 auth = Blueprint('auth', __name__)

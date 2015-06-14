@@ -58,7 +58,7 @@
                         {% else %}
                         <li><a href="#">{{ current_user.name }}</a></li>
                         {% endif %}
-                        <li><a href="#">Settings</a></li>
+                        <li><a href="{{ url_for('users.edit') }}">Settings</a></li>
                         <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
                     {% else %}
                         <li><a href="#"><strong>Sign up</strong></a></li>

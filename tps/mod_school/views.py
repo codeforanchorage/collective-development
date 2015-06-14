@@ -2,7 +2,6 @@ from flask import Blueprint, g, render_template, flash, redirect, request, url_f
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from flask.ext.babel import gettext as _
 
-from tps.mod_auth import authenticate_user
 
 school = Blueprint('school', __name__)
 

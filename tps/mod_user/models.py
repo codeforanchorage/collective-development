@@ -2,10 +2,11 @@ import datetime
 
 from werkzeug import check_password_hash, generate_password_hash
 from flask.ext.login import UserMixin
-from mongoengine import Q
+from mongoengine import Q, NULLIFY
 
 from tps.database import db
 from .constants import ROLE_USER, ROLE_ADMIN
+from tps.mod_school import School
 
 
 class User(db.Document, UserMixin):
@@ -18,6 +19,9 @@ class User(db.Document, UserMixin):
 	active = db.BooleanField(default=True)
 	role = db.IntField(default=ROLE_USER)
 	created = db.DateTimeField(default=datetime.datetime.now())
+	# School/s the user is following
+	schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
+	
 
 	# following which schools? (list of schools)
 	# committee memberships (list)

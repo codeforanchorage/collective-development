@@ -49,7 +49,7 @@ def detail(id):
 def make():
 	""" Make a proposal route """
 	schools = g.all_schools
-	if g.is_default_school and len(all_schools())>0:
+	if g.is_default_school and len(g.all_schools())>0:
 		return render_template('proposal/make_choose_school.html', 
 			title=_('Which school?'), 
 			schools=[school for school in schools if not school==g.default_school])
