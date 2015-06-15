@@ -13,7 +13,7 @@ from tps.database import db
 from tps import config
 
 from tps.mod_auth import login_manager, auth
-from tps.mod_school import load_school, load_all_schools, school
+from tps.mod_school import load_school, load_all_schools, schools
 from tps.mod_user import users
 from tps.mod_proposal import proposals
 from tps.mod_event import events, places
@@ -58,7 +58,7 @@ def register_extensions(app):
 def register_views(app):
 	""" All views/ routes are registered here """
 	app.register_blueprint(auth)
-	app.register_blueprint(school)
+	app.register_blueprint(schools)
 	app.register_blueprint(users)
 	app.register_blueprint(proposals)
 	app.register_blueprint(events)

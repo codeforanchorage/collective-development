@@ -1,0 +1,27 @@
+{% from "macros/_form.html" import render_form %}
+
+{% set page_title = "Sign up" %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}{% endblock %}
+
+{% block body %}
+<h2>Sign up for The Public School</h2>
+<div>
+    {{ render_form(url_for('users.create'), form)}}
+</div>
+{% endblock %}
+
+
+{% block css_style %}
+<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
+
+
+{% block extra_js %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+<script>
+$('#schools').select2();
+</script>
+{% endblock %}

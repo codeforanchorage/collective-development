@@ -2,7 +2,7 @@
 {% if g.all_schools.count()>1 %}
 <li>
 	<div class="btn-group">
-	  <button type="button" class="btn"><a href="{{ url_for('school.home') }}">/ {{ g.school.name }}</a></button>
+	  <button type="button" class="btn"><a href="{{ url_for('schools.home') }}">/ {{ g.school.name }}</a></button>
 	  <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
 	    <span class="caret"></span>
 	    <span class="sr-only">Toggle Dropdown</span>
@@ -10,7 +10,7 @@
 	  <ul class="dropdown-menu" role="menu">
 	    {% for school in g.all_schools %}
 	    {% if school!=g.default_school %}
-	    <li><a href="{{ url_for_school('school.home', school=school) }}">/ {{ school.name }}</a></li>
+	    <li><a href="{{ url_for_school('schools.home', school=school) }}">/ {{ school.name }}</a></li>
 	    {% endif %}
 	    {% endfor %}
 	  </ul>

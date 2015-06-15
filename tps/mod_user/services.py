@@ -24,7 +24,10 @@ def create_user(username=None, password=None, email=None, is_admin=False, displa
 
 def find_user(name):
 	""" Gets a user by one of its 2 unique fields: username or email """
-	return User.objects.get(Q(username=name) | Q(email=name))
+	try:
+		return User.objects.get(Q(username=name) | Q(email=name))
+	except:
+		return None
 
 
 def random_user():

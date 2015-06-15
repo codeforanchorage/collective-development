@@ -31,9 +31,12 @@ class DAN(db.Document):
 			self.end = datetime.datetime.now()
 			self.is_current = False
 			self.save()
-		del self.__dict__['_id']
-		del self.__dict__['_created']
-		del self.__dict__['_changed_fields']
+		if '_id' in self.__dict__:
+			del self.__dict__['_id']
+		if '_created' in self.__dict__:
+			del self.__dict__['_created']
+		if '_changed_fields' in self.__dict__:
+			del self.__dict__['_changed_fields']
 		self.id = ObjectId()
 		self.start = datetime.datetime.now()
 		self.end = None

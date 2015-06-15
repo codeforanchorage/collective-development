@@ -1,7 +1,7 @@
 from dateutil import parser
 from flask.ext.mongoengine.wtf.orm import converts, ModelConverter, ModelForm, model_form as orig_model_form
 from flask.ext.wtf import Form
-from wtforms import fields as f, widgets
+from wtforms import fields as f, widgets, HiddenField
 from wtforms.fields import Field
 from wtforms.widgets import TextInput
 from wtforms.ext.dateutil.fields import DateTimeField
@@ -17,7 +17,8 @@ class TPSModelConverter(ModelConverter):
 class BaseForm(Form):
 	""" This base form allows for re-ordering fields in the form """	
 	csrf_enabled=True
-
+	next = HiddenField()
+	
 	def __iter__(self):
 		field_order = getattr(self, 'field_order', None)
 		# everything before the wildcard

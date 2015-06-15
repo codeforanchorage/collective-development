@@ -4,6 +4,7 @@ from flask.ext.babel import gettext as _
 
 from tps.mod_auth import authenticate_user
 from tps.mod_school import get_school_context
+from tps.utils import url_for_school
 from .forms import LoginForm
 
 auth = Blueprint('auth', __name__)
@@ -20,7 +21,8 @@ def login():
 			remember = request.form.get('remember') == 'y'
 			if login_user(user, remember=remember):
 				flash(_("Logged in"), 'success')
-			return redirect(form.next.data or 'proposals/make')
+			# redirects to specified page OR the homepage for the user's school
+			return redirect(form.next.data or url_for_school('schools.home', user_school=True))
 		else:
 			flash(_('Sorry, invalid login'), 'error')			
 	return render_template('auth/login.html', title='login', form=form)

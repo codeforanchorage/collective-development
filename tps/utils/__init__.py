@@ -1,15 +1,22 @@
 import datetime
-
 from flask import g, url_for
+from flask.ext.login import current_user
 import flask.ext.babel as babel
 
 from .form import model_form, BaseForm
+from tps.mod_school import get_school_context
 
-def url_for_school(endpoint, school=None, **values):
+
+def url_for_school(endpoint, school=None, user_school=False, **values):
 	""" Similar to typical url for, except this will rewrite the base to the specified school """
 	url = url_for(endpoint, **values)
 	csn = g.school.name # current school name
 	fsn = school.name if hasattr(school,'name') else school # future school name
+	if fsn is None and user_school:
+		u = current_user._get_current_object()
+		c = get_school_context(u)
+		if c:
+			fsn = c.name
 	# The name of the default school never appears in the path: it is always the base url
 	if school == g.default_school:
 		fsn = None

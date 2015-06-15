@@ -1,3 +1,4 @@
+from flask import session
 from flask.ext.login import current_user
 from flask.ext.wtf import Form
 from wtforms import TextField, PasswordField, BooleanField, SubmitField, HiddenField
@@ -20,16 +21,41 @@ def validate_password(form, field):
 def validate_username(form, field):
 	""" Checks if the username is already in use or not """
 	user = current_user._get_current_object()
-	if not user.username==field.data and find_user(field.data):
+	current = user.username if hasattr(user,'username') else None
+	if not current==field.data and find_user(field.data):
 		raise ValidationError("That username is already in use.")
 
 
 def validate_email(form, field):
 	""" Checks if the email is already in use or not """
 	user = current_user._get_current_object()
-	if not user.email==field.data and find_user(field.data):
+	current = user.email if hasattr(user,'email') else None
+	if not current==field.data and find_user(field.data):
 		raise ValidationError("That email address is already in use.")
 
+
+def validate_gotcha(form, field):
+	""" Checks if the gotcha field matches what is set in the session (the view sets the challenge) """
+	if not field.data.lower()==session['gotcha'].lower():
+		raise ValidationError("Sorry, that's not correct.")
+
+
+class PasswordForm(BaseForm):
+	""" Replace password form """
+	password = PasswordField('Current password', [Required(), validate_password])
+	new_password = PasswordField('New password', [Required(), Length(PASSWORD_LEN_MIN, PASSWORD_LEN_MAX)])
+	password_again = PasswordField('Password again', [Required(), Length(PASSWORD_LEN_MIN, PASSWORD_LEN_MAX), EqualTo('new_password')])
+	submit = SubmitField(u'Update password')
+
+
+class BaseAddUserForm(BaseForm):
+	""" Base add user form """
+	field_order = ('username', 'email', '*', 'captcha', 'gotcha', 'submit')
+	new_password = PasswordField('New password', [Required(), Length(PASSWORD_LEN_MIN, PASSWORD_LEN_MAX)])
+	password_again = PasswordField('Password again', [Required(), Length(PASSWORD_LEN_MIN, PASSWORD_LEN_MAX), EqualTo('new_password')])
+	# 2 basic anti registration spam measures. add more
+	captcha = TextField('Captcha') # This is a honeypot
+	gotcha = TextField('Gotcha', [validate_gotcha])
 
 
 UserSettingsForm = model_form( User, 
@@ -48,11 +74,18 @@ submit_add = SubmitField('Save')
 UserSettingsForm.submit = submit_add
 
 
-class PasswordForm(Form):
-	""" Replace password form """
-	next = HiddenField()
-	password = PasswordField('Current password', [Required(), validate_password])
-	new_password = PasswordField('New password', [Required(), Length(PASSWORD_LEN_MIN, PASSWORD_LEN_MAX)])
-	password_again = PasswordField('Password again', [Required(), Length(PASSWORD_LEN_MIN, PASSWORD_LEN_MAX), EqualTo('new_password')])
-	submit = SubmitField(u'Update password')
+UserAddForm = model_form( User, 
+	base_class=BaseAddUserForm,
+	exclude=(
+		'password',
+		'role',
+		'created',
+		'active'),
+	field_args = { 
+		'username': { 'validators': [validate_username]} ,
+		'email': { 'validators': [validate_email]} ,
+		'schools': { 'label': 'Schools you are interested in'}
+		})
+submit_add = SubmitField('Sign up')
+UserAddForm.submit = submit_add
 
