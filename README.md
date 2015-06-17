@@ -24,9 +24,17 @@ pip install -r requirements.txt
 Before starting the server, you need some data. There are various command line utilities to populate the database with fake data. Run the following commands:
 
 ```
-python manage.py user create_admin -u tps -p tps
+python manage.py user create_admin
 ```
 creates an admin with name "tps" and password "tps"
+
+```
+python manage.py school create
+python manage.py school create -s berlin
+python manage.py school create -s brussels
+python manage.py school create -s la
+```
+creates 3 schools plus the default school. You can omit any of the last 3 or add as many more as you want.
 
 ```
 python manage.py user fake_users -n 25
