@@ -1,15 +1,21 @@
-from wtforms import TextField, TextAreaField, BooleanField, SubmitField, HiddenField
+from wtforms import TextField, TextAreaField, BooleanField, SubmitField, HiddenField, SelectMultipleField
 from wtforms.validators import Required
-#from flask.ext.mongoengine.wtf import model_form
+from flask.ext.login import current_user
 
 from tps.utils.form import model_form, BaseForm, TagListField
+from tps.mod_school import user_schools
 from .models import Proposal
 
 
 class ProposalBase(BaseForm):
 	""" Full event form """
-	tags = TagListField('Tags (comma separated)')
+	tags = TagListField('Tags')
 	field_order = ('*', 'tags', 'submit')
+
+	def __init__(self, *args, **kwargs):
+		super(ProposalBase, self).__init__(*args, **kwargs)
+		if hasattr(self, 'schools'):
+			self.schools.queryset = user_schools()
 
 
 AddProposalForm = model_form( Proposal, 
@@ -36,7 +42,6 @@ ProposalForm = model_form( Proposal,
 	exclude=(
 		'edited_description',
 		'proposer',
-		'schools',
 		'published',
 		'stage',
 		'source',

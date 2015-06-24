@@ -2,7 +2,7 @@ from dateutil import parser
 from flask.ext.mongoengine.wtf.orm import converts, ModelConverter, ModelForm, model_form as orig_model_form
 from flask.ext.wtf import Form
 from wtforms import fields as f, widgets, HiddenField
-from wtforms.fields import Field
+from wtforms.fields import Field, SelectMultipleField
 from wtforms.widgets import TextInput
 from wtforms.ext.dateutil.fields import DateTimeField
 
@@ -45,20 +45,24 @@ class BaseForm(Form):
 					start = True
 
 
-class TagListField(Field):
-	widget = TextInput()
-
-	def _value(self):
+class TagListField(SelectMultipleField):
+	""" Custom select list of text items that allows for new items to be entered """
+	def iter_choices(self):
 		if self.data:
-			return u', '.join(self.data)
-		else:
-			return u''
+			for tag in self.data:
+				yield (tag, tag, True)
 
 	def process_formdata(self, valuelist):
-		if valuelist:
-			self.data = [x.strip() for x in valuelist[0].split(',')]
-		else:
-			self.data = []
+		try:
+			self.data = list(self.coerce(x) for x in valuelist)
+		except ValueError:
+			raise ValueError(self.gettext('Invalid choice(s): one or more data inputs could not be coerced'))
+
+	def pre_validate(self, form):
+		pass
+
+
+
 
 
 def model_form(model, base_class=ModelForm, only=None, exclude=None, field_args=None, converter=TPSModelConverter()):

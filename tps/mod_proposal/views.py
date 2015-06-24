@@ -74,7 +74,7 @@ def edit(id):
 	# submit
 	if form.validate_on_submit():
 		form.populate_obj(p)
-		e.save()
+		p.save()
 		return redirect(url_for('proposals.detail', id=p.id))
 	return render_template('proposal/edit.html', 
 		title=_('Edit a proposal'), 

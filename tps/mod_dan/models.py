@@ -7,6 +7,7 @@ from tps.database import db
 from tps.mod_school import School
 from tps.mod_user import User
 
+
 class DAN(db.Document):
 	
 	school = db.ReferenceField(School, reverse_delete_rule = CASCADE)

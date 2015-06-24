@@ -39,7 +39,9 @@ $(function () {
 		'format':'lll',
 		'extraFormats': [ 'YYYY-MM-DD HH:mm:ss' ]
 	});
-	$('#places').select2();
+	$('#places').select2({
+		tags: true
+	});
 	$('#schools').select2();
 });
 </script>    

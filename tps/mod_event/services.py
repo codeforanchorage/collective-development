@@ -18,6 +18,8 @@ def other_events(event):
 
 
 def create_place(*args, **kwargs):
+	if not 'creator' in kwargs:
+		kwargs['creator'] = current_user._get_current_object()
 	p = Place(*args, **kwargs)
 	p.save()
 	return p

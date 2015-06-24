@@ -1,3 +1,6 @@
+from flask.ext.login import current_user
+
+from tps.mod_school import load_schools
 from .models import DAN
 from .constants import MIN_LIFESPAN
 
@@ -30,6 +33,16 @@ def user_is_a_dan(user, dans):
 		if user_is_dan(user, dan):
 			return True
 	return False
+
+
+def user_dans(user=None, only_current=True):
+	""" What committees is the user on? only_current can be False to give historical information """
+	user = user or current_user._get_current_object()
+	if only_current:
+		# Generally we want a queryset here so we do an extra query to be able to returns schools that way 
+		return load_schools([dan.school.name for dan in DAN.objects.filter(users=user, is_current=True)])
+	else:
+		return DAN.objects.filter(users=user)
 
 
 def add_user_to_dan(user, dan):
