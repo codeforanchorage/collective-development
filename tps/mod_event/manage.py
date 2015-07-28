@@ -33,19 +33,22 @@ def fake_events(num):
 	""" Generates num fake events """
 	faker = Factory.create()
 	for x in range(int(num)):
-		p = random_proposal()
 		e = create_event(
 			start = faker.date_time(),
 			title = faker.bs(),
-			schools = p.schools,
+			schools = [],
 			creator = random_user(),
 			created = faker.date_time(),
-			proposals= [p,],
 			description= faker.paragraph(),
 			short_description= faker.sentence(),
 			places= [random_place(), ]
 			)
+		p = random_proposal()
+		e.schools = p.schools
+		e.save()
+		p.add_event(e)
 		print "Created: ", e.title
+		print "    (added to proposal: %s)" % p.title
 
 
 @manager.command

@@ -4,10 +4,11 @@ from flask.ext.babel import gettext as _
 
 from tps.utils import url_for_school
 from tps.mod_school import get_school_context
-from tps.mod_event import events_for_proposal
+from tps.mod_event import AddEventForm
+from tps.mod_discussion import Discussion, Comment, AddDiscussionForm, start_discussion
 from .forms import AddProposalForm, ProposalForm
 from .models import Proposal
-from .services import can_edit, can_organize, can_edit_proposal, can_organize_proposal, add_user_interest, remove_user_interest
+from .services import can_edit, can_organize, can_edit_proposal, can_organize_proposal
 
 # Blueprint definition
 proposals = Blueprint('proposals', __name__, url_prefix='/proposals')
@@ -41,7 +42,8 @@ def detail(id):
 		title = p.title, 
 		proposal = p,
 		other_schools = other_schools,
-		events = events_for_proposal(p))
+		events = p.events,
+		discussions = p.discussions)
 
 
 @proposals.route('/make', methods=['GET', 'POST'])
@@ -49,7 +51,7 @@ def detail(id):
 def make():
 	""" Make a proposal route """
 	schools = g.all_schools
-	if g.is_default_school and len(g.all_schools())>0:
+	if g.is_default_school and len(schools)>0:
 		return render_template('proposal/make_choose_school.html', 
 			title=_('Which school?'), 
 			schools=[school for school in schools if not school==g.default_school])
@@ -89,23 +91,39 @@ def organize(id):
 	return "organizing!"
 
 
-@proposals.route('/<id>/interest', methods=['POST'])
+@proposals.route('/<id>/create/discussion', methods=['GET','POST'])
 @login_required
-def interest(id):
-	""" Toggles current user's interest in a proposal """
+def create_discussion(id):
+	""" Create a new discussion within the proposal """
 	p = Proposal.objects.get_or_404(id=id)
-	u = current_user._get_current_object()
-	remove = request.form.get('action','add')=='remove'
-	attribute = request.form.get('attribute', None) or None
-	print attribute
-	if remove:
-		remove_user_interest(u, p, only=attribute)
-	else:
-		add_user_interest(u, p, extra=attribute)
-	return jsonify({
-		'num_interested':p.num_interested, 
-		'next' : 'remove' if p.user_is_interested(u) else 'add'
-		})
+	form = AddDiscussionForm()
+	if form.validate_on_submit():
+		d = start_discussion(request.form.get("text"), schools=p.schools, form=form)
+		p.add_discussion(d)
+		return redirect(url_for('discussions.detail', id=d.id))
+	return render_template('discussion/create.html', 
+		title=_('New discussion in @title', title=p.title), 
+		form=form)
 
 
+@proposals.route('/<id>/create/event', methods=['GET','POST'])
+@login_required
+@can_organize
+def create_event(id):
+	""" Create an event (usually, within the context of a proposal) """
+	p = Proposal.objects.get_or_404(id=id)
+	form = AddEventForm(request.form, exclude=['end'])
+	# submit
+	if form.validate_on_submit():
+		e = Event(
+			schools = p.schools)
+		form.populate_obj(e)
+		e.save()
+		p.add_event(e)
+		flash(_('The new event has been created. Please edit it here to provide more information like its location, a title, description, etc.'))
+		flash(Markup(_('Or you can do that later and now just add more events by clicking <a href="%(url)s">here</a>', url=url_for('events.create', proposal_id=p.id))))
+		return redirect(url_for('events.edit', id=e.id))
+	return render_template('event/create.html', 
+		title=_('Add a class event'), 
+		form=form)
 	

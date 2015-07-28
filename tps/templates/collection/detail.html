@@ -1,0 +1,74 @@
+{% from "macros/_interest.html" import interested_counter with context %}
+{% from "proposal/_macros.html" import list_users with context %}
+{% from "school/_macros.html" import list_schools %}
+
+{% set page_title = collection.title %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}proposal{% endblock %}
+
+{# setting variables for permissions #}
+{# set can_edit = can_edit_collection(collection) #}
+{# set can_organize = can_organize_collection(collection) #}
+
+{% block body %}
+	{# administrative links #}
+	{% if can_edit or can_organize %}
+		<ul>
+		{% if can_edit %}
+		<li><a href="{{ url_for('collections.edit', id=collection.id) }}">EDIT</a></li>
+		{% endif %}
+		{% if can_organize %}
+		<li><a href="{{ url_for('collections.organize', id=collection.id) }}">ORGANIZE</a></li>
+		{% endif %}
+		</ul>
+	{% endif %}
+	{# end admin section #}
+
+	{{ interested_counter(collection, 'collection') }}
+	<h2>{{ collection.title }}</h2>
+	<p><em>{{ collection.description }}</em></p>
+	<dl>
+
+		{% if proposals %}
+		<dt>Proposals:</dt>
+		<dd>
+			<ul>
+			{% for proposal in proposals %}
+				<li><a href="{{ url_for('proposals.detail', id=proposal.id) }}">{{ proposal.title }}</a></li>
+			{% endfor %}
+			</ul>
+		</dd>
+		{% endif %}
+
+		{% if events %}
+		<dt>Events:</dt>
+		<dd>
+			<ul>
+			{% for event in events %}
+				<li><a href="{{ url_for('events.detail', id=event.id) }}">{{ event.start | datetime }}</a> {{ event.title }}</li>
+			{% endfor %}
+			</ul>
+		</dd>
+		{% endif %}
+
+		<dt>Created:</dt>
+		<dd>{{ collection.created }}</dd>
+
+		<dt>Proposed to:</dt>
+		<dd>{{ list_schools(collection.schools) }}</dd>
+
+		<dt>Updated:</dt>
+		<dd>{{ collection.updated }}</dd>
+
+		<dt>Num. interested</dt>
+		<dd><span class="counter {{ collection.id }}">{{ collection.num_interested }}</span></dd>
+
+		<dt>Interested users</dt>
+		<dd>{{ list_users(collection.interested_users) }}</dd>
+
+		
+
+	</dl>
+{% endblock %}

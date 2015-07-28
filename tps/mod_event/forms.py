@@ -57,7 +57,6 @@ AddEventForm = model_form( Event,
 		'end',
 		'updated',
 		'created',
-		'proposals',
 		'creator',
 		'schools',
 		'title',
@@ -68,5 +67,5 @@ AddEventForm = model_form( Event,
 
 EventForm = model_form(Event, 
 	base_class=EventBase, 
-	exclude=('updated','created','proposals','creator','places'))
+	exclude=('updated','created','creator','places'))
 

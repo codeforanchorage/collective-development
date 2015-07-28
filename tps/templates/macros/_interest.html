@@ -1,0 +1,12 @@
+{% macro interested_counter(obj, type='proposal') %}
+<div class="interested" obj-id="{{ obj.id }}" obj-type="{{ type }}">
+	<div class="counter">{{obj.num_interested}}</div>
+	{% if obj.user_is_interested(current_user) %}
+	<div class="add">add me</div>
+	<div class="remove button">remove me</div>
+	{% else %}
+	<div class="add button">add me</div>
+	<div class="remove">remove me</div>
+	{% endif %}
+</div>
+{% endmacro %}

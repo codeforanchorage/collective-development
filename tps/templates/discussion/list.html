@@ -1,0 +1,12 @@
+{% from "discussion/_macros.html" import discussions_list %}
+
+{% set page_title = "Discussions" %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}discussion{% endblock %}
+
+{% block body %}
+	<h2>Discussions</h2>
+	{{ discussions_list(discussions) }}
+{% endblock %}

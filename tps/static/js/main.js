@@ -1,10 +1,8 @@
 // This can be called on dynamically created elements too
 function bind_interested($container) {
-	function send_interest(id, action, mode, $counter) {
+	function send_interest(id, action, mode, type, $counter) {
 		post_data = { action: action, attribute: mode };
-		console.log(post_data);
-		$.post( INTEREST_POST_URL.replace('id',id), post_data, function( data ) {
-			console.log(data);
+		$.post( INTEREST_POST_URL.replace('/type','/'+type).replace('/id','/'+id), post_data, function( data ) {
 			// Counter within the interested widget
 		  $counter.text(data.num_interested);
 		  // Controlling counters detached from the buttons
@@ -17,16 +15,18 @@ function bind_interested($container) {
 	// add
 	$container.on('click', '.interested .add.button', function() {
 		$p = $(this).parent();
-		id = $p.attr('proposal-id');
-		send_interest( id, 'add', null, $p.find('.counter'));
+		id = $p.attr('obj-id');
+		type = $p.attr('obj-type');
+		send_interest( id, 'add', null, type, $p.find('.counter'));
 		$p.find('.remove').addClass('button');
     $p.find('.add').removeClass('button');
 	});
 	// remove
 	$container.on('click', '.interested .remove.button', function() {
 		$p = $(this).parent();
-		id = $p.attr('proposal-id');
-		send_interest( id, 'remove', null, $p.find('.counter'));
+		id = $p.attr('obj-id');
+		type = $p.attr('obj-type');
+		send_interest( id, 'remove', null, type, $p.find('.counter'));
 		$p.find('.add').addClass('button');
     $p.find('.remove').removeClass('button');
 	});

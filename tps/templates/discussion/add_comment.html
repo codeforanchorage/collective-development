@@ -1,0 +1,21 @@
+{% from "macros/_form.html" import render_form %}
+
+{% set page_title = "Comment on {{ title }}" %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}{% endblock %}
+
+{% block body %}
+<h2>Comment on {{ title }}</h2>
+<div>
+    {{ render_form(url_for('discussions.add_comment', id=discussion.id), form)}}
+</div>
+{% endblock %}
+
+{# extra JS and CSS for the datepicker #}
+{% block css_style %}
+{% endblock %}
+
+{% block extra_js %}   
+{% endblock %}

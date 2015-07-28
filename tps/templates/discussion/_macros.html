@@ -1,0 +1,16 @@
+
+{% macro discussions_list_item(discussion) %}
+<li>
+	<h4><a href="{{url_for('discussions.detail', id=discussion.id)}}">{{discussion.title}}</a></h4>
+	<p>{{discussion.last_comment.text}}</p>
+</li>
+{% endmacro %}
+
+
+{% macro discussions_list(discussions) %}
+<ul>
+	{% for discussion in discussions %}
+		{{ discussions_list_item(discussion) }}
+	{% endfor %}
+</ul>
+{% endmacro %}

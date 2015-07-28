@@ -3,18 +3,12 @@ from flask import g, abort
 from flask.ext.login import current_user
 
 from tps.mod_dan import load_dan, user_is_dan, user_is_a_dan
-from tps.mod_proposal import Proposal
 from .models import Place, Event
 
 
-def events_for_proposal(proposal):
-	""" returns all events for a proposal """
-	return Event.objects.filter(proposals=proposal).order_by('-start')
-
-
-def other_events(event):
-	""" Other events in the proposals for this event """
-	return Event.objects.filter(id__ne=event.id, proposals__in=event.proposals).order_by('-start')
+def events_for_collection(collection):
+	""" returns all events in a collection """
+	return Event.objects.filter(collections=collection).order_by('-start')
 
 
 def create_place(*args, **kwargs):

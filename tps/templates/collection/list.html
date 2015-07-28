@@ -1,0 +1,12 @@
+{% from "collection/_macros.html" import collections_list with context %}
+
+{% set page_title = "Collections" %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}collection{% endblock %}
+
+{% block body %}
+	<h2>Collections</h2>
+	{{ collections_list(collections) }}
+{% endblock %}

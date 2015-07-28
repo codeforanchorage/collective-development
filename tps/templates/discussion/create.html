@@ -1,0 +1,21 @@
+{% from "macros/_form.html" import render_form %}
+
+{% set page_title = "Start a discussion" %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}{% endblock %}
+
+{% block body %}
+<h2>Start a discussion</h2>
+<div>
+    {{ render_form(request.path, form)}}
+</div>
+{% endblock %}
+
+{# extra JS and CSS for the datepicker #}
+{% block css_style %}
+{% endblock %}
+
+{% block extra_js %}   
+{% endblock %}

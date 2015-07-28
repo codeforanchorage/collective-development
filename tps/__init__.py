@@ -15,8 +15,11 @@ from tps import config
 from tps.mod_auth import login_manager, auth
 from tps.mod_school import load_school, load_all_schools, schools
 from tps.mod_user import users
-from tps.mod_proposal import proposals
 from tps.mod_event import events, places
+from tps.mod_discussion import discussions
+from tps.mod_proposal import proposals
+from tps.mod_collection import collections
+from tps.mod_interest import interested
 
 
 def create_app(config=config.dev_config, school_name=None):
@@ -60,9 +63,12 @@ def register_views(app):
 	app.register_blueprint(auth)
 	app.register_blueprint(schools)
 	app.register_blueprint(users)
-	app.register_blueprint(proposals)
+	app.register_blueprint(interested)
+	app.register_blueprint(discussions)
 	app.register_blueprint(events)
 	app.register_blueprint(places)
+	app.register_blueprint(proposals)
+	app.register_blueprint(collections)
 	
 
 def register_template_filters(app):

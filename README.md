@@ -49,6 +49,10 @@ python manage.py event fake_places -n 10
 python manage.py event fake_events -n 10
 ```
 creates 10 fake places and 10 fake class events.
+```
+python manage.py event fake_discussions -n 30
+```
+creates 30 fake discussions
 
 # Starting the server
 

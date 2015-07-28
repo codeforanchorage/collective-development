@@ -1,3 +1,8 @@
+"""
+A proposal is the basic element of The Public School.
+Rather than distinguish between a proposal (virtual) and a class (actual) as 
+two different data types, the class is still a proposal.. only, at different "stage".
+"""
 import datetime
 
 from bson import ObjectId
@@ -7,6 +12,9 @@ from tps.utils import pretty_date
 from tps.database import db
 from tps.mod_user import User
 from tps.mod_school import School
+from tps.mod_event import Event
+from tps.mod_discussion import Discussion
+from tps.mod_interest import InterestedMixin, Interested
 
 from .constants import LIFE_ORIGIN, LIFE_PLANNING, LIFE_CLASS, LIFE_FINISHED, SOURCE_UNKNOWN, SOURCE_WEBSITE, SOURCE_API, SOURCE_OFFLINE
 
@@ -20,25 +28,18 @@ class Stage(db.EmbeddedDocument):
 	@property
 	def pretty_date(self):
 		return pretty_date(self.date)
-
-
-class Interested(db.EmbeddedDocument):
-	""" Structure for holding information about someone being interested in a proposal """
-	date = db.DateTimeField(default=datetime.datetime.now())
-	user = db.ReferenceField(User)
-	can_teach = db.BooleanField(default=False)
-	can_organize = db.BooleanField(default=False)
-	can_host = db.BooleanField(default=False)
 	
 
-class Proposal(db.Document):
-	""" A proposal object """
+class BaseProposal(db.Document, InterestedMixin):
+	meta = {
+		'allow_inheritance': True,
+		'abstract': True,
+	}
+
 	title = db.StringField(max_length=255)
 	# A copy of the original description is kept
 	description = db.StringField()
 	edited_description = db.StringField()
-	# Tags
-	tags = db.ListField(db.StringField(max_length=30))
 	# School the proposal was made to
 	schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
 	# Person who made the proposal
@@ -46,13 +47,46 @@ class Proposal(db.Document):
 	created = db.DateTimeField(default=datetime.datetime.now())
 	updated = db.DateTimeField(default=datetime.datetime.now())
 	published = db.BooleanField(default=True)
-	source = db.IntField(default=SOURCE_WEBSITE)
-	stage = db.ListField(db.EmbeddedDocumentField(Stage))
-	# Users who are interested
-	interested = db.ListField(db.EmbeddedDocumentField(Interested))
-	num_interested = db.IntField(default=0)
 	# The proposal that this proposal "copies"
 	copy_of = db.ReferenceField("self", reverse_delete_rule = NULLIFY)
+	# Events 
+	events = db.ListField(db.ReferenceField(Event, reverse_delete_rule = NULLIFY))
+	# Discussions 
+	discussions = db.ListField(db.ReferenceField(Discussion, reverse_delete_rule = NULLIFY))
+
+
+	def add_event(self, event):
+		self.update(add_to_set__events=event)
+		self.reload()
+
+	def remove_event(self, event):
+		self.update(pull__events=event)
+		self.reload()
+
+	def add_discussion(self, discussion):
+		self.update(add_to_set__discussions=discussion)
+		self.reload()
+
+	def remove_discussion(self, discussion):
+		self.update(pull__discussions=discussion)
+		self.reload()
+
+	def __str__(self):
+		return self.title
+
+
+
+class Proposal(BaseProposal):
+	""" A proposal object """
+	meta = {'collection': 'proposal'}
+	# Tags
+	tags = db.ListField(db.StringField(max_length=30))
+	# School the proposal was made to
+	schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
+	# Context in which the proposal was made
+	source = db.IntField(default=SOURCE_WEBSITE)
+	# Which stage in the organizing process
+	stage = db.ListField(db.EmbeddedDocumentField(Stage))
 
 
 	def __init__(self, *args, **kwargs):
@@ -63,29 +97,6 @@ class Proposal(db.Document):
 			self.stage.append(Stage(creator=self.proposer, date=self.created))
 
 
-	def add_interested_user(self, user):
-		self.update(add_to_set__interested=Interested(user=user))
-		self.reload()
-		self.update(set__num_interested=len(self.interested))
-		self.reload()
-
-
-	def remove_interested_user(self, user):
-		self.update(pull__interested__user=user)
-		self.reload()
-		self.update(set__num_interested=len(self.interested))
-		self.reload()
-
-
-	def user_is_interested(self, user):
-		if user is None:
-			return False
-		for iu in self.interested:
-			if iu.user==user:
-				return iu
-		return False
-
-
 	@property
 	def current_stage(self):
 		current_stage = None
@@ -93,12 +104,3 @@ class Proposal(db.Document):
 			if current_stage is None or s.date>current_stage.date:
 				current_stage = s
 		return current_stage
-
-
-	@property
-	def interested_users(self):
-		return [interested.user for interested in self.interested]
-
-
-	def __str__(self):
-		return self.title

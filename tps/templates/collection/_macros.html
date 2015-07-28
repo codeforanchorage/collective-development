@@ -1,0 +1,18 @@
+{% from "macros/_interest.html" import interested_counter with context %}
+
+{% macro collections_list_item(collection) %}
+<li>
+	<p>{{ interested_counter(collection, 'collection') }}</p>
+	<h4><a href="{{url_for('collections.detail', id=collection.id)}}">{{collection.title}}</a></h4>
+	<p>{{collection.description}}</p>
+</li>
+{% endmacro %}
+
+
+{% macro collections_list(collections) %}
+<ul>
+	{% for collection in collections %}
+		{{ collections_list_item(collection) }}
+	{% endfor %}
+</ul>
+{% endmacro %}

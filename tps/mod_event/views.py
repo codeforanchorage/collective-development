@@ -6,10 +6,9 @@ from flask.ext.babel import gettext as _
 
 from tps.utils import url_for_school, model_form
 from tps.mod_school import get_school_context
-from tps.mod_proposal import Proposal
 from .forms import AddEventForm, EventForm
 from .models import Event, Place
-from .services import other_events, can_edit_place, can_edit_event, can_create_event, can_edit, can_create
+from .services import can_edit_place, can_edit_event, can_create_event, can_edit, can_create
 
 
 events = Blueprint('events', __name__, url_prefix='/events') # should this be classes?
@@ -31,27 +30,19 @@ def list():
 # @todo: calendar
 
 @events.route('/create', methods=['GET','POST'])
-@events.route('/create/<proposal_id>', methods=['GET','POST'])
 @login_required
 @can_create_event
-def create(proposal_id=None):
+def create():
 	""" Create an event (usually, within the context of a proposal) """
-	try:
-		p = Proposal.objects.get(id=proposal_id)
-	except:
-		p = None
 	form = AddEventForm(request.form, exclude=['end'])
 	#del form.end
 	# submit
 	if form.validate_on_submit():
 		e = Event(
-			proposals = [p,] if p else [], 
-			schools = p.schools if p else [g.school,])
+			schools = [g.school,])
 		form.populate_obj(e)
 		e.save()
 		flash(_('The new event has been created. Please edit it here to provide more information like its location, a title, description, etc.'))
-		if p:
-			flash(Markup(_('Or you can do that later and now just add more events by clicking <a href="%(url)s">here</a>', url=url_for('events.create', proposal_id=p.id))))
 		return redirect(url_for('events.edit', id=e.id))
 	return render_template('event/create.html', 
 		title=_('Add a class event'), 
@@ -71,7 +62,7 @@ def detail(id):
 	return render_template('event/detail.html', 
 		title = e.title, 
 		event = e,
-		other_events = other_events(e))
+		other_events = []) #other_events(e))
 
 
 @events.route('/<id>/edit', methods=['GET','POST'])

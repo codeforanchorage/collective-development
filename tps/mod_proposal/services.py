@@ -3,27 +3,8 @@ from random import randint
 from flask import g, abort
 from flask.ext.login import current_user
 from tps.mod_dan import load_dan, user_is_a_dan
-from .models import Proposal, Interested
+from .models import Proposal
 
-
-def add_user_interest(user, proposal, extra=None):
-	""" Modifying user interested 
-	'extra' can be None or 'can_teach', 'can_organize', 'can_host' """
-	if not proposal.user_is_interested(user):
-		proposal.add_interested_user(user)
-	elif extra in ['can_teach', 'can_organize', 'can_host']:
-		kw = {'set__interested__S__'+extra: True}
-		Proposal.objects(id=proposal.id, interested__user=user).modify(**kw)
-
-
-def remove_user_interest(user, proposal, only=None):
-	""" Remove user from being interested in this proposal
-	If 'only' is set to a fieldname, then only that fieldname is set to False """
-	if only is None:
-		proposal.remove_interested_user(user)
-	elif only in ['can_teach', 'can_organize', 'can_host']:
-		kw = {'set__interested__S__'+only: False}
-		Proposal.objects(id=proposal.id, interested__user=user).modify(**kw)
 
 
 def random_proposal():
@@ -46,6 +27,8 @@ def can_edit_proposal(proposal, user=None):
 	Allow the proposal author, the school committee members, and admins """
 	user = user or current_user._get_current_object()
 	dans = [load_dan(school) for school in proposal.schools]
+	if user.is_anonymous():
+		return False
 	return user_is_a_dan(user, dans) or proposal.proposer==user or user.is_admin()
 
 
@@ -54,6 +37,9 @@ def can_organize_proposal(proposal, user=None):
 	Allow the school committee and admins """
 	user = user or current_user._get_current_object()
 	dans = [load_dan(school) for school in proposal.schools]
+	if user.is_anonymous():
+		return False
+	print user.is_admin()
 	return user_is_a_dan(user, dans) or user.is_admin()
 
 
@@ -61,6 +47,7 @@ def can_organize_proposal(proposal, user=None):
 # Permissions decorators
 #
 from functools import wraps
+
 
 def can_edit(fn):
 	@wraps(fn)
@@ -73,6 +60,7 @@ def can_edit(fn):
 			abort(403)
 		return fn(*args, **kwargs)
 	return decorated_view
+
 
 def can_organize(fn):
 	@wraps(fn)

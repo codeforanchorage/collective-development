@@ -32,6 +32,8 @@ AddProposalForm = model_form( Proposal,
 		'interested',
 		'num_interested',
 		'copy_of',
+		'events',
+		'discussions',
 		'tags'))
 submit_add = SubmitField('Propose!')
 AddProposalForm.submit = submit_add
@@ -49,6 +51,8 @@ ProposalForm = model_form( Proposal,
 		'created',
 		'interested',
 		'num_interested',
+		'events',
+		'discussions',
 		'copy_of',
 		'tags'))
 submit_save = SubmitField('Save')

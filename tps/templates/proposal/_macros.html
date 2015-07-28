@@ -1,16 +1,4 @@
-{% macro interested_counter(proposal) %}
-<div class="interested" proposal-id="{{ proposal.id }}">
-	<div class="counter">{{proposal.num_interested}}</div>
-	{% if proposal.user_is_interested(current_user) %}
-	<div class="add">add me</div>
-	<div class="remove button">remove me</div>
-	{% else %}
-	<div class="add button">add me</div>
-	<div class="remove">remove me</div>
-	{% endif %}
-</div>
-{% endmacro %}
-
+{% from "macros/_interest.html" import interested_counter with context %}
 
 {% macro proposals_list_item(proposal) %}
 <li>

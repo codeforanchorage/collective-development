@@ -1,4 +1,6 @@
-{% from "proposal/_macros.html" import interested_counter, show_stage, list_users with context %}
+{% from "macros/_interest.html" import interested_counter with context %}
+{% from "discussion/_macros.html" import discussions_list %}
+{% from "proposal/_macros.html" import show_stage, list_users with context %}
 {% from "school/_macros.html" import list_schools %}
 
 {% set page_title = proposal.title %}
@@ -11,64 +13,103 @@
 {% set can_edit = can_edit_proposal(proposal) %}
 {% set can_organize = can_organize_proposal(proposal) %}
 
+
+{% block secondary %}
+<ul class="nav nav-pills row" id="secondary">
+	<li role="presentation" class="active">
+		<a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a>
+	</li>
+	<li role="presentation">
+		<a href="#discussions" aria-controls="discussions" role="tab" data-toggle="tab">Discussion</a>
+	</li>
+	<li role="presentation">
+		<a href="#events" aria-controls="events" role="tab" data-toggle="tab">Events</a>
+	</li>
+</ul>
+{% endblock %}
+
+
 {% block body %}
-	{# administrative links #}
-	{% if can_edit or can_organize %}
-		<ul>
-		{% if can_edit %}
-		<li><a href="{{ url_for('proposals.edit', id=proposal.id) }}">EDIT</a></li>
-		{% endif %}
-		{% if can_organize %}
-		<li><a href="{{ url_for('proposals.organize', id=proposal.id) }}">ORGANIZE</a></li>
-		{% endif %}
-		</ul>
-	{% endif %}
-	{# end admin section #}
+<div class="tab-content">
 
-	{{ interested_counter(proposal) }}
-	<h2>{{ proposal.title }}</h2>
-	<p><em>{{ proposal.description }}</em></p>
-	<dl>
-		<dt>Proposed by:</dt>
-		<dd>{{ proposal.proposer.display_name }}</dd>
-
-		<dt>Proposed:</dt>
-		<dd>{{ proposal.created }}</dd>
-
-		<dt>Proposed to:</dt>
-		<dd>{{ list_schools(proposal.schools) }}</dd>
-
-		<dt>Updated:</dt>
-		<dd>{{ proposal.updated }}</dd>
-
-		<dt>Tags:</dt>
-		<dd>{{ proposal.tags | join(', ') }}</dd>
-
-		<dt>Num. interested</dt>
-		<dd><span class="counter {{ proposal.id }}">{{ proposal.num_interested }}</span></dd>
-
-		<dt>Interested users</dt>
-		<dd>{{ list_users(proposal.interested_users) }}</dd>
-
-		<dt>Stage</dt>
-		<dd>{{ show_stage(proposal) }}</dd>
-
-		{% if events or can_organize %}
-		<dt>Classes:</dt>
-		<dd>
+  <div role="tabpanel" class="tab-pane active" id="description">
+		{# administrative links #}
+		{% if can_edit or can_organize %}
 			<ul>
-				<li><a href="{{ url_for('events.create', proposal_id=proposal.id) }}">add a class event</a></li>
-			{% for event in events %}
-				<li>
-					<a href="{{ url_for('events.detail', id=event.id) }}">{{ event.start | datetime }}</a>
-					{% if event.title %}
-					{{ event.title }}
-					{% endif %}
-				</li>
-			{% endfor %}
+			{% if can_edit %}
+			<li><a href="{{ url_for('proposals.edit', id=proposal.id) }}">EDIT</a></li>
+			{% endif %}
+			{% if can_organize %}
+			<li><a href="{{ url_for('proposals.organize', id=proposal.id) }}">ORGANIZE</a></li>
+			{% endif %}
 			</ul>
-		</dd>
 		{% endif %}
+		{# end admin section #}
+  	{{ interested_counter(proposal) }}
+		<h2>{{ proposal.title }}</h2>
+		<p><em>{{ proposal.description }}</em></p>
+		<dl>
+			<dt>Proposed by:</dt>
+			<dd>{{ proposal.proposer.display_name }}</dd>
 
-	</dl>
+			<dt>Proposed:</dt>
+			<dd>{{ proposal.created }}</dd>
+
+			<dt>Proposed to:</dt>
+			<dd>{{ list_schools(proposal.schools) }}</dd>
+
+			<dt>Updated:</dt>
+			<dd>{{ proposal.updated }}</dd>
+
+			<dt>Tags:</dt>
+			<dd>{{ proposal.tags | join(', ') }}</dd>
+
+			<dt>Num. interested</dt>
+			<dd><span class="counter {{ proposal.id }}">{{ proposal.num_interested }}</span></dd>
+
+			<dt>Interested users</dt>
+			<dd>{{ list_users(proposal.interested_users) }}</dd>
+
+			<dt>Stage</dt>
+			<dd>{{ show_stage(proposal) }}</dd>
+		</dl>
+  </div>
+
+  <div role="tabpanel" class="tab-pane" id="discussions">
+	<a href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">add a discussion</a>
+	{% if discussions %}
+		{{ discussions_list(discussions) }}
+	{% endif %}
+  </div>
+  
+  <div role="tabpanel" class="tab-pane" id="events">
+  	{% if events or can_organize %}
+		{% if can_organize %}
+		<a href="{{ url_for('proposals.create_event', id=proposal.id) }}">add a class event</a>
+		{% endif %}
+		<ul>
+		{% for event in events %}
+			<li>
+				<a href="{{ url_for('events.detail', id=event.id) }}">{{ event.start | datetime }}</a>
+				{% if event.title %}
+				{{ event.title }}
+				{% endif %}
+			</li>
+		{% endfor %}
+		</ul>
+		{% endif %}
+  </div>
+
+</div>
+		
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+$('#myTabs a').click(function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+})
+</script>
 {% endblock %}

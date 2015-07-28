@@ -4,7 +4,8 @@ from faker import Factory
 
 from tps.mod_school import load_school, random_school
 from tps.mod_user import random_user
-from .services import add_user_interest, delete_all_proposals
+from tps.mod_interest import add_user_interest
+from .services import delete_all_proposals
 from .models import Proposal
 
 
@@ -23,6 +24,7 @@ def fake_proposals(num):
 			tags = faker.words(),
 			schools = [random_school(),],
 			created = faker.date_time(),
+			events = [],
 			)
 		p.save()
 		for x in range(randint(0,20)):

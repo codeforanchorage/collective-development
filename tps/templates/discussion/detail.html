@@ -1,0 +1,53 @@
+
+{% set page_title = discussion.title %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}discussion{% endblock %}
+
+{# setting variables for permissions #}
+{# set can_edit = can_edit_discussion(discussion) #}
+{% set can_comment = True %}
+
+{% block body %}
+	{# administrative links #}
+	{% if can_edit or can_comment %}
+		<ul>
+		{% if can_edit %}
+		<li><a href="{{ url_for('discussions.edit', id=discussion.id) }}">EDIT</a></li>
+		{% endif %}
+		{% if can_comment %}
+		<li><a href="{{ url_for('discussions.add_comment', id=discussion.id) }}">ADD COMMENT</a></li>
+		{% endif %}
+		</ul>
+	{% endif %}
+	{# end admin section #}
+
+	<h2>{{ discussion.title }}</h2>
+	<dl>
+
+		<dt>Created:</dt>
+		<dd>{{ discussion.created }}</dd>
+
+		<dt>Last comment time:</dt>
+		<dd>{{ discussion.last_comment_time }}</dd>
+
+		{% if comments %}
+		<dt>Comments:</dt>
+		<dd>
+			<ul>
+			{% for comment in comments %}
+				<li>
+					<p>{{ comment.creator.display_name }} on {{ comment.created | datetime }}</p>
+					<p>{{ comment.text }}</p>
+				</li>
+			{% endfor %}
+			</ul>
+		</dd>
+		{% endif %}
+
+
+		
+
+	</dl>
+{% endblock %}

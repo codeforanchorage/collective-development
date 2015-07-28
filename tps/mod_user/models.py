@@ -62,6 +62,7 @@ class User(db.Document, UserMixin):
 				authenticated = False
 			return user, authenticated
 		except:
+			import traceback
 			print(traceback.format_exc())
 			return None, False
 

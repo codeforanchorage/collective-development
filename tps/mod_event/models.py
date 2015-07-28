@@ -4,7 +4,6 @@ from mongoengine import CASCADE, NULLIFY
 from tps.database import db
 from tps.mod_user import User
 from tps.mod_school import School
-from tps.mod_proposal import Proposal
 
 
 class Place(db.Document):
@@ -36,7 +35,6 @@ class Event(db.Document):
 	created = db.DateTimeField(default=datetime.datetime.now())
 	updated = db.DateTimeField(default=datetime.datetime.now())
 	# Optional fields
-	proposals = db.ListField(db.ReferenceField(Proposal, reverse_delete_rule = NULLIFY))
 	short_description = db.StringField(max_length=255)
 	description = db.StringField()
 	places = db.ListField(db.ReferenceField(Place))
@@ -47,18 +45,6 @@ class Event(db.Document):
 		self.updated = datetime.datetime.now()
 		super(Event, self).save(*args,**kwargs)
 
-
-	def full_title(self):
-		if len(self.proposals)==1:
-			if self.title:
-				return "%s (%s)" % (self.proposals[0].title, self.title)
-			else:
-				return "%s" % self.proposals[0].title
-		else:
-			if self.title:
-				return self.title
-			else:
-				return '[ untitled event! ]'
 
 """
 class RepeatingEvent(Event):

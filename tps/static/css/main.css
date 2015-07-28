@@ -11,6 +11,10 @@ body.event {
 	background-color: #FFEFFF;
 }
 
+body.collection {
+	background-color: #FFFFEF;
+}
+
 /* navbar */
 .navbar {
 	font-family: 'Open Sans', sans-serif;
