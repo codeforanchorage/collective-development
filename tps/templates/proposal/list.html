@@ -1,10 +1,21 @@
-{% from "proposal/_macros.html" import proposals_list, interested_counter with context %}
+{% from "proposal/_macros.html" import proposals_list, interested_check with context %}
 
 {% set page_title = "Proposals" %}
 
 {% extends "layouts/base.html" %}
 
 {% block body_classes %}proposal{% endblock %}
+
+
+{% block secondary %}
+<form action="{{ url_for('proposals.search') }}" method="get">
+	<div class="form-group inner-addon left-addon">
+	    <span class="glyphicon glyphicon-search"></span>
+	    <input type="text" name="query" class="form-control">
+	</div>
+</form>
+{% endblock %}
+
 
 {% block body %}
 	<h2>Proposals</h2>

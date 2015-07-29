@@ -1,20 +1,20 @@
-{% from "macros/_interest.html" import interested_counter with context %}
+{% from "macros/_interest.html" import interested_counter, interested_check with context %}
 
 {% macro proposals_list_item(proposal) %}
-<li>
-	<p>{{ interested_counter(proposal) }}</p>
+<div class="list-group-item">
+	<p>{{ interested_check(proposal) }}</p>
 	<h4><a href="{{url_for('proposals.detail', id=proposal.id)}}">{{proposal.title}}</a></h4>
 	<p>{{proposal.description}}</p>
-</li>
+</div>
 {% endmacro %}
 
 
 {% macro proposals_list(proposals) %}
-<ul>
+<div class="list-group">
 	{% for proposal in proposals %}
 		{{ proposals_list_item(proposal) }}
 	{% endfor %}
-</ul>
+</div>
 {% endmacro %}
 
 

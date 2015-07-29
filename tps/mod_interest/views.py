@@ -18,7 +18,6 @@ def toggle(type, id):
 	u = current_user._get_current_object()
 	remove = request.form.get('action','add')=='remove'
 	attribute = request.form.get('attribute', None) or None
-	print 'TYPE==========',type
 	if type=='collection':
 		cls = Collection
 	else:

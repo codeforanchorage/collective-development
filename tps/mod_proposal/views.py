@@ -1,3 +1,4 @@
+from mongoengine import Q
 from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify
 from flask.ext.login import current_user, login_required
 from flask.ext.babel import gettext as _
@@ -23,6 +24,17 @@ def list():
 		proposals = Proposal.objects.filter(schools=g.school, published=True).order_by('-created')
 	return render_template('proposal/list.html', 
 		title=_('Proposals'), 
+		proposals=proposals)
+
+@proposals.route('/search')
+def search():
+	query = request.args.get('query', "")
+	if g.is_default_school:
+		proposals = Proposal.objects.filter(Q(published=True)&(Q(title__contains=query)|Q(description__contains=query))).order_by('-created')
+	else:
+		proposals = Proposal.objects.filter(Q(schools=g.school)&Q(published=True)&(Q(title__contains=query)|Q(description__contains=query))).order_by('-created')
+	return render_template('proposal/list.html', 
+		title=_('Search results'), 
 		proposals=proposals)
 
 

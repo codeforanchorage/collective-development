@@ -24,23 +24,65 @@ body.collection {
 }
 
 /* interested button */
-.interested div {
-	display: inline-block;
-	padding-left: 10px;
-}
-.interested .counter {
-	font-size: 1.5em;
-}
-.interested .add,
-.interested .remove {
-	color: #CCC;
-}
 .interested .add.button,
 .interested .remove.button {
 	cursor: pointer;
+}
+.interested-counter div {
+	display: inline-block;
+	padding-left: 10px;
+}
+.interested-counter .counter {
+	font-size: 1.5em;
+}
+.interested-counter .add,
+.interested-counter .remove {
+	color: #CCC;
+}
+.interested-counter .add.button,
+.interested-counter .remove.button {
+	cursor: pointer;
 	color: blue;
 }
-.interested .add.button::after,
-.interested .remove.button::after {
+.interested-counter .add.button::after,
+.interested-counter .remove.button::after {
 	content: '!';
 }
+
+.interested-checker .add,
+.interested-checker .remove,
+.interested-checker .counter {
+	display: none;
+}
+.interested-checker .add.button {
+	display: block;
+	opacity: 0.25;
+}
+.interested-checker .remove.button {
+	display: block;
+	opacity: 1;
+}
+.interested-checker .button:hover {
+	opacity: 0.5;
+}
+
+/* icons inside text input form elements */
+/* enable absolute positioning */
+.inner-addon { 
+    position: relative; 
+}
+
+/* style icon */
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+}
+
+/* align icon */
+.left-addon .glyphicon  { left:  0px;}
+.right-addon .glyphicon { right: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }

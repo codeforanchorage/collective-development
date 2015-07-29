@@ -7,28 +7,35 @@
 
 {% extends "layouts/base.html" %}
 
+
+{# add extra body classes #}
 {% block body_classes %}proposal{% endblock %}
+
 
 {# setting variables for permissions #}
 {% set can_edit = can_edit_proposal(proposal) %}
 {% set can_organize = can_organize_proposal(proposal) %}
 
 
+{# secondary navigation #}
 {% block secondary %}
 <ul class="nav nav-pills row" id="secondary">
 	<li role="presentation" class="active">
 		<a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a>
 	</li>
 	<li role="presentation">
-		<a href="#discussions" aria-controls="discussions" role="tab" data-toggle="tab">Discussion</a>
+		<a href="#discussions" aria-controls="discussions" role="tab" data-toggle="tab">Comments</a>
 	</li>
+	{% if events or can_organize %}
 	<li role="presentation">
 		<a href="#events" aria-controls="events" role="tab" data-toggle="tab">Events</a>
 	</li>
+	{% endif %}
 </ul>
 {% endblock %}
 
 
+{# main body class #}
 {% block body %}
 <div class="tab-content">
 
@@ -105,9 +112,10 @@
 {% endblock %}
 
 
+{# add page-specific javascript #}
 {% block extra_js %}
 <script>
-$('#myTabs a').click(function (e) {
+$('#secondary a').click(function (e) {
   e.preventDefault()
   $(this).tab('show')
 })
