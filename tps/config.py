@@ -12,6 +12,7 @@ class base_config(object):
 		'db': 'tps',
 		'host': os.environ.get('DB_PORT_27017_TCP_ADDR'),
 		'port': int(os.environ.get('DB_PORT_27017_TCP_PORT')),
+		'connecttimeoutms': 10000,
 	}
 	ACCEPT_LANGUAGES = ['zh']
 	BABEL_DEFAULT_LOCALE = 'en'
