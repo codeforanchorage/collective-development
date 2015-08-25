@@ -68,3 +68,20 @@ class User(db.Document, UserMixin):
 
 	def __str__(self):
 		return self.display_name
+
+
+class AnonymousUser(object):
+	def is_authenticated(self):
+		return False
+
+	def is_active(self):
+		return False
+
+	def is_anonymous(self):
+		return True
+
+	def is_admin(self):
+		return False
+
+	def get_id(self):
+		return
