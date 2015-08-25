@@ -28,7 +28,7 @@ def fake_proposals(num):
 			)
 		p.save()
 		for x in range(randint(0,20)):
-			add_user_interest(random_user(), p)
+			add_user_interest(random_user(), p, Proposal)
 		print "Created: ", p.title
 
 
