@@ -1,5 +1,5 @@
-The Public School
-=================
+Collective Development
+======================
 
 # Pre-installation
 
@@ -50,7 +50,7 @@ python manage.py event fake_events -n 10
 ```
 creates 10 fake places and 10 fake class events.
 ```
-python manage.py event fake_discussions -n 30
+python manage.py discussion fake_discussions -n 30
 ```
 creates 30 fake discussions
 
