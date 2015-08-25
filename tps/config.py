@@ -10,6 +10,8 @@ class base_config(object):
 	DEFAULT_SCHOOL = 'www' # In "single-school" mode, or the root within "multi-school" mode
 	MONGODB_SETTINGS = {
 		'db': 'tps',
+		'host': os.environ.get('DB_PORT_27017_TCP_ADDR'),
+		'port': int(os.environ.get('DB_PORT_27017_TCP_PORT')),
 	}
 	ACCEPT_LANGUAGES = ['zh']
 	BABEL_DEFAULT_LOCALE = 'en'

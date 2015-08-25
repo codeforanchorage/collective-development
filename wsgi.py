@@ -18,4 +18,4 @@ if __name__ == "__main__":
 		apps['/'+school] = create_app(school_name=school)
 	# now create all the app instances
 	master_app = DispatcherMiddleware(app, apps)
-	run_simple('localhost', 5000, master_app, use_reloader=True)
+	run_simple('0.0.0.0', 5000, master_app, use_reloader=True)
