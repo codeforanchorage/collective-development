@@ -2,9 +2,9 @@ from flask import Blueprint, render_template, flash, redirect, request, url_for
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from flask.ext.babel import gettext as _
 
-from tps.mod_auth import authenticate_user
-from tps.mod_school import get_school_context
-from tps.utils import url_for_school
+from app.mod_auth import authenticate_user
+from app.mod_school import get_school_context
+from app.utils import url_for_school
 from .forms import LoginForm
 
 auth = Blueprint('auth', __name__)
@@ -24,7 +24,7 @@ def login():
 			# redirects to specified page OR the homepage for the user's school
 			return redirect(form.next.data or url_for_school('schools.home', user_school=True))
 		else:
-			flash(_('Sorry, invalid login'), 'error')			
+			flash(_('Sorry, invalid login'), 'error')
 	return render_template('auth/login.html', title='login', form=form)
 
 
@@ -40,4 +40,3 @@ def logout():
 	logout_user()
 	flash(_('Logged out'), 'success')
 	return redirect(url_for('proposals.list'))
-

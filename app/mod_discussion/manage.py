@@ -2,19 +2,19 @@ from random import randint
 from flask.ext.script import Manager, prompt_bool
 from faker import Factory
 
-from tps.mod_school import load_school, random_school
-from tps.mod_user import random_user
+from app.mod_school import load_school, random_school
+from app.mod_user import random_user
 from .services import add_comment, delete_all_discussions
 from .models import Discussion, Comment
 
 
-manager = Manager(usage="Perform TPS discussion operations")
+manager = Manager(usage="Perform Collective Development discussion operations")
 
 
 @manager.option('-n', '--num', dest='num', default=4)
 def fake_discussions(num):
 	""" Generates num fake discussions """
-	from tps.mod_proposal import random_proposal
+	from app.mod_proposal import random_proposal
 	faker = Factory.create()
 	for x in range(int(num)):
 		d = Discussion(

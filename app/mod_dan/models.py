@@ -3,13 +3,13 @@ import datetime
 from mongoengine import CASCADE, NULLIFY
 from bson import ObjectId
 
-from tps.database import db
-from tps.mod_school import School
-from tps.mod_user import User
+from app.database import db
+from app.mod_school import School
+from app.mod_user import User
 
 
 class DAN(db.Document):
-	
+
 	school = db.ReferenceField(School, reverse_delete_rule = CASCADE)
 	users = db.ListField(db.ReferenceField(User, reverse_delete_rule = NULLIFY))
 	is_current = db.BooleanField(default=False)

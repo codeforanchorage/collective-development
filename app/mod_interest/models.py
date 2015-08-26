@@ -1,10 +1,10 @@
 """
 A proposal is the basic element of The Public School.
-Rather than distinguish between a proposal (virtual) and a class (actual) as 
+Rather than distinguish between a proposal (virtual) and a class (actual) as
 two different data types, the class is still a proposal.. only, at different "stage".
 
 Similarly, a Collection could have been considered yet another data type.
-But a collection could be 'proposed' and it might have been initially throught of 
+But a collection could be 'proposed' and it might have been initially throught of
 as a class idea, but it was recognized to function better as a collection.
 So, a collection is also a proposal at a different "stage."
 """
@@ -13,8 +13,8 @@ import datetime
 from bson import ObjectId
 from mongoengine import CASCADE, NULLIFY
 
-from tps.database import db
-from tps.mod_user import User
+from app.database import db
+from app.mod_user import User
 
 
 class Interested(db.EmbeddedDocument):
@@ -24,7 +24,7 @@ class Interested(db.EmbeddedDocument):
 	can_teach = db.BooleanField(default=False)
 	can_organize = db.BooleanField(default=False)
 	can_host = db.BooleanField(default=False)
-	
+
 
 class InterestedMixin(object):
 	""" Mixin to provide fields for interest/ following functionality """

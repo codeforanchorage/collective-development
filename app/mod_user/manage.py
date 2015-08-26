@@ -2,12 +2,12 @@ from faker import Factory
 from flask.ext.script import Manager, prompt_bool
 from .services import create_user, delete_all_users, UserExistsError
 
-manager = Manager(usage="Perform TPS user operations")
+manager = Manager(usage="Perform Collective Development user operations")
 
 
-@manager.option('-n', '--name', dest='name', default='tps')
-@manager.option('-p', '--password', dest='password', default='tps')
-@manager.option('-e', '--email', dest='email', default='tps@mailinator.com')
+@manager.option('-n', '--name', dest='name', default='collectivedevelopment')
+@manager.option('-p', '--password', dest='password', default='collectivedevelopment')
+@manager.option('-e', '--email', dest='email', default='collectivedevelopment@mailinator.com')
 def create_admin(name, password, email):
 	""" Creates an administrative user """
 	try:
@@ -17,9 +17,9 @@ def create_admin(name, password, email):
 		print "A user already exists with that username or email address"
 
 
-@manager.option('-n', '--name', dest='name', default='tps')
-@manager.option('-p', '--password', dest='password', default='tps')
-@manager.option('-e', '--email', dest='email', default='tps@mailinator.com')
+@manager.option('-n', '--name', dest='name', default='collectivedevelopment')
+@manager.option('-p', '--password', dest='password', default='collectivedevelopment')
+@manager.option('-e', '--email', dest='email', default='collectivedevelopment@mailinator.com')
 def create(name, password, email):
 	""" Creates a regular user """
 	try:
@@ -35,7 +35,7 @@ def fake_users(num):
 	faker = Factory.create()
 	for x in range(int(num)):
 		try:
-			u = create_user(username=faker.user_name(), password="tps", email=faker.email(), is_admin=False, display_name=faker.name())
+			u = create_user(username=faker.user_name(), password="collectivedevelopment", email=faker.email(), is_admin=False, display_name=faker.name())
 			print "User created! name: %s, username: %s, email: %s" % (u.display_name, u.username, u.email)
 		except UserExistsError, e:
 			pass # ohwell
@@ -48,6 +48,3 @@ def delete_all():
 		"Are you sure you want to delete all users? This cannot be undone."):
 		delete_all_users()
 		print "All users have been deleted. You should run 'dan delete_all' now"
-
-
-		

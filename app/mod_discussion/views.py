@@ -2,8 +2,8 @@ from flask import Blueprint, g, current_app, render_template, flash, redirect, r
 from flask.ext.login import current_user, login_required
 from flask.ext.babel import gettext as _
 
-from tps.utils import url_for_school
-from tps.mod_school import get_school_context
+from app.utils import url_for_school
+from app.mod_school import get_school_context
 from .models import Discussion, Comment
 from .services import start_discussion
 from .forms import AddDiscussionForm, AddCommentForm
@@ -19,8 +19,8 @@ def list():
 		discussions = Discussion.objects.filter(published=True).order_by('-created')
 	else:
 		discussions = Discussion.objects.filter(schools=g.school, published=True).order_by('-created')
-	return render_template('discussion/list.html', 
-		title=_('Discussions'), 
+	return render_template('discussion/list.html',
+		title=_('Discussions'),
 		discussions=discussions)
 
 
@@ -36,8 +36,8 @@ def detail(id):
 	comments = Comment.objects.filter(discussion=d).order_by('-created')
 	# Passing some permissions related functions on to Jinja
 	#current_app.jinja_env.globals['can_edit_proposal'] = can_edit_proposal
-	return render_template('discussion/detail.html', 
-		title = d.title, 
+	return render_template('discussion/detail.html',
+		title = d.title,
 		discussion = d,
 		comments = comments,
 		other_schools = other_schools)
@@ -52,8 +52,8 @@ def create():
 	if form.validate_on_submit():
 		d = start_discussion(request.form.get("text"), form=form)
 		return redirect(url_for('discussions.detail', id=d.id))
-	return render_template('discussion/create.html', 
-		title=_('Start a discussion'), 
+	return render_template('discussion/create.html',
+		title=_('Start a discussion'),
 		form=form)
 
 
@@ -70,7 +70,7 @@ def add_comment(id):
 		form.populate_obj(c)
 		c.save()
 		return redirect(url_for('discussions.detail', id=d.id))
-	return render_template('discussion/add_comment.html', 
+	return render_template('discussion/add_comment.html',
 		discussion = d,
-		title = d.title, 
+		title = d.title,
 		form = form)

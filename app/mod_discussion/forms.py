@@ -2,8 +2,8 @@ from wtforms import TextField, TextAreaField, BooleanField, SubmitField, HiddenF
 from wtforms.validators import Required
 from flask.ext.login import current_user
 
-from tps.utils.form import model_form, BaseForm, TagListField
-from tps.mod_school import user_schools
+from app.utils.form import model_form, BaseForm, TagListField
+from app.mod_school import user_schools
 from .models import Comment, Discussion
 
 
@@ -23,8 +23,8 @@ class CommentBase(BaseForm):
 	field_order = ('*', 'submit')
 
 
-AddDiscussionForm = model_form( Discussion, 
-	base_class=DiscussionBase, 
+AddDiscussionForm = model_form( Discussion,
+	base_class=DiscussionBase,
 	exclude=(
 		'schools',
 		'published',
@@ -40,8 +40,8 @@ submit_add = SubmitField('Start Discussion')
 AddDiscussionForm.submit = submit_add
 
 
-AddCommentForm = model_form( Comment, 
-	base_class=CommentBase, 
+AddCommentForm = model_form( Comment,
+	base_class=CommentBase,
 	exclude=(
 		'published',
 		'updated',

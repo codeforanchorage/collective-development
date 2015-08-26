@@ -2,8 +2,8 @@ from wtforms import TextField, TextAreaField, BooleanField, SubmitField, HiddenF
 from wtforms.validators import Required
 from flask.ext.login import current_user
 
-from tps.utils.form import model_form, BaseForm, TagListField
-from tps.mod_school import user_schools
+from app.utils.form import model_form, BaseForm, TagListField
+from app.mod_school import user_schools
 from .models import Proposal
 
 
@@ -18,8 +18,8 @@ class ProposalBase(BaseForm):
 			self.schools.queryset = user_schools()
 
 
-AddProposalForm = model_form( Proposal, 
-	base_class=ProposalBase, 
+AddProposalForm = model_form( Proposal,
+	base_class=ProposalBase,
 	exclude=(
 		'edited_description',
 		'proposer',
@@ -39,8 +39,8 @@ submit_add = SubmitField('Propose!')
 AddProposalForm.submit = submit_add
 
 
-ProposalForm = model_form( Proposal, 
-	base_class=ProposalBase, 
+ProposalForm = model_form( Proposal,
+	base_class=ProposalBase,
 	exclude=(
 		'edited_description',
 		'proposer',
@@ -57,5 +57,3 @@ ProposalForm = model_form( Proposal,
 		'tags'))
 submit_save = SubmitField('Save')
 ProposalForm.submit = submit_save
-
-

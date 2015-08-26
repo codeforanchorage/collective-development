@@ -2,7 +2,7 @@ from random import randint
 
 from flask import g, abort
 from flask.ext.login import current_user
-from tps.mod_dan import load_dan, user_is_a_dan
+from app.mod_dan import load_dan, user_is_a_dan
 from .models import Proposal
 
 
@@ -23,7 +23,7 @@ def delete_all_proposals():
 #
 
 def can_edit_proposal(proposal, user=None):
-	""" Can a user edit a particular proposal? 
+	""" Can a user edit a particular proposal?
 	Allow the proposal author, the school committee members, and admins """
 	user = user or current_user._get_current_object()
 	dans = [load_dan(school) for school in proposal.schools]
@@ -43,7 +43,7 @@ def can_organize_proposal(proposal, user=None):
 	return user_is_a_dan(user, dans) or user.is_admin()
 
 
-# 
+#
 # Permissions decorators
 #
 from functools import wraps

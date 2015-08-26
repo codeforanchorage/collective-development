@@ -1,11 +1,11 @@
 from werkzeug.serving import run_simple
 from werkzeug.wsgi import DispatcherMiddleware
 
-from tps import create_app
+from app import create_app
 
 
 if __name__ == "__main__":
-	""" 
+	"""
 	In local development environment, multiple schools are simulated as below.
 	In production, the app will be run under uwsgi and SCRIPT_NAME will be set in
 	the wsgi variables. Each school will be its own script: http://domain.net/school

@@ -12,8 +12,8 @@ interested = Blueprint('interested', __name__, url_prefix='/interested')
 @login_required
 def toggle(type, id):
 	""" Toggles current user's interest in a proposal """
-	from tps.mod_proposal import Proposal
-	from tps.mod_collection import Collection
+	from app.mod_proposal import Proposal
+	from app.mod_collection import Collection
 
 	u = current_user._get_current_object()
 	remove = request.form.get('action','add')=='remove'
@@ -30,6 +30,6 @@ def toggle(type, id):
 	else:
 		add_user_interest(u, obj, cls, extra=attribute)
 	return jsonify({
-		'num_interested':obj.num_interested, 
+		'num_interested':obj.num_interested,
 		'next' : 'remove' if obj.user_is_interested(u) else 'add'
 		})

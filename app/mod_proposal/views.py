@@ -3,10 +3,10 @@ from flask import Blueprint, g, current_app, render_template, flash, redirect, r
 from flask.ext.login import current_user, login_required
 from flask.ext.babel import gettext as _
 
-from tps.utils import url_for_school
-from tps.mod_school import get_school_context
-from tps.mod_event import AddEventForm
-from tps.mod_discussion import Discussion, Comment, AddDiscussionForm, start_discussion
+from app.utils import url_for_school
+from app.mod_school import get_school_context
+from app.mod_event import AddEventForm
+from app.mod_discussion import Discussion, Comment, AddDiscussionForm, start_discussion
 from .forms import AddProposalForm, ProposalForm
 from .models import Proposal
 from .services import can_edit, can_organize, can_edit_proposal, can_organize_proposal
@@ -22,8 +22,8 @@ def list():
 		proposals = Proposal.objects.filter(published=True).order_by('-created')
 	else:
 		proposals = Proposal.objects.filter(schools=g.school, published=True).order_by('-created')
-	return render_template('proposal/list.html', 
-		title=_('Proposals'), 
+	return render_template('proposal/list.html',
+		title=_('Proposals'),
 		proposals=proposals)
 
 @proposals.route('/search')
@@ -33,8 +33,8 @@ def search():
 		proposals = Proposal.objects.filter(Q(published=True)&(Q(title__contains=query)|Q(description__contains=query))).order_by('-created')
 	else:
 		proposals = Proposal.objects.filter(Q(schools=g.school)&Q(published=True)&(Q(title__contains=query)|Q(description__contains=query))).order_by('-created')
-	return render_template('proposal/list.html', 
-		title=_('Search results'), 
+	return render_template('proposal/list.html',
+		title=_('Search results'),
 		proposals=proposals)
 
 
@@ -50,8 +50,8 @@ def detail(id):
 	# Passing some permissions related functions on to Jinja
 	current_app.jinja_env.globals['can_edit_proposal'] = can_edit_proposal
 	current_app.jinja_env.globals['can_organize_proposal'] = can_organize_proposal
-	return render_template('proposal/detail.html', 
-		title = p.title, 
+	return render_template('proposal/detail.html',
+		title = p.title,
 		proposal = p,
 		other_schools = other_schools,
 		events = p.events,
@@ -64,8 +64,8 @@ def make():
 	""" Make a proposal route """
 	schools = g.all_schools
 	if g.is_default_school and len(schools)>0:
-		return render_template('proposal/make_choose_school.html', 
-			title=_('Which school?'), 
+		return render_template('proposal/make_choose_school.html',
+			title=_('Which school?'),
 			schools=[school for school in schools if not school==g.default_school])
 	form = AddProposalForm()
 	if form.validate_on_submit():
@@ -73,8 +73,8 @@ def make():
 		form.populate_obj(p)
 		p.save()
 		return redirect(url_for('proposals.detail', id=p.id))
-	return render_template('proposal/make.html', 
-		title=_('Make a proposal'), 
+	return render_template('proposal/make.html',
+		title=_('Make a proposal'),
 		form=form)
 
 
@@ -90,8 +90,8 @@ def edit(id):
 		form.populate_obj(p)
 		p.save()
 		return redirect(url_for('proposals.detail', id=p.id))
-	return render_template('proposal/edit.html', 
-		title=_('Edit a proposal'), 
+	return render_template('proposal/edit.html',
+		title=_('Edit a proposal'),
 		proposal = p,
 		form=form)
 
@@ -113,8 +113,8 @@ def create_discussion(id):
 		d = start_discussion(request.form.get("text"), schools=p.schools, form=form)
 		p.add_discussion(d)
 		return redirect(url_for('discussions.detail', id=d.id))
-	return render_template('discussion/create.html', 
-		title=_('New discussion in @title', title=p.title), 
+	return render_template('discussion/create.html',
+		title=_('New discussion in @title', title=p.title),
 		form=form)
 
 
@@ -135,7 +135,6 @@ def create_event(id):
 		flash(_('The new event has been created. Please edit it here to provide more information like its location, a title, description, etc.'))
 		flash(Markup(_('Or you can do that later and now just add more events by clicking <a href="%(url)s">here</a>', url=url_for('events.create', proposal_id=p.id))))
 		return redirect(url_for('events.edit', id=e.id))
-	return render_template('event/create.html', 
-		title=_('Add a class event'), 
+	return render_template('event/create.html',
+		title=_('Add a class event'),
 		form=form)
-	

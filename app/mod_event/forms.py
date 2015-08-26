@@ -4,8 +4,8 @@ from wtforms import TextField, BooleanField, SubmitField, HiddenField
 from wtforms.validators import Required
 #from flask.ext.mongoengine.wtf import model_form
 
-from tps.utils.form import model_form, BaseForm
-from tps.mod_dan import user_dans
+from app.utils.form import model_form, BaseForm
+from app.mod_dan import user_dans
 from .models import Event, Place
 from .services import create_place
 
@@ -15,7 +15,7 @@ class PlacesListField(QuerySetSelectMultipleField):
 	def __init__(self, *args, **kwargs):
 		super(PlacesListField, self).__init__(*args, **kwargs)
 		self.queryset = Place.objects.filter(schools=g.school)
-		
+
 	def create_place(self, name):
 		return create_place(name=name, schools=[g.school,])
 
@@ -51,8 +51,8 @@ class EventBase(BaseForm):
 			self.schools.queryset = user_dans()
 
 
-AddEventForm = model_form( Event, 
-	base_class=EventBase, 
+AddEventForm = model_form( Event,
+	base_class=EventBase,
 	exclude=(
 		'end',
 		'updated',
@@ -65,7 +65,6 @@ AddEventForm = model_form( Event,
 		'places'))
 
 
-EventForm = model_form(Event, 
-	base_class=EventBase, 
+EventForm = model_form(Event,
+	base_class=EventBase,
 	exclude=('updated','created','creator','places'))
-

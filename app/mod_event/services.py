@@ -2,7 +2,7 @@ from random import randint
 from flask import g, abort
 from flask.ext.login import current_user
 
-from tps.mod_dan import load_dan, user_is_dan, user_is_a_dan
+from app.mod_dan import load_dan, user_is_dan, user_is_a_dan
 from .models import Place, Event
 
 
@@ -67,7 +67,7 @@ def can_edit(obj, user=None):
 	return user_is_a_dan(user, dans) or obj.creator==user or user.is_admin()
 
 
-# 
+#
 # Permissions decorators
 #
 from functools import wraps

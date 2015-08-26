@@ -3,10 +3,10 @@ import datetime
 from bson import ObjectId
 from mongoengine import CASCADE, NULLIFY
 
-from tps.utils import pretty_date
-from tps.database import db
-from tps.mod_user import User
-from tps.mod_school import School
+from app.utils import pretty_date
+from app.database import db
+from app.mod_user import User
+from app.mod_school import School
 
 
 class Comment(db.Document):

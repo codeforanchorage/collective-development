@@ -7,23 +7,23 @@ import operator
 from bson import ObjectId
 from mongoengine import CASCADE, NULLIFY
 
-from tps.utils import pretty_date
-from tps.database import db
-from tps.mod_user import User
-from tps.mod_interest import Interested
-from tps.mod_school import School
-from tps.mod_proposal import Proposal, BaseProposal
-from tps.mod_event import Event
+from app.utils import pretty_date
+from app.database import db
+from app.mod_user import User
+from app.mod_interest import Interested
+from app.mod_school import School
+from app.mod_proposal import Proposal, BaseProposal
+from app.mod_event import Event
 
 
 class Collection(BaseProposal):
 	""" A collection object """
 
-	meta = {'collection': 'tps_collection'}
+	meta = {'collection': 'app_collection'}
 	# directly included proposals
 	proposals = db.ListField(db.ReferenceField(Proposal))
 	collections = db.ListField(db.ReferenceField('self'))
-	# todo: url 
+	# todo: url
 
 
 	def __init__(self, *args, **kwargs):

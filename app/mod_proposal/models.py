@@ -1,6 +1,6 @@
 """
 A proposal is the basic element of The Public School.
-Rather than distinguish between a proposal (virtual) and a class (actual) as 
+Rather than distinguish between a proposal (virtual) and a class (actual) as
 two different data types, the class is still a proposal.. only, at different "stage".
 """
 import datetime
@@ -8,13 +8,13 @@ import datetime
 from bson import ObjectId
 from mongoengine import CASCADE, NULLIFY
 
-from tps.utils import pretty_date
-from tps.database import db
-from tps.mod_user import User
-from tps.mod_school import School
-from tps.mod_event import Event
-from tps.mod_discussion import Discussion
-from tps.mod_interest import InterestedMixin, Interested
+from app.utils import pretty_date
+from app.database import db
+from app.mod_user import User
+from app.mod_school import School
+from app.mod_event import Event
+from app.mod_discussion import Discussion
+from app.mod_interest import InterestedMixin, Interested
 
 from .constants import LIFE_ORIGIN, LIFE_PLANNING, LIFE_CLASS, LIFE_FINISHED, SOURCE_UNKNOWN, SOURCE_WEBSITE, SOURCE_API, SOURCE_OFFLINE
 
@@ -28,7 +28,7 @@ class Stage(db.EmbeddedDocument):
 	@property
 	def pretty_date(self):
 		return pretty_date(self.date)
-	
+
 
 class BaseProposal(db.Document, InterestedMixin):
 	meta = {
@@ -49,9 +49,9 @@ class BaseProposal(db.Document, InterestedMixin):
 	published = db.BooleanField(default=True)
 	# The proposal that this proposal "copies"
 	copy_of = db.ReferenceField("self", reverse_delete_rule = NULLIFY)
-	# Events 
+	# Events
 	events = db.ListField(db.ReferenceField(Event, reverse_delete_rule = NULLIFY))
-	# Discussions 
+	# Discussions
 	discussions = db.ListField(db.ReferenceField(Discussion, reverse_delete_rule = NULLIFY))
 
 

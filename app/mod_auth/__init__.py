@@ -1,5 +1,5 @@
 from flask.ext.login import LoginManager
-from tps.mod_user import User, AnonymousUser
+from app.mod_user import User, AnonymousUser
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'

@@ -2,7 +2,7 @@ from random import randint
 
 from flask import g, abort
 from flask.ext.login import current_user
-from tps.mod_dan import load_dan, user_is_a_dan
+from app.mod_dan import load_dan, user_is_a_dan
 from .models import Collection
 
 

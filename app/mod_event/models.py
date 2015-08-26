@@ -1,9 +1,9 @@
 import datetime
 from mongoengine import CASCADE, NULLIFY
 
-from tps.database import db
-from tps.mod_user import User
-from tps.mod_school import School
+from app.database import db
+from app.mod_user import User
+from app.mod_school import School
 
 
 class Place(db.Document):
@@ -48,8 +48,8 @@ class Event(db.Document):
 
 """
 class RepeatingEvent(Event):
-	"" If automated repetition is required, then perhaps this class 
-	could store the repetition variables (how much time between events, 
+	"" If automated repetition is required, then perhaps this class
+	could store the repetition variables (how much time between events,
 	any skipped dates, repeat until, etc.) ""
 	pass
 """

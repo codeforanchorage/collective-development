@@ -4,8 +4,8 @@ from flask import Blueprint, g, current_app, render_template, flash, redirect, r
 from flask.ext.login import current_user, login_required
 from flask.ext.babel import gettext as _
 
-from tps.utils import url_for_school, model_form
-from tps.mod_school import get_school_context
+from app.utils import url_for_school, model_form
+from app.mod_school import get_school_context
 from .forms import AddEventForm, EventForm
 from .models import Event, Place
 from .services import can_edit_place, can_edit_event, can_create_event, can_edit, can_create
@@ -22,8 +22,8 @@ def list():
 		events = Event.objects.filter().order_by('-start')
 	else:
 		events = Event.objects.filter(schools=g.school).order_by('-start')
-	return render_template('event/list.html', 
-		title=_('Events'), 
+	return render_template('event/list.html',
+		title=_('Events'),
 		events=events)
 
 
@@ -44,8 +44,8 @@ def create():
 		e.save()
 		flash(_('The new event has been created. Please edit it here to provide more information like its location, a title, description, etc.'))
 		return redirect(url_for('events.edit', id=e.id))
-	return render_template('event/create.html', 
-		title=_('Add a class event'), 
+	return render_template('event/create.html',
+		title=_('Add a class event'),
 		form=form)
 
 
@@ -59,8 +59,8 @@ def detail(id):
 		return redirect(url_for_school('events.detail', school=c, id=e.id), code=301)
 	# Passing some permissions related functions on to Jinja
 	current_app.jinja_env.globals['can_edit'] = can_edit
-	return render_template('event/detail.html', 
-		title = e.title, 
+	return render_template('event/detail.html',
+		title = e.title,
 		event = e,
 		other_events = []) #other_events(e))
 
@@ -76,8 +76,8 @@ def edit(id):
 		form.populate_obj(e)
 		e.save()
 		return redirect(url_for('events.detail', id=e.id))
-	return render_template('event/edit.html', 
-		title=_('Edit a class event'), 
+	return render_template('event/edit.html',
+		title=_('Edit a class event'),
 		event = e,
 		form=form)
 

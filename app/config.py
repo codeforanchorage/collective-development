@@ -9,7 +9,7 @@ class base_config(object):
 	MAIL_PORT = os.environ.get('MAIL_PORT', 1025)
 	DEFAULT_SCHOOL = 'www' # In "single-school" mode, or the root within "multi-school" mode
 	MONGODB_SETTINGS = {
-		'db': 'tps',
+		'db': 'collectivedevelopment',
 		'host': os.environ.get('DB_PORT_27017_TCP_ADDR'),
 		'port': int(os.environ.get('DB_PORT_27017_TCP_PORT')),
 		'connecttimeoutms': 10000,

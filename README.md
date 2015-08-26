@@ -12,8 +12,8 @@ Collective Development
 # Installation
 
 ```
-git clone https://github.com/sdockray/tps.git
-cd tps
+git clone https://github.com/codeforanchorage/collective-development.git
+cd collective-development
 virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -26,7 +26,7 @@ Before starting the server, you need some data. There are various command line u
 ```
 python manage.py user create_admin
 ```
-creates an admin with name "tps" and password "tps"
+creates an admin with name "collectivedevelopment" and password "collectivedevelopment"
 
 ```
 python manage.py school create
@@ -39,7 +39,7 @@ creates 3 schools plus the default school. You can omit any of the last 3 or add
 ```
 python manage.py user fake_users -n 25
 ```
-creates 25 fake users. all of them will have "tps" for a password
+creates 25 fake users. all of them will have "collectivedevelopment" for a password
 ```
 python manage.py proposal fake_proposals -n 40
 ```

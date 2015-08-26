@@ -4,7 +4,7 @@ from flask.ext.login import current_user
 import flask.ext.babel as babel
 
 from .form import model_form, BaseForm
-from tps.mod_school import get_school_context
+from app.mod_school import get_school_context
 
 
 def url_for_school(endpoint, school=None, user_school=False, **values):
@@ -21,12 +21,12 @@ def url_for_school(endpoint, school=None, user_school=False, **values):
 	if school == g.default_school:
 		fsn = None
 	# Requesting the default/ global school
-	if fsn is None: 
+	if fsn is None:
 		if g.is_default_school:
 			return url
 		else:
 			return url.replace('/'+csn, '', 1)
-	# Requesting a particular school 
+	# Requesting a particular school
 	else:
 		if csn==fsn:
 			return url
@@ -40,7 +40,7 @@ def pretty_date(dt, default=None):
 	"""
 	Returns string representing "time since" e.g.
 	3 days ago, 5 hours ago etc.
-	Ref: https://bitbucket.org/danjac/newsmeme/src/a281babb9ca3/newsmeme/
+	Ref: htapp://bitbucket.org/danjac/newsmeme/src/a281babb9ca3/newsmeme/
 	"""
 
 	if default is None:

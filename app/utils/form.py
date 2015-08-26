@@ -7,7 +7,7 @@ from wtforms.widgets import TextInput
 from wtforms.ext.dateutil.fields import DateTimeField
 
 
-class TPSModelConverter(ModelConverter):
+class CDModelConverter(ModelConverter):
 	""" Use updated datetime field """
 	@converts('DateTimeField')
 	def conv_DateTime(self, model, field, kwargs):
@@ -15,10 +15,10 @@ class TPSModelConverter(ModelConverter):
 
 
 class BaseForm(Form):
-	""" This base form allows for re-ordering fields in the form """	
+	""" This base form allows for re-ordering fields in the form """
 	csrf_enabled=True
 	next = HiddenField()
-	
+
 	def __iter__(self):
 		field_order = getattr(self, 'field_order', None)
 		# everything before the wildcard
@@ -65,7 +65,6 @@ class TagListField(SelectMultipleField):
 
 
 
-def model_form(model, base_class=ModelForm, only=None, exclude=None, field_args=None, converter=TPSModelConverter()):
+def model_form(model, base_class=ModelForm, only=None, exclude=None, field_args=None, converter=CDModelConverter()):
 	""" Default to using our custom model converter """
 	return orig_model_form(model, base_class=base_class, only=only, exclude=exclude, field_args=field_args, converter=converter)
-	

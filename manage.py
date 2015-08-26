@@ -1,13 +1,13 @@
 from flask.ext.script import Manager
 
-from tps import create_app
-from tps.mod_user import manager as user_manager
-from tps.mod_dan import manager as dan_manager
-from tps.mod_proposal import manager as proposal_manager
-from tps.mod_collection import manager as collection_manager
-from tps.mod_event import manager as event_manager
-from tps.mod_discussion import manager as discussion_manager
-from tps.mod_school import manager as school_manager
+from app import create_app
+from app.mod_user import manager as user_manager
+from app.mod_dan import manager as dan_manager
+from app.mod_proposal import manager as proposal_manager
+from app.mod_collection import manager as collection_manager
+from app.mod_event import manager as event_manager
+from app.mod_discussion import manager as discussion_manager
+from app.mod_school import manager as school_manager
 
 # create the manager so decorators work
 manager = Manager(create_app())

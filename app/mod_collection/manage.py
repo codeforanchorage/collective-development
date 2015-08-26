@@ -2,14 +2,14 @@ from random import randint
 from flask.ext.script import Manager, prompt_bool
 from faker import Factory
 
-from tps.mod_school import load_school, random_school
-from tps.mod_user import random_user
-from tps.mod_proposal import random_proposal
+from app.mod_school import load_school, random_school
+from app.mod_user import random_user
+from app.mod_proposal import random_proposal
 from .services import delete_all_collections
 from .models import Collection
 
 
-manager = Manager(usage="Perform TPS collection operations")
+manager = Manager(usage="Perform Collective Development collection operations")
 
 
 @manager.option('-n', '--num', dest='num', default=4)

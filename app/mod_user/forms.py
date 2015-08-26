@@ -5,7 +5,7 @@ from wtforms import TextField, PasswordField, BooleanField, SubmitField, HiddenF
 from wtforms.validators import Required, Length, EqualTo, ValidationError
 #from flask.ext.mongoengine.wtf import model_form
 
-from tps.utils.form import model_form, BaseForm
+from app.utils.form import model_form, BaseForm
 from .models import User
 from .constants import PASSWORD_LEN_MIN, PASSWORD_LEN_MAX
 from .services import find_user
@@ -58,7 +58,7 @@ class BaseAddUserForm(BaseForm):
 	gotcha = TextField('Gotcha', [validate_gotcha])
 
 
-UserSettingsForm = model_form( User, 
+UserSettingsForm = model_form( User,
 	base_class=Form,
 	exclude=(
 		'username',
@@ -66,7 +66,7 @@ UserSettingsForm = model_form( User,
 		'role',
 		'created',
 		'active'),
-	field_args = { 
+	field_args = {
 		'email': { 'validators': [validate_email]} ,
 		'schools': { 'label': 'Schools you are following'}
 		})
@@ -74,18 +74,17 @@ submit_add = SubmitField('Save')
 UserSettingsForm.submit = submit_add
 
 
-UserAddForm = model_form( User, 
+UserAddForm = model_form( User,
 	base_class=BaseAddUserForm,
 	exclude=(
 		'password',
 		'role',
 		'created',
 		'active'),
-	field_args = { 
+	field_args = {
 		'username': { 'validators': [validate_username]} ,
 		'email': { 'validators': [validate_email]} ,
 		'schools': { 'label': 'Schools you are interested in'}
 		})
 submit_add = SubmitField('Sign up')
 UserAddForm.submit = submit_add
-

@@ -2,14 +2,14 @@ from random import randint
 from flask.ext.script import Manager, prompt_bool
 from faker import Factory
 
-from tps.mod_school import load_school, random_school
-from tps.mod_user import random_user
-from tps.mod_interest import add_user_interest
+from app.mod_school import load_school, random_school
+from app.mod_user import random_user
+from app.mod_interest import add_user_interest
 from .services import delete_all_proposals
 from .models import Proposal
 
 
-manager = Manager(usage="Perform TPS proposal operations")
+manager = Manager(usage="Perform Collective Development proposal operations")
 
 
 @manager.option('-n', '--num', dest='num', default=10)
@@ -41,4 +41,3 @@ def delete_all():
 		"Are you sure you want to delete all proposals? This cannot be undone."):
 		delete_all_proposals()
 		print "All proposals have been deleted"
-

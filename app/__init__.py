@@ -2,24 +2,24 @@
 New schools:
 1. create subdomain record that simply points to this same app
 2. by default, it uses 'www' or 'default' (for global)
-3. add/ edit a school 
+3. add/ edit a school
 """
 
 from flask import Flask, g, request, url_for
 from flask.ext.babel import Babel
 
-from tps.utils import pretty_date, format_datetime, url_for_school
-from tps.database import db
-from tps import config
+from app.utils import pretty_date, format_datetime, url_for_school
+from app.database import db
+from app import config
 
-from tps.mod_auth import login_manager, auth
-from tps.mod_school import load_school, load_all_schools, schools
-from tps.mod_user import users
-from tps.mod_event import events, places
-from tps.mod_discussion import discussions
-from tps.mod_proposal import proposals
-from tps.mod_collection import collections
-from tps.mod_interest import interested
+from app.mod_auth import login_manager, auth
+from app.mod_school import load_school, load_all_schools, schools
+from app.mod_user import users
+from app.mod_event import events, places
+from app.mod_discussion import discussions
+from app.mod_proposal import proposals
+from app.mod_collection import collections
+from app.mod_interest import interested
 
 
 def create_app(config=config.dev_config, school_name=None):
@@ -30,12 +30,12 @@ def create_app(config=config.dev_config, school_name=None):
 	app.config.from_object(config)
 	# Configuration overrides
 	app.config.from_pyfile('../application.cfg', silent=True)
-	# In "multi-school" mode, each school is run as a separate app. 
+	# In "multi-school" mode, each school is run as a separate app.
 	# And each is run under the root directory (eg. domain.net/school)
 	if school_name is not None:
 		app.config['SCRIPT_NAME'] = '/'+school_name
 	app.config['SCHOOL'] = school_name or app.config['DEFAULT_SCHOOL']
-	
+
 	# Register everything
 	register_extensions(app)
 	register_views(app)
@@ -69,7 +69,7 @@ def register_views(app):
 	app.register_blueprint(places)
 	app.register_blueprint(proposals)
 	app.register_blueprint(collections)
-	
+
 
 def register_template_filters(app):
 	@app.template_filter('time_ago')

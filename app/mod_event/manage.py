@@ -2,13 +2,13 @@ from random import randint
 from flask.ext.script import Manager, prompt_bool
 from faker import Factory
 
-from tps.mod_school import load_school, random_school
-from tps.mod_user import random_user
-from tps.mod_proposal import random_proposal
+from app.mod_school import load_school, random_school
+from app.mod_user import random_user
+from app.mod_proposal import random_proposal
 from .services import create_place, create_event, random_place, random_event, delete_all_places, delete_all_events
 
 
-manager = Manager(usage="Perform TPS event operations")
+manager = Manager(usage="Perform Collective Development event operations")
 
 
 @manager.option('-n', '--num', dest='num', default=10)

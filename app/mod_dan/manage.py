@@ -1,10 +1,10 @@
 from flask import current_app
 from flask.ext.script import Manager, prompt_bool
-from tps.mod_school import load_school
-from tps.mod_user import find_user
+from app.mod_school import load_school
+from app.mod_user import find_user
 from .services import load_dan, add_user_to_dan, remove_user_from_dan, delete_all_dans
 
-manager = Manager(usage="Perform TPS committee operations")
+manager = Manager(usage="Perform Collective Development committee operations")
 
 
 @manager.option('-s', '--school', dest='school', default=None)
@@ -61,4 +61,3 @@ def delete_all():
 		"Are you sure you want to delete all committees? This cannot be undone."):
 		delete_all_dans()
 		print "All committees have been deleted"
-

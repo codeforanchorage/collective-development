@@ -2,7 +2,7 @@ from random import randint
 
 from flask import g, abort
 from flask.ext.login import current_user
-from tps.mod_dan import load_dan, user_is_a_dan
+from app.mod_dan import load_dan, user_is_a_dan
 from .models import Discussion, Comment
 
 
@@ -13,11 +13,11 @@ def start_discussion(text, title=None, schools=None, form=None):
 	if title:
 		d = Discussion(
 			title=title,
-			schools=schools, 
+			schools=schools,
 			creator=current_user._get_current_object())
 	elif form:
 		d = Discussion(
-			schools=schools, 
+			schools=schools,
 			creator=current_user._get_current_object())
 		if form:
 			form.populate_obj(d)
