@@ -1,4 +1,4 @@
-from flask.ext.script import Manager
+from flask.ext.script import Manager, Server
 
 from app import create_app
 from app.mod_user import manager as user_manager
@@ -11,6 +11,7 @@ from app.mod_school import manager as school_manager
 
 # create the manager so decorators work
 manager = Manager(create_app())
+manager.add_command("runserver", Server(host='0.0.0.0'))
 manager.add_command("user", user_manager)
 manager.add_command("dan", dan_manager)
 manager.add_command("proposal", proposal_manager)
