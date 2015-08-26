@@ -1,20 +1,16 @@
 from faker import Factory
-from flask.ext.script import Manager, prompt_bool
+from flask.ext.script import Manager, prompt_bool, Command, Option
 from .services import create_user, delete_all_users, UserExistsError
 
 manager = Manager(usage="Perform Collective Development user operations")
 
-
-@manager.option('-n', '--name', dest='name', default='collectivedevelopment')
-@manager.option('-p', '--password', dest='password', default='collectivedevelopment')
-@manager.option('-e', '--email', dest='email', default='collectivedevelopment@mailinator.com')
-def create_admin(name, password, email):
-	""" Creates an administrative user """
+@manager.command
+def create_admin(name='collectivedevelopment', password='collectivedevelopment', email='collectivedevelopment@mailinator.com'):
 	try:
-		u = create_user(username=name, password=password, email=email, is_admin=True)
-		print "Admin created! username: %s, password: %s, email: %s" % (name, password, email)
+		_ = create_user(username=name, password=password, email=email, is_admin=True)
+		print("Admin created! username: {}, password: {}, email: {}".format(name, password, email))
 	except UserExistsError, e:
-		print "A user already exists with that username or email address"
+		print("A user already exists with that username or email address")
 
 
 @manager.option('-n', '--name', dest='name', default='collectivedevelopment')
@@ -29,14 +25,16 @@ def create(name, password, email):
 		print "A user already exists with that username or email address"
 
 
-@manager.option('-n', '--num', dest='num', default=10)
-def fake_users(num):
-	""" Generates num fake users """
+@manager.command
+def fake_users(num=10):
+	"""
+		Generates num fake users
+	"""
 	faker = Factory.create()
 	for x in range(int(num)):
 		try:
 			u = create_user(username=faker.user_name(), password="collectivedevelopment", email=faker.email(), is_admin=False, display_name=faker.name())
-			print "User created! name: %s, username: %s, email: %s" % (u.display_name, u.username, u.email)
+			print("User created! name: {0.display_name}, username: {0.username}, email: {0.email}".format(u))
 		except UserExistsError, e:
 			pass # ohwell
 

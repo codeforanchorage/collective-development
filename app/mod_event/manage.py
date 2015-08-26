@@ -11,44 +11,47 @@ from .services import create_place, create_event, random_place, random_event, de
 manager = Manager(usage="Perform Collective Development event operations")
 
 
-@manager.option('-n', '--num', dest='num', default=10)
-def fake_places(num):
-	""" Generates num fake places """
+@manager.command
+def fake_places(num=10):
+	"""
+		Generates num fake places
+	"""
 	faker = Factory.create()
 	for x in range(int(num)):
 		p = create_place(
-			name = faker.text(),
-			information = faker.paragraph(),
-			address = faker.address(),
-			geo = [float(faker.longitude()), float(faker.latitude())],
-			schools = [random_school(),],
-			creator = random_user(),
-			created = faker.date_time(),
+				name=faker.text(),
+				information=faker.paragraph(),
+				address=faker.address(),
+				geo=[float(faker.longitude()), float(faker.latitude())],
+				schools=[random_school(),],
+				creator=random_user(),
+				created=faker.date_time(),
 			)
-		print "Created: ", p.address
+		print("Created: {}".format(p.address))
 
 
-@manager.option('-n', '--num', dest='num', default=10)
-def fake_events(num):
-	""" Generates num fake events """
+@manager.command
+def fake_events(num=10):
+	"""
+		Generates num fake events
+	"""
 	faker = Factory.create()
 	for x in range(int(num)):
 		e = create_event(
-			start = faker.date_time(),
-			title = faker.bs(),
-			schools = [],
-			creator = random_user(),
-			created = faker.date_time(),
-			description= faker.paragraph(),
-			short_description= faker.sentence(),
-			places= [random_place(), ]
+				start=faker.date_time(),
+				title=faker.bs(),
+				schools=[],
+				creator=random_user(),
+				created=faker.date_time(),
+				description=faker.paragraph(),
+				short_description=faker.sentence(),
+				places=[random_place(),]
 			)
 		p = random_proposal()
 		e.schools = p.schools
 		e.save()
 		p.add_event(e)
-		print "Created: ", e.title
-		print "    (added to proposal: %s)" % p.title
+		print("Created: {}\n    (added to proposal: {})".format(e.title, p.title))
 
 
 @manager.command

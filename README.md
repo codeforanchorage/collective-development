@@ -21,38 +21,21 @@ pip install -r requirements.txt
 
 # Before starting the server
 
-Before starting the server, you need some data. There are various command line utilities to populate the database with fake data. Run the following commands:
+Before starting the server, you need some data. Run the following command:
 
+```python
+python manage.py fake_data
 ```
-python manage.py user create_admin
-```
-creates an admin with name "collectivedevelopment" and password "collectivedevelopment"
+which creates:
 
-```
-python manage.py school create
-python manage.py school create -s berlin
-python manage.py school create -s brussels
-python manage.py school create -s la
-```
-creates 3 schools plus the default school. You can omit any of the last 3 or add as many more as you want.
+- admin with name "collectivedevelopment" and password "collectivedevelopment"
+- 4 schools
+- 25 users
+- 40 proposals
+- 10 places
+- 10 events
+- 30 discussions
 
-```
-python manage.py user fake_users -n 25
-```
-creates 25 fake users. all of them will have "collectivedevelopment" for a password
-```
-python manage.py proposal fake_proposals -n 40
-```
-creates 40 fake proposals with randomized people interested in each proposal.
-```
-python manage.py event fake_places -n 10
-python manage.py event fake_events -n 10
-```
-creates 10 fake places and 10 fake class events.
-```
-python manage.py discussion fake_discussions -n 30
-```
-creates 30 fake discussions
 
 # Starting the server
 

@@ -21,5 +21,42 @@ manager.add_command("discussion", discussion_manager)
 manager.add_command("school", school_manager)
 
 
+@manager.command
+def fake_data():
+	from app import db
+	from app.mod_user import create_admin, fake_users
+	from app.mod_proposal import fake_proposals
+	from app.mod_school import create as create_school
+	from app.mod_event import fake_places, fake_events
+	from app.mod_discussion import fake_discussions
+
+	print('Dropping all data in database')
+	db.connection.drop_database(db.app.config['MONGODB_SETTINGS']['db'])
+
+	print('\nCreating default admin user')
+	create_admin()
+
+	print('\nCreating schools')
+	create_school()
+	create_school('berlin')
+	create_school('brussels')
+	create_school('la')
+
+	print('\nCreating users')
+	fake_users(25)
+
+	print('\nCreating proposals')
+	fake_proposals(40)
+
+	print('\nCreating places')
+	fake_places()
+
+	print('\nCreating events')
+	fake_events()
+
+	print('\nCreating discussions')
+	fake_discussions(30)
+
+
 if __name__ == "__main__":
 	manager.run()
