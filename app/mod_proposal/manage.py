@@ -12,26 +12,26 @@ from .models import Proposal
 manager = Manager(usage="Perform Collective Development proposal operations")
 
 
-@manager.option('-n', '--num', dest='num', default=10)
-def fake_proposals(num):
-	""" Generates num fake proposals """
+@manager.command
+def fake_proposals(num=10):
+	"""
+		Generates num fake proposals
+	"""
 	faker = Factory.create()
 	for x in range(int(num)):
 		p = Proposal(
-			proposer = random_user(),
-			title = faker.bs(),
-			description = faker.text(),
-			tags = faker.words(),
-			schools = [random_school(),],
-			created = faker.date_time(),
-			events = [],
+				proposer=random_user(),
+				title=faker.bs(),
+				description=faker.text(),
+				tags=faker.words(),
+				schools=[random_school(),],
+				created=faker.date_time(),
+				events=[],
 			)
 		p.save()
 		for x in range(randint(0,20)):
 			add_user_interest(random_user(), p, Proposal)
-		print "Created: ", p.title
-
-
+		print("Created: {}".format(p.title))
 
 
 @manager.command

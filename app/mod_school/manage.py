@@ -5,10 +5,12 @@ from .services import load_school
 manager = Manager(usage="Perform Collective Development school operations")
 
 
-@manager.option('-s', '--school', dest='school', default=None)
-def create(school):
-	""" Creates a school """
+@manager.command
+def create(school=None):
+	"""
+		Creates a school
+	"""
 	if school is None:
 		school = current_app.config['DEFAULT_SCHOOL']
-	s = load_school(school)
-	print "Created: ",school
+	_ = load_school(school)
+	print("Created: {}".format(school))

@@ -10,25 +10,26 @@ from .models import Discussion, Comment
 
 manager = Manager(usage="Perform Collective Development discussion operations")
 
-
-@manager.option('-n', '--num', dest='num', default=4)
-def fake_discussions(num):
-	""" Generates num fake discussions """
+@manager.command
+def fake_discussions(num=4):
+	"""
+		Generates fake discussions
+	"""
 	from app.mod_proposal import random_proposal
 	faker = Factory.create()
 	for x in range(int(num)):
 		d = Discussion(
-			title = faker.bs(),
-			schools = [random_school(),],
-			creator = random_user(),
-			created = faker.date_time(),
+				title=faker.bs(),
+				schools=[random_school(),],
+				creator=random_user(),
+				created=faker.date_time(),
 			)
 		d.save()
 		for y in range(randint(0,25)):
 			add_comment(faker.text(), random_user(), d, time=faker.date_time())
 		p = random_proposal()
 		p.add_discussion(d)
-		print "Created discussion with ", y ," comments: ", d.title
+		print("Created discussion with {} comments: {}".format(y, d.title))
 
 
 @manager.command
