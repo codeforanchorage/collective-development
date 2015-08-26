@@ -30,9 +30,9 @@ def list():
 def search():
 	query = request.args.get('query', "")
 	if g.is_default_school:
-		proposals = Proposal.objects.filter(Q(published=True)&(Q(title__contains=query)|Q(description__contains=query))).order_by('-created')
+		proposals = Proposal.objects.filter(Q(published=True)&(Q(title__icontains=query)|Q(description__icontains=query))).order_by('-created')
 	else:
-		proposals = Proposal.objects.filter(Q(schools=g.school)&Q(published=True)&(Q(title__contains=query)|Q(description__contains=query))).order_by('-created')
+		proposals = Proposal.objects.filter(Q(schools=g.school)&Q(published=True)&(Q(title__icontains=query)|Q(description__icontains=query))).order_by('-created')
 	return render_template('proposal/list.html',
 		title=_('Search results'),
 		proposals=proposals)
