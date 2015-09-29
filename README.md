@@ -1,9 +1,17 @@
 Collective Development
 ======================
 
+# Development Quickstart
+
+```
+$ docker-compose start # builds and launches mongodb and application server
+$ docker-compose run web python manage.py fake_data # populates db with fake data
+```
+
 # Pre-installation
 
 1. Install MongoDB (instructions for OSX are [http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/](here))
+and make sure it is running
 
 2. Make sure pip is installed (for OSX: "sudo easy_install pip")
 

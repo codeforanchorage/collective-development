@@ -3,8 +3,6 @@ db:
 web:
   build: .
   command: python manage.py runserver
-  volumes:
-    - .:/code
   ports:
     - "80:5000"
   links:
