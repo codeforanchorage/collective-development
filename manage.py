@@ -36,11 +36,8 @@ def fake_data():
 	print('\nCreating default admin user')
 	create_admin()
 
-	print('\nCreating schools')
+	print('\nCreating locations')
 	create_school()
-	create_school('berlin')
-	create_school('brussels')
-	create_school('la')
 
 	print('\nCreating users')
 	fake_users(25)
