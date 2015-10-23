@@ -3,12 +3,56 @@ Collective Development
 
 # Development Quickstart
 
+Local development can be done with Vagrant or Docker. Instructions for both below.
+
+## Vagrant
+
+Vagrant requires that you download [Virtualbox](https://www.virtualbox.org/wiki/Downloads) and [Vagrant](https://www.vagrantup.com/downloads.html)
+
+Once you have those installed, `git clone` this code and start vagrant:
+
+```
+git clone https://github.com/codeforanchorage/collective-development.git
+cd collective-development
+vagrant up
+```
+
+Wait for this to load, it will take some time. Once it is finished, get onto the vagrant VM:
+```
+vagrant ssh 
+cd collective-development
+sudo virtualenv venv
+source venv/bin/activate
+sudo pip install -r requirements.txt
+```
+
+This last step will take some time too.
+
+### Create Fake Data and start the server
+
+Run:
+```
+python manage.py fake_data
+```
+
+You can read more details in the section 'Before starting the server'
+
+Start the server:
+```
+python wsgi.py
+```
+
+And go to http://192.168.61.2:5000
+
+
+## Docker
+
 ```
 $ docker-compose start # builds and launches mongodb and application server
 $ docker-compose run web python manage.py fake_data # populates db with fake data
 ```
 
-# Pre-installation
+### Pre-installation
 
 1. Install MongoDB (instructions for OSX are [http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/](here))
 and make sure it is running
@@ -17,7 +61,7 @@ and make sure it is running
 
 3. Make sure virtualenv is installed. If not: "pip install virtualenv"
 
-# Installation
+### Installation
 
 ```
 git clone https://github.com/codeforanchorage/collective-development.git
@@ -27,7 +71,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-# Before starting the server
+### Before starting the server
 
 Before starting the server, you need some data. Run the following command:
 
@@ -45,7 +89,7 @@ which creates:
 - 30 discussions
 
 
-# Starting the server
+### Starting the server
 
 At this point, you can start the server and play around. That is simply:
 
