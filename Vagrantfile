@@ -12,16 +12,6 @@ Vagrant.configure("2") do |config|
 
   config.vm.network 'private_network', ip: '192.168.61.2'
 
-  config.vm.provision :file do |file|
-    file.source      = '~/.gitconfig'
-    file.destination = '/home/vagrant/.gitconfig'
-  end
-
-  config.vm.provision :file do |file|
-    file.source      = '~/.ssh/id_rsa'
-    file.destination = '/home/vagrant/.ssh/id_rsa'
-  end
-
   config.vm.provision(:shell) do |s|
     s.path = "vagrant-bootstrap.sh"
   end
