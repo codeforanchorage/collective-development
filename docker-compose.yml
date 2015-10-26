@@ -1,9 +1,0 @@
-db:
-  image: mongo
-web:
-  build: .
-  command: python manage.py runserver
-  ports:
-    - "80:5000"
-  links:
-    - db
