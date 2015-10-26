@@ -1,15 +1,12 @@
-Collective Development
-======================
+# Collective Development
 
-# Development Quickstart
+## Development Quickstart
 
-Local development can be done with Vagrant or Docker. Instructions for both below.
-
-## Vagrant
+A Vagrant configuration is provided for development purposes.
 
 Vagrant requires that you download [Virtualbox](https://www.virtualbox.org/wiki/Downloads) and [Vagrant](https://www.vagrantup.com/downloads.html)
 
-Once you have those installed, `git clone` this code and start vagrant:
+Once you have those installed, `git clone` this repository and start vagrant:
 
 ```
 git clone https://github.com/codeforanchorage/collective-development.git
@@ -17,9 +14,10 @@ cd collective-development
 vagrant up
 ```
 
-Wait for this to load, it will take some time. Once it is finished, get onto the vagrant VM:
+Wait for this to load (it will take some time). Once it is finished, get onto the vagrant VM:
+
 ```
-vagrant ssh 
+vagrant ssh
 cd collective-development
 sudo virtualenv venv
 source venv/bin/activate
@@ -28,7 +26,7 @@ sudo pip install -r requirements.txt
 
 This last step will take some time too.
 
-### Create Fake Data and start the server
+Next, create fake data and start the server
 
 Run:
 ```
@@ -45,14 +43,7 @@ python wsgi.py
 And go to http://192.168.61.2:5000
 
 
-## Docker
-
-```
-$ docker-compose start # builds and launches mongodb and application server
-$ docker-compose run web python manage.py fake_data # populates db with fake data
-```
-
-### Pre-installation
+## Pre-installation
 
 1. Install MongoDB (instructions for OSX are [http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/](here))
 and make sure it is running
@@ -61,7 +52,7 @@ and make sure it is running
 
 3. Make sure virtualenv is installed. If not: "pip install virtualenv"
 
-### Installation
+## Installation
 
 ```
 git clone https://github.com/codeforanchorage/collective-development.git
@@ -71,7 +62,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Before starting the server
+## Before starting the server
 
 Before starting the server, you need some data. Run the following command:
 
@@ -89,7 +80,7 @@ which creates:
 - 30 discussions
 
 
-### Starting the server
+## Starting the server
 
 At this point, you can start the server and play around. That is simply:
 
@@ -100,7 +91,7 @@ python wsgi.py
 Now visit http://localhost:5000/
 
 
-# Configuring things
+## Configuring things
 
 If you need to delete all the users, places, events, or proposals, do the following:
 
@@ -126,7 +117,7 @@ python manage.py dan delete_all
 
 ## Issues
 
-Issues that you may run into as you do the install, especially if you do a raw install without Docker or Vagrant:
+Issues that you may run into as you do the install, especially if you install without Vagrant:
 
 ### MongoDB does not start
 
@@ -143,7 +134,6 @@ If it isn't running, start the service:
 ```
 sudo service mongod start
 ```
-
 
 Mongo requires a very large journal file directory (>3GB). If you see a line in mongod.log such as
 ```
