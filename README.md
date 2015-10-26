@@ -123,3 +123,40 @@ and then the following commands to remove a user or clear out all committees
 python manage.py dan remove_user -u username -s schoolname
 python manage.py dan delete_all
 ```
+
+## Issues
+
+Issues that you may run into as you do the install, especially if you do a raw install without Docker or Vagrant:
+
+### MongoDB does not start
+
+Make sure the mongo daemon is running:
+
+```
+tail /var/log/mongodb/mongod.log
+```
+Look for a line reading
+```
+[initandlisten] waiting for connections on port 27017
+```
+If it isn't running, start the service:
+```
+sudo service mongod start
+```
+
+
+Mongo requires a very large journal file directory (>3GB). If you see a line in mongod.log such as
+```
+[initandlisten] Insufficient free space for journal files
+```
+allocate more space to the volume containing /var/lib/mongodb/journal and try again.
+
+### Python syntax errors during pip install
+
+If you are installing on Ubuntu 14.04 LTS, for example, you may not have Python 2.7 installed. Install 2.7 and try again.
+
+(For Ubuntu)
+```
+sudo apt-get update
+sudo apt-get install python2.7-dev
+```
