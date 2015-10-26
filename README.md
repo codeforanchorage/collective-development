@@ -19,13 +19,38 @@ vagrant up
 
 Wait for this to load, it will take some time. Once it is finished, get onto the vagrant VM:
 ```
-vagrant ssh
+vagrant ssh 
+cd collective-development
+sudo virtualenv venv
+source venv/bin/activate
+sudo pip install -r requirements.txt
 ```
 
-You can now skip over the Docker section and go to Installation
+This last step will take some time too.
+
+### Create Fake Data and start the server
+
+Run:
+```
+python manage.py fake_data
+```
+
+You can read more details in the section 'Before starting the server'
+
+Start the server:
+```
+python wsgi.py
+```
+
+And go to http://192.168.61.2:5000
 
 
 ## Docker
+
+```
+$ docker-compose start # builds and launches mongodb and application server
+$ docker-compose run web python manage.py fake_data # populates db with fake data
+```
 
 ### Pre-installation
 
@@ -36,15 +61,7 @@ and make sure it is running
 
 3. Make sure virtualenv is installed. If not: "pip install virtualenv"
 
-```
-$ docker-compose start # builds and launches mongodb and application server
-$ docker-compose run web python manage.py fake_data # populates db with fake data
-```
-
-
-# Installation
-
-On your vagrant of docker VM:
+### Installation
 
 ```
 git clone https://github.com/codeforanchorage/collective-development.git
@@ -54,9 +71,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-This will take some time to run. Wait for it to finish. 
-
-# Before starting the server
+### Before starting the server
 
 Before starting the server, you need some data. Run the following command:
 
@@ -74,17 +89,13 @@ which creates:
 - 30 discussions
 
 
-# Starting the server
+### Starting the server
 
 At this point, you can start the server and play around. That is simply:
 
 ```
 python wsgi.py
 ```
-
-If you followed the vagrant pattern, go to (http://192.168.61.2:5000)[http://192.168.61.2:5000] in your web browswer.
-
-Docker and local VM access is here too.
 
 Now visit http://localhost:5000/
 

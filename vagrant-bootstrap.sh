@@ -14,3 +14,5 @@ sudo apt-get install -y git
 # Install numpy dependencies
 sudo apt-get install -y python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose 
 
+# Put Code on VM
+cd /home/vagrant && git clone https://github.com/codeforanchorage/collective-development.git
