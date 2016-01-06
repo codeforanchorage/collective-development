@@ -29,7 +29,14 @@ def toggle(type, id):
 		remove_user_interest(u, obj, cls, only=attribute)
 	else:
 		add_user_interest(u, obj, cls, extra=attribute)
+
+	# Used for updating the list of interested users
+	interested_users = []
+	for user in obj.interested_users:
+		interested_users.append(user.display_name)
+
 	return jsonify({
 		'num_interested':obj.num_interested,
-		'next' : 'remove' if obj.user_is_interested(u) else 'add'
+		'next' : 'remove' if obj.user_is_interested(u) else 'add',
+        'interested_users':interested_users
 		})
