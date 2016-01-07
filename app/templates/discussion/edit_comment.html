@@ -20,7 +20,10 @@
 <script>
     $(document).ready(function () {
         var passText = '{{ text }}';
-        $('#text').text(passText);
+        var parent = $('#text').parent();
+        $('#text').remove();
+        parent.prepend("<textarea class=\"form-control\" id=\"text\" name=\"text\" rows=\"4\">" + passText
+            + "</textarea><span class=\"help-inline\"></span>");
     });
 </script>
 {% endblock %}

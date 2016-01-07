@@ -20,8 +20,7 @@ class DiscussionBase(BaseForm):
 
 class CommentBase(BaseForm):
 	""" Form for a comment """
-	text = TextAreaField('Text', [])
-	field_order = ('*', 'text', 'submit')
+	field_order = ('*', 'submit')
 
 
 AddDiscussionForm = model_form( Discussion,
