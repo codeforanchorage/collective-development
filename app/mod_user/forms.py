@@ -19,7 +19,7 @@ def validate_password(form, field):
 
 
 def validate_username(form, field):
-	""" Checks if the username is already in use or not """
+	""" Checks if the username is already in use """
 	user = current_user._get_current_object()
 	current = user.username if hasattr(user,'username') else None
 	if not current==field.data and find_user(field.data):
@@ -27,7 +27,7 @@ def validate_username(form, field):
 
 
 def validate_email(form, field):
-	""" Checks if the email is already in use or not """
+	""" Checks if the email is already in use """
 	user = current_user._get_current_object()
 	current = user.email if hasattr(user,'email') else None
 	if not current==field.data and find_user(field.data):
@@ -82,8 +82,8 @@ UserAddForm = model_form( User,
 		'created',
 		'active'),
 	field_args = {
-		'username': { 'validators': [validate_username]} ,
-		'email': { 'validators': [validate_email]} ,
+		'username': { 'validators': [Required(), validate_username]} ,
+		'email': { 'validators': [Required(), validate_email]} ,
 		'schools': { 'label': 'Schools you are interested in'}
 		})
 submit_add = SubmitField('Sign up')

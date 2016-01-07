@@ -1,12 +1,12 @@
-from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify
+from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify, abort
 from flask.ext.login import current_user, login_required
 from flask.ext.babel import gettext as _
 
 from app.utils import url_for_school
 from app.mod_school import get_school_context
 from .models import Discussion, Comment
-from .services import start_discussion
-from .forms import AddDiscussionForm, AddCommentForm
+from .services import start_discussion, can_edit_comment
+from .forms import AddDiscussionForm, AddCommentForm, EditCommentForm
 
 # Blueprint definition
 discussions = Blueprint('discussions', __name__, url_prefix='/discussions')
@@ -35,7 +35,7 @@ def detail(id):
 	other_schools = [school for school in d.schools if not school==context]
 	comments = Comment.objects.filter(discussion=d).order_by('-created')
 	# Passing some permissions related functions on to Jinja
-	#current_app.jinja_env.globals['can_edit_proposal'] = can_edit_proposal
+	current_app.jinja_env.globals['can_edit_comment'] = can_edit_comment
 	return render_template('discussion/detail.html',
 		title = d.title,
 		discussion = d,
@@ -74,3 +74,27 @@ def add_comment(id):
 		discussion = d,
 		title = d.title,
 		form = form)
+
+@discussions.route('/<discussion_id>/comments/<comment_id>/edit', methods=['GET','POST'])
+@login_required
+def edit_comment(discussion_id, comment_id):
+	""" Edit a comment of a discussion """
+	d = Discussion.objects.get_or_404(id=discussion_id)
+	c = Comment.objects.get_or_404(id=comment_id)
+	form = EditCommentForm()
+	
+	# If the user is not the owner of the comment, throw a 403
+	if current_user._get_current_object() != c.creator:
+		abort(403)
+
+	if form.validate_on_submit():		
+		c.edit_comment(newText=form.text.data)
+		return redirect(url_for('discussions.detail', id=d.id))
+
+	return render_template('discussion/edit_comment.html',
+		discussion = d,
+		title = d.title,
+		comment = c,
+        text = c.text,
+        form = form)
+		

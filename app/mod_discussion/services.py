@@ -47,3 +47,8 @@ def delete_all_discussions():
 	""" Deletes all the discussions. Careful! """
 	Comment.drop_collection()
 	Discussion.drop_collection()
+
+def can_edit_comment(comment):
+	""" Can a user edit a particular comment of a proposal?
+	Allow the comment author """
+	return comment.creator == current_user._get_current_object()

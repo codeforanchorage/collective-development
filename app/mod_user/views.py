@@ -1,5 +1,5 @@
 from random import randint
-from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify, session
+from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify, session, Markup
 from flask.ext.login import current_user, login_required, login_user
 from flask.ext.babel import gettext as _
 
@@ -43,7 +43,7 @@ def edit(id=None):
 	if form.validate_on_submit():
 		form.populate_obj(u)
 		u.save()
-		flash(_("The settings have been saved"), 'success')
+		flash(Markup("<span class=\"glyphicon glyphicon-ok\"></span> The settings have been saved."), 'success')
 	return render_template('user/settings.html',
 		title=_('Edit settings'),
 		user = u,
@@ -58,7 +58,7 @@ def password():
 	if form.validate_on_submit():
 		user.set_password(form.new_password.data)
 		user.save()
-		flash(_('Password updated.'), 'success')
+		flash(Markup('<span class=\"glyphicon glyphicon-ok\"></span> Password updated.'), 'success')
 		return redirect(url_for('users.edit'))
 	return render_template('user/password.html',
 		user=user,

@@ -20,7 +20,8 @@ class DiscussionBase(BaseForm):
 
 class CommentBase(BaseForm):
 	""" Form for a comment """
-	field_order = ('*', 'submit')
+	text = TextAreaField('Text', [])
+	field_order = ('*', 'text', 'submit')
 
 
 AddDiscussionForm = model_form( Discussion,
@@ -50,3 +51,14 @@ AddCommentForm = model_form( Comment,
 		'discussion'))
 submit_add = SubmitField('Comment')
 AddCommentForm.submit = submit_add
+
+EditCommentForm = model_form( Comment,
+	base_class=CommentBase,
+	exclude=(
+		'published',
+		'updated',
+		'created',
+		'creator',
+		'discussion'))
+submit_edit = SubmitField('Edit Comment')
+EditCommentForm.submit = submit_edit
