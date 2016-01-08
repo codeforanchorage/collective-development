@@ -12,13 +12,17 @@
     {{ render_form(url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id), form)}}
 </div>
 
-<h3>Comment JSON:</h3>
-<pre>{{ comment | tojson }}</pre>
+<div class="json-hide">
+    <h3>Comment JSON:</h3>
+    <pre>{{ comment | tojson }}</pre>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
     $(document).ready(function () {
+        // Fix to force textarea tag instead of input tag
         var passText = '{{ text }}';
         var parent = $('#text').parent();
         $('#text').remove();
