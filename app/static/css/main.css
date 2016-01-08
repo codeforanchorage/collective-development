@@ -86,3 +86,13 @@ body.collection {
 /* add padding  */
 .left-addon input  { padding-left:  30px; }
 .right-addon input { padding-right: 30px; }
+
+.second-nav-margin-fix {    
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-left: 15px;
+}
+
+.hide {
+    display: none;
+}

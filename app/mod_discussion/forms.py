@@ -50,3 +50,14 @@ AddCommentForm = model_form( Comment,
 		'discussion'))
 submit_add = SubmitField('Comment')
 AddCommentForm.submit = submit_add
+
+EditCommentForm = model_form( Comment,
+	base_class=CommentBase,
+	exclude=(
+		'published',
+		'updated',
+		'created',
+		'creator',
+		'discussion'))
+submit_edit = SubmitField('Edit Comment')
+EditCommentForm.submit = submit_edit

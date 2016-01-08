@@ -1,0 +1,29 @@
+﻿{% from "macros/_form.html" import render_form %}
+
+{% set page_title = discussion.title %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}discussion{% endblock %}
+
+{% block body %}
+<h2>Edit Comment on {{ title }}</h2>
+<div>
+    {{ render_form(url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id), form)}}
+</div>
+
+<h3>Comment JSON:</h3>
+<pre>{{ comment | tojson }}</pre>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function () {
+        var passText = '{{ text }}';
+        var parent = $('#text').parent();
+        $('#text').remove();
+        parent.prepend("<textarea class=\"form-control\" id=\"text\" name=\"text\" rows=\"4\">" + passText
+            + "</textarea><span class=\"help-inline\"></span>");
+    });
+</script>
+{% endblock %}
