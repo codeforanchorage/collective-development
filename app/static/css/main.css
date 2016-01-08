@@ -96,3 +96,7 @@ body.collection {
 .hide {
     display: none;
 }
+
+.json-hide {
+    display: none;
+}
