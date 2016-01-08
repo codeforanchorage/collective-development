@@ -74,12 +74,7 @@ def detail(id):
 @proposals.route('/make', methods=['GET', 'POST'])
 @login_required
 def make():
-	""" Make a proposal route """
-	schools = g.all_schools
-	if g.is_default_school and len(schools)>0:
-		return render_template('proposal/make_choose_school.html',
-			title=_('Which school?'),
-			schools=[school for school in schools if not school==g.default_school])
+	""" Make a proposal """
 	form = AddProposalForm()
 	if form.validate_on_submit():
 		p = Proposal(schools=[g.school,], proposer=current_user._get_current_object())
