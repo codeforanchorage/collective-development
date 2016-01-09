@@ -1,0 +1,14 @@
+{% from "macros/_form.html" import render_form %}
+
+{% set page_title = "Add School" %}
+
+{% extends "layouts/base.html" %}
+
+{% block body_classes %}{% endblock %}
+
+{% block body %}
+<h2>Add School</h2>
+<div>
+    {{ render_form(url_for('schools.add_school'), form) }}
+</div>
+{% endblock %}
