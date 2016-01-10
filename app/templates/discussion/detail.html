@@ -11,40 +11,41 @@
     <div style="margin-bottom: 10px;"><a href="{{ url_for('discussions.add_comment', id=discussion.id) }}">Add Comment</a></div>
 	<dl>
 
-		<dt>Created:</dt>
+		<dt>Created</dt>
 		<dd>{{ discussion.created | datetime }}</dd>
 
-		<dt>Last comment time:</dt>
+		<dt>Last comment time</dt>
 		<dd>{{ discussion.last_comment_time | datetime }}</dd>
-        
+
 		{% if comments %}
-		<dt>Comments:</dt>
+		<dt>Comments</dt>
 		<dd>
-			<ul>
 			{% for comment in comments %}
-				<li>
-					<p>{{ comment.creator.display_name }} on {{ comment.created | datetime }}</p>           
-                    {% set can_edit = can_edit_comment(comment) %}     
-                    {% if can_edit %}    
-                        <a href="{{ url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id) }}">Edit Comment</a>
-                    {% endif %}
-					<p>{{ comment.text }}</p>
-				</li>
+				<div class="comment">
+					<p>
+						<b>{{ comment.creator.display_name }} on {{ comment.created | datetime }}</b>
+	                    {% set can_edit = can_edit_comment(comment) %}
+	                    {% if can_edit %}
+	                        <a href="{{ url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id) }}">Edit Comment</a>
+	                    {% endif %}
+						<br/>
+						{{ comment.text }}
+					</p>
+				</div>
 			{% endfor %}
-			</ul>
 		</dd>
 		{% endif %}
 
 
-		
+
 
 	</dl>
 
 <div class="json-hide">
-    <h3>Discussion JSON:</h3>
+    <h3>Discussion JSON</h3>
     <pre>{{ discussion | tojson }}</pre>
 
-    <h3>Comment JSON:</h3>
+    <h3>Comment JSON</h3>
 <pre>{{ comments | tojson }}</pre>
 </div>
 

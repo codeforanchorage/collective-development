@@ -33,7 +33,7 @@ def detail(id):
 		flash(_("You've been redirected to where the discussion was created."))
 		return redirect(url_for_school('discussions.detail', school=context, id=d.id), code=301)
 	other_schools = [school for school in d.schools if not school==context]
-	comments = Comment.objects.filter(discussion=d).order_by('-created')
+	comments = Comment.objects.filter(discussion=d).order_by('created')
 	# Passing some permissions related functions on to Jinja
 	current_app.jinja_env.globals['can_edit_comment'] = can_edit_comment
 	return render_template('discussion/detail.html',
@@ -82,12 +82,12 @@ def edit_comment(discussion_id, comment_id):
 	d = Discussion.objects.get_or_404(id=discussion_id)
 	c = Comment.objects.get_or_404(id=comment_id)
 	form = EditCommentForm()
-	
+
 	# If the user is not the owner of the comment, throw a 403
 	if current_user._get_current_object() != c.creator:
 		abort(403)
 
-	if form.validate_on_submit():		
+	if form.validate_on_submit():
 		c.edit_comment(newText=form.text.data)
 		return redirect(url_for('discussions.detail', id=d.id))
 
@@ -97,4 +97,3 @@ def edit_comment(discussion_id, comment_id):
 		comment = c,
         text = c.text,
         form = form)
-		
