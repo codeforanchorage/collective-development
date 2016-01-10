@@ -15,7 +15,7 @@
     {% if can_edit %}
         <div style="margin-bottom: 10px;">
             <a href="{{ url_for('events.edit', id=event.id) }}">Edit Class</a>
-        </div>        
+        </div>
     {% endif %}
 
     <p><em>{{ event.short_description }}</em></p>
@@ -29,7 +29,7 @@
         <dd>
             <ul>
                 {% for place in event.places %}
-                <li><a href="#">{{ place.name }}</a></li>
+                <li>{{ place.name }}</li>
                 {% endfor %}
             </ul>
         </dd>
