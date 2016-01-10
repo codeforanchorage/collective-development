@@ -81,6 +81,7 @@ UserAddForm = model_form( User,
 		'active'),
 	field_args = {
 		'username': { 'validators': [Required(), validate_username]} ,
+		'display_name': { 'validators': [Required()]} ,
 		'email': { 'validators': [Required(), validate_email]} ,
 		'schools': { 'label': 'Schools you are interested in'}
 		})
