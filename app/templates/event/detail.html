@@ -60,8 +60,10 @@
     <dt>Created:</dt>
     <dd>{{ event.created }}</dd>
 
+	{% if g.all_schools.count()>1 %}
     <dt>Happening at:</dt>
     <dd>{{ list_schools(event.schools) }}</dd>
+	{% endif %}
 
     <dt>Updated:</dt>
     <dd>{{ event.updated }}</dd>

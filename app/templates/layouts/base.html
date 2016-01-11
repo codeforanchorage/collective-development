@@ -46,7 +46,7 @@
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <!--{{ schools_nav_dropdown() }}-->
+                        {{ schools_nav_dropdown() }}
                         <li><a href='{{ url_for('proposals.list') }}'>Proposals</a></li>
                         <li><a href='{{ url_for('events.list') }}'>Classes</a></li>
                         <li><a href='{{ url_for('proposals.make') }}'>Propose a class</a></li>
@@ -75,7 +75,7 @@
             {% endblock %}
         </nav>
     </div>
-    {% endblock %}    
+    {% endblock %}
 
     {% block flash_message %}
         <div class="container-fluid">
@@ -117,10 +117,10 @@
     <script>window.jQuery || document.write('<script src="{{ jquery_path }}"><\/script>')</script>
     <script src="{{ url_for('static', filename='js/vendor/bootstrap.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    
+
         {% block extra_js %}
         {% endblock %}
-    
+
     {% endblock %}
 
     {% block ga %}

@@ -74,7 +74,7 @@ UserSettingsForm.submit = submit_add
 
 UserAddForm = model_form( User,
 	base_class=BaseAddUserForm,
-	exclude=(
+	exclude=(# 'schools',
 		'password',
 		'role',
 		'created',

@@ -58,31 +58,31 @@
 <div id="proposal-detail-div" class="tab-content" data-user-unknown="{{ current_user.is_anonymous() }}">
 
   <div role="tabpanel" class="tab-pane active" id="description">
-  	
+
 		<h2>{{ proposal.title }}</h2>
 
         {% if can_edit or can_organize %}
-            <div style="margin-bottom: 10px;">      
+            <div style="margin-bottom: 10px;">
                 {% if can_edit %}
                     <a href="{{ url_for('proposals.edit', id=proposal.id) }}">Edit Proposal</a>
                 {% endif %}
 
                 {% if can_organize %}
-      
+
                     {% if can_edit %}
                         <a href="{{ url_for('proposals.organize', id=proposal.id) }}" style="margin-left: 10px;">Organize Proposal</a>
                     {% else %}
                         <a href="{{ url_for('proposals.organize', id=proposal.id) }}">Organize Proposal</a>
                     {% endif %}
-                {% endif %}     
+                {% endif %}
             </div>
-        {% endif %}  
+        {% endif %}
 
       {#{ interested_counter(proposal) }#}
 
 
       <div class="btn-group interested-status" data-toggle="buttons" style="margin-bottom: 10px;" obj-id="{{ proposal.id }}" obj-type="proposal">
-          {% if proposal.user_is_interested(current_user) %}    
+          {% if proposal.user_is_interested(current_user) %}
               <label class="btn btn-default active add">
                   <input type="radio" value="1" /> I am interested in this proposal
               </label>
@@ -107,8 +107,10 @@
 			<dt>Proposed:</dt>
 			<dd>{{ proposal.created }}</dd>
 
+			{% if g.all_schools.count()>1 %}
 			<dt>Proposed to school:</dt>
 			<dd>{{ list_schools(proposal.schools) }}</dd>
+			{% endif %}
 
 			<dt>Updated:</dt>
 			<dd>{{ proposal.updated }}</dd>
@@ -133,7 +135,7 @@
 		{{ discussions_list(discussions) }}
 	{% endif %}
   </div>
-  
+
   <div role="tabpanel" class="tab-pane" id="events">
   	{% if events or can_organize %}
 		{% if can_organize %}
@@ -153,13 +155,13 @@
   </div>
 
 </div>
-		
+
 {% endblock %}
 
 
 {# add page-specific javascript #}
 {% block extra_js %}
-<script>    
+<script>
     $(document).ready(function () {
 
         $('#secondary a').click(function (e) {
@@ -202,7 +204,7 @@
                 // Update all number interested counters
                 $('.counter.' + id).text(data.num_interested);
 
-                // Update interested users list           
+                // Update interested users list
                 var appendUsers = "<ul>";
                 for (var i = 0; i < data.interested_users.length; i++) {
                     appendUsers += '<li>' + data.interested_users[i] + '</li>';
