@@ -19,7 +19,7 @@ def validate_password(form, field):
 
 
 def validate_username(form, field):
-	""" Checks if the username is already in use or not """
+	""" Checks if the username is already in use """
 	user = current_user._get_current_object()
 	current = user.username if hasattr(user,'username') else None
 	if not current==field.data and find_user(field.data):
@@ -27,7 +27,7 @@ def validate_username(form, field):
 
 
 def validate_email(form, field):
-	""" Checks if the email is already in use or not """
+	""" Checks if the email is already in use """
 	user = current_user._get_current_object()
 	current = user.email if hasattr(user,'email') else None
 	if not current==field.data and find_user(field.data):
@@ -53,8 +53,6 @@ class BaseAddUserForm(BaseForm):
 	field_order = ('username', 'email', '*', 'captcha', 'gotcha', 'submit')
 	new_password = PasswordField('New password', [Required(), Length(PASSWORD_LEN_MIN, PASSWORD_LEN_MAX)])
 	password_again = PasswordField('Password again', [Required(), Length(PASSWORD_LEN_MIN, PASSWORD_LEN_MAX), EqualTo('new_password')])
-	# 2 basic anti registration spam measures. add more
-	captcha = TextField('Captcha') # This is a honeypot
 	gotcha = TextField('Gotcha', [validate_gotcha])
 
 
@@ -82,8 +80,9 @@ UserAddForm = model_form( User,
 		'created',
 		'active'),
 	field_args = {
-		'username': { 'validators': [validate_username]} ,
-		'email': { 'validators': [validate_email]} ,
+		'username': { 'validators': [Required(), validate_username]} ,
+		'display_name': { 'validators': [Required()]} ,
+		'email': { 'validators': [Required(), validate_email]} ,
 		'schools': { 'label': 'Schools you are interested in'}
 		})
 submit_add = SubmitField('Sign up')

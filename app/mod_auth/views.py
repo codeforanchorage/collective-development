@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash, redirect, request, url_for
+from flask import Blueprint, render_template, flash, redirect, request, url_for, Markup
 from flask.ext.login import login_required, login_user, logout_user, current_user
 from flask.ext.babel import gettext as _
 
@@ -13,18 +13,18 @@ auth = Blueprint('auth', __name__)
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
 	if current_user.is_authenticated():
-		return redirect(url_for('proposals.make'))
+		return redirect(url_for('schools.home'))
 	form = LoginForm(username=request.args.get('username', None), next=request.args.get('next', None))
 	if form.validate_on_submit():
 		user, authenticated = authenticate_user(form.username.data, form.password.data)
 		if user and authenticated:
 			remember = request.form.get('remember') == 'y'
 			if login_user(user, remember=remember):
-				flash(_("Logged in"), 'success')
+				flash(Markup("<span class=\"glyphicon glyphicon-ok\"></span> Logged in"), 'success')
 			# redirects to specified page OR the homepage for the user's school
 			return redirect(form.next.data or url_for_school('schools.home', user_school=True))
 		else:
-			flash(_('Sorry, invalid login'), 'error')
+			flash(Markup('<span class="glyphicon glyphicon-exclamation-sign"></span> Sorry, invalid login'), 'danger')
 	return render_template('auth/login.html', title='login', form=form)
 
 
@@ -38,5 +38,5 @@ def reauth():
 @login_required
 def logout():
 	logout_user()
-	flash(_('Logged out'), 'success')
+	flash(Markup('<span class=\"glyphicon glyphicon-ok\"></span> Logged out'), 'success')
 	return redirect(url_for('proposals.list'))

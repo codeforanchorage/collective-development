@@ -68,8 +68,8 @@ body.collection {
 
 /* icons inside text input form elements */
 /* enable absolute positioning */
-.inner-addon { 
-    position: relative; 
+.inner-addon {
+    position: relative;
 }
 
 /* style icon */
@@ -86,3 +86,22 @@ body.collection {
 /* add padding  */
 .left-addon input  { padding-left:  30px; }
 .right-addon input { padding-right: 30px; }
+
+.second-nav-margin-fix {
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-left: 15px;
+}
+
+.hide {
+    display: none;
+}
+
+.json-hide {
+    display: none;
+}
+
+dd {
+	margin-left: 20px;
+	margin-bottom: 10px;
+}

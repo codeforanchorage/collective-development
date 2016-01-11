@@ -7,7 +7,7 @@
 {% block body_classes %}{% endblock %}
 
 {% block body %}
-<h2>Propose</h2>
+<h2>Propose a class</h2>
 <div>
     {{ render_form(url_for('proposals.make'), form)}}
 </div>
@@ -21,10 +21,13 @@
 {% block extra_js %}
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 <script>
-$(function () {
-	$('#tags').select2({
-		tags: true
-	});
-});
+    $(document).ready(function () {
+	    $('#tags').select2({
+		    tags: true
+	    });
+	    var parent = $('#description').parent();
+	    $('#description').remove();
+	    parent.prepend("<textarea class=\"form-control\" id=\"description\" name=\"description\" rows=\"4\"></textarea><span class=\"help-inline\"></span>");
+    });
 </script>    
 {% endblock %}

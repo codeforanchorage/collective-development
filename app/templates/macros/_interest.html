@@ -1,26 +1,25 @@
 {% macro interested_counter(obj, type='proposal') %}
 <div class="interested interested-counter" obj-id="{{ obj.id }}" obj-type="{{ type }}">
-	<div class="counter">{{obj.num_interested}}</div>
-	{% if obj.user_is_interested(current_user) %}
-	<div class="add">add me</div>
-	<div class="remove button">remove me</div>
-	{% else %}
-	<div class="add button">add me</div>
-	<div class="remove">remove me</div>
-	{% endif %}
+    <!-- Commenting this out for now. Do we need to display the number interested when it's already in the page information?-->
+	<!--<div class="counter">{{obj.num_interested}}</div>-->
+	{% if obj.user_is_interested(current_user) %}    
+    <div class="add" style="padding-left: 0px; margin-bottom: 10px;">add me</div>
+    <div class="remove button">remove me</div>
+    {% else %}
+    <div class="add button">add me</div>
+    <div class="remove">remove me</div>
+    {% endif %}
 </div>
 {% endmacro %}
 
 
 
 {% macro interested_check(obj, type='proposal') %}
-<div class="interested interested-checker" obj-id="{{ obj.id }}" obj-type="{{ type }}">
+<div class="interested interested-checker interested-status" obj-id="{{ obj.id }}" obj-type="{{ type }}">
 	<div class="counter">{{obj.num_interested}}</div>
-	{% if obj.user_is_interested(current_user) %}
-	<span class="add glyphicon glyphicon-ok"></span>
-	<span class="remove button glyphicon glyphicon-ok"></span>
+	{% if obj.user_is_interested(current_user) %}	
+    <span class="remove button glyphicon glyphicon-ok"></span>
 	{% else %}
-	<span class="remove glyphicon glyphicon-ok"></span>
 	<span class="add button glyphicon glyphicon-ok"></span>
 	{% endif %}
 </div>

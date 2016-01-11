@@ -35,7 +35,7 @@ AddProposalForm = model_form( Proposal,
 		'events',
 		'discussions',
 		'tags'))
-submit_add = SubmitField('Propose!')
+submit_add = SubmitField('Propose')
 AddProposalForm.submit = submit_add
 
 

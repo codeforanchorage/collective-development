@@ -1,4 +1,4 @@
-{% from "macros/_nav.html" import schools_nav_dropdown %}
+﻿{% from "macros/_nav.html" import schools_nav_dropdown %}
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -42,14 +42,18 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="{{ url_for_school('schools.home') }}">THE PUBLIC SCHOOL</a>
+                    <a class="navbar-brand" href="{{ url_for_school('schools.home') }}">Elective</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        {{ schools_nav_dropdown() }}
+                        <!--{{ schools_nav_dropdown() }}-->
                         <li><a href='{{ url_for('proposals.list') }}'>Proposals</a></li>
                         <li><a href='{{ url_for('events.list') }}'>Classes</a></li>
-                        <li><a href='{{ url_for('proposals.make') }}'>Propose a class!</a></li>
+                        <li><a href='{{ url_for('proposals.make') }}'>Propose a class</a></li>
+                        {% if current_user.is_admin() %}
+                        {# Hidden for now. Removing the concept on schools for this prototype. #}
+                        <!--<li><a href="{{ url_for('schools.add_school')}}">Add a school</a></li>-->
+                        {% endif %}
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_authenticated() %}

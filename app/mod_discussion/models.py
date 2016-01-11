@@ -19,7 +19,11 @@ class Comment(db.Document):
 	published = db.BooleanField(default=True)
 	discussion = db.GenericReferenceField()
 	# The actual content of the comment
-	text = db.StringField()
+	text = db.StringField(max_length=1000, required=True)
+	
+	def edit_comment(self, newText):
+		self.text = newText
+		self.save()
 
 
 class Discussion(db.Document):
@@ -58,3 +62,5 @@ class Discussion(db.Document):
 		self.last_comment = c
 		self.last_comment_time = c.created
 		self.save()
+
+		

@@ -1,5 +1,5 @@
 from mongoengine import Q
-from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify
+from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify, Response
 from flask.ext.login import current_user, login_required
 from flask.ext.babel import gettext as _
 
@@ -22,9 +22,16 @@ def list():
 		proposals = Proposal.objects.filter(published=True).order_by('-created')
 	else:
 		proposals = Proposal.objects.filter(schools=g.school, published=True).order_by('-created')
-	return render_template('proposal/list.html',
+
+	resp = Response(render_template('proposal/list.html',
 		title=_('Proposals'),
-		proposals=proposals)
+		proposals=proposals))
+    # Disable cache on this page (checkmarks need to update properly)
+	resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+	resp.headers['Pragma'] = 'no-cache'
+
+	return resp;
+
 
 @proposals.route('/search')
 def search():
@@ -50,23 +57,24 @@ def detail(id):
 	# Passing some permissions related functions on to Jinja
 	current_app.jinja_env.globals['can_edit_proposal'] = can_edit_proposal
 	current_app.jinja_env.globals['can_organize_proposal'] = can_organize_proposal
-	return render_template('proposal/detail.html',
+
+	resp = Response(render_template('proposal/detail.html',
 		title = p.title,
 		proposal = p,
 		other_schools = other_schools,
 		events = p.events,
-		discussions = p.discussions)
+		discussions = p.discussions))
+    # Disable cache on this page (toggle button needs to update properly)
+	resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+	resp.headers['Pragma'] = 'no-cache'
+
+	return resp
 
 
 @proposals.route('/make', methods=['GET', 'POST'])
 @login_required
 def make():
-	""" Make a proposal route """
-	schools = g.all_schools
-	if g.is_default_school and len(schools)>0:
-		return render_template('proposal/make_choose_school.html',
-			title=_('Which school?'),
-			schools=[school for school in schools if not school==g.default_school])
+	""" Make a proposal """
 	form = AddProposalForm()
 	if form.validate_on_submit():
 		p = Proposal(schools=[g.school,], proposer=current_user._get_current_object())

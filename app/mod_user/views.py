@@ -1,5 +1,6 @@
+import string
 from random import randint
-from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify, session
+from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify, session, Markup
 from flask.ext.login import current_user, login_required, login_user
 from flask.ext.babel import gettext as _
 
@@ -43,7 +44,7 @@ def edit(id=None):
 	if form.validate_on_submit():
 		form.populate_obj(u)
 		u.save()
-		flash(_("The settings have been saved"), 'success')
+		flash(Markup("<span class=\"glyphicon glyphicon-ok\"></span> The settings have been saved."), 'success')
 	return render_template('user/settings.html',
 		title=_('Edit settings'),
 		user = u,
@@ -58,7 +59,7 @@ def password():
 	if form.validate_on_submit():
 		user.set_password(form.new_password.data)
 		user.save()
-		flash(_('Password updated.'), 'success')
+		flash(Markup('<span class=\"glyphicon glyphicon-ok\"></span> Password updated.'), 'success')
 		return redirect(url_for('users.edit'))
 	return render_template('user/password.html',
 		user=user,
@@ -72,10 +73,6 @@ def create():
 	form = UserAddForm(request.form, schools=[g.school,], next=request.args.get('next'))
 	# submit
 	if form.validate_on_submit():
-		# This is a honeypot and we act like it was successful
-		if form.captcha.data:
-			flash(_("Welcome to the website!"), 'success')
-			return redirect(form.next.data or url_for('schools.home'))
 		u = User(password=form.new_password.data)
 		form.populate_obj(u)
 		u.save()
@@ -84,9 +81,12 @@ def create():
 		return redirect(form.next.data or url_for_school('schools.home', user_school=True))
 	# Our simple custom captcha implementation
 	gotcha = 'which letter in this sentence is uppercase?'
-	idx = randint(0, len(gotcha)-1)
+	gotcha_cap = '-'
+	while gotcha_cap not in string.letters:
+		idx = randint(0, len(gotcha)-1)
+		gotcha_cap = gotcha[idx]
 	form.gotcha.label = gotcha[:idx].lower() + gotcha[idx:].capitalize()
-	session['gotcha'] = gotcha[idx]
+	session['gotcha'] = gotcha_cap
 	return render_template('user/create.html',
 		title=_('Create an account'),
 		form=form)

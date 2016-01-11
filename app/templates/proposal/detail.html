@@ -19,7 +19,7 @@
 
 {# secondary navigation #}
 {% block secondary %}
-<ul class="nav nav-pills row" id="secondary">
+<ul class="nav nav-pills row second-nav-margin-fix" id="secondary">
 	<li role="presentation" class="active">
 		<a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a>
 	</li>
@@ -34,26 +34,71 @@
 </ul>
 {% endblock %}
 
-
 {# main body class #}
 {% block body %}
-<div class="tab-content">
+
+<div class="alert alert-danger proposal-detail-alert hide">
+    <a class="alert-close close pull-right" title="Close">&times;</a>
+    <span class="glyphicon glyphicon-exclamation-sign"></span>
+    An error occured. Please contact the site administrator.
+</div>
+
+<div class="alert alert-warning proposal-detail-alert hide">
+    <a class="alert-close close pull-right" title="Close">&times;</a>
+    <span class="glyphicon glyphicon-warning-sign"></span>
+    You have been removed from the list of interested users.
+</div>
+
+<div class="alert alert-success proposal-detail-alert hide">
+    <a class="alert-close close pull-right" title="Close">&times;</a>
+    <span class="glyphicon glyphicon-ok"></span>
+    You have been added to the list of interested users.
+</div>
+
+<div id="proposal-detail-div" class="tab-content" data-user-unknown="{{ current_user.is_anonymous() }}">
 
   <div role="tabpanel" class="tab-pane active" id="description">
-		{# administrative links #}
-		{% if can_edit or can_organize %}
-			<ul>
-			{% if can_edit %}
-			<li><a href="{{ url_for('proposals.edit', id=proposal.id) }}">EDIT</a></li>
-			{% endif %}
-			{% if can_organize %}
-			<li><a href="{{ url_for('proposals.organize', id=proposal.id) }}">ORGANIZE</a></li>
-			{% endif %}
-			</ul>
-		{% endif %}
-		{# end admin section #}
-  	{{ interested_counter(proposal) }}
+  	
 		<h2>{{ proposal.title }}</h2>
+
+        {% if can_edit or can_organize %}
+            <div style="margin-bottom: 10px;">      
+                {% if can_edit %}
+                    <a href="{{ url_for('proposals.edit', id=proposal.id) }}">Edit Proposal</a>
+                {% endif %}
+
+                {% if can_organize %}
+      
+                    {% if can_edit %}
+                        <a href="{{ url_for('proposals.organize', id=proposal.id) }}" style="margin-left: 10px;">Organize Proposal</a>
+                    {% else %}
+                        <a href="{{ url_for('proposals.organize', id=proposal.id) }}">Organize Proposal</a>
+                    {% endif %}
+                {% endif %}     
+            </div>
+        {% endif %}  
+
+      {#{ interested_counter(proposal) }#}
+
+
+      <div class="btn-group interested-status" data-toggle="buttons" style="margin-bottom: 10px;" obj-id="{{ proposal.id }}" obj-type="proposal">
+          {% if proposal.user_is_interested(current_user) %}    
+              <label class="btn btn-default active add">
+                  <input type="radio" value="1" /> I am interested in this proposal
+              </label>
+              <label class="btn btn-default remove">
+                  <input type="radio" value="2" /> I am not interested in this proposal
+              </label>
+          {% else %}
+              <label class="btn btn-default add">
+                  <input type="radio" value="1" /> I am interested in this proposal
+              </label>
+              <label class="btn btn-default active remove">
+                  <input type="radio" value="2" /> I am not interested in this proposal
+              </label>
+          {% endif %}
+      </div>
+
 		<p><em>{{ proposal.description }}</em></p>
 		<dl>
 			<dt>Proposed by:</dt>
@@ -62,7 +107,7 @@
 			<dt>Proposed:</dt>
 			<dd>{{ proposal.created }}</dd>
 
-			<dt>Proposed to:</dt>
+			<dt>Proposed to school:</dt>
 			<dd>{{ list_schools(proposal.schools) }}</dd>
 
 			<dt>Updated:</dt>
@@ -71,13 +116,13 @@
 			<dt>Tags:</dt>
 			<dd>{{ proposal.tags | join(', ') }}</dd>
 
-			<dt>Num. interested</dt>
+			<dt>Number of interested users:</dt>
 			<dd><span class="counter {{ proposal.id }}">{{ proposal.num_interested }}</span></dd>
 
-			<dt>Interested users</dt>
-			<dd>{{ list_users(proposal.interested_users) }}</dd>
+			<dt>Interested users:</dt>
+			<dd id="interested-users-list">{{ list_users(proposal.interested_users) }}</dd>
 
-			<dt>Stage</dt>
+			<dt>Stage:</dt>
 			<dd>{{ show_stage(proposal) }}</dd>
 		</dl>
   </div>
@@ -114,10 +159,87 @@
 
 {# add page-specific javascript #}
 {% block extra_js %}
-<script>
-$('#secondary a').click(function (e) {
-  e.preventDefault()
-  $(this).tab('show')
-})
+<script>    
+    $(document).ready(function () {
+
+        $('#secondary a').click(function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+        })
+
+        // Attach event to handle the closing of alerts
+        $('body').on('click', '.alert-close', function () {
+            var parent = $(this).parent();
+            if (!parent.hasClass('hide')) {
+                parent.addClass('hide');
+            }
+        });
+
+        // Attach event to handle toggle between interested and not interested
+        $('.interested-status').on('click', '.add, .remove', function () {
+            var action = $(this).attr('class').indexOf('add') > -1 ? 'add' : 'remove';
+            var parent = $(this).parent();
+            var id = parent.attr('obj-id');
+            var type = parent.attr('obj-type');
+            var counter = parent.find('.counter');
+            var url = INTEREST_POST_URL.replace('/type', '/' + type).replace('/id', '/' + id);
+            var post_data = { action: action, attribute: null };
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: post_data,
+                dataType: 'json'
+            })
+            .always(function () {
+                // Hide all alerts after the ajax request is finished
+                hideProposalDetailAlerts();
+            })
+            .success(function (data) {
+                // Counter within the interested widget
+                counter.text(data.num_interested);
+
+                // Update all number interested counters
+                $('.counter.' + id).text(data.num_interested);
+
+                // Update interested users list           
+                var appendUsers = "<ul>";
+                for (var i = 0; i < data.interested_users.length; i++) {
+                    appendUsers += '<li>' + data.interested_users[i] + '</li>';
+                }
+                appendUsers += "</ul>";
+                $('#interested-users-list').html(appendUsers);
+
+                // Display appropriate message
+                if (action === 'add') {
+                    $('.alert-success.proposal-detail-alert').removeClass('hide');
+                }
+                else {
+                    $('.alert-warning.proposal-detail-alert').removeClass('hide');
+                }
+            })
+            .error(function (jqXHR, textStatus, errorThrown) {
+                // Check is the user is anonymous and that the status code is appropriate
+                var isUserAnonymous = $('#proposal-detail-div').attr('data-user-unknown');
+                if (isUserAnonymous === 'True' && jqXHR.status === 200) {
+                    // Send them to the login screen
+                    window.location.href = INTEREST_LOGIN_URL.replace('id', id);
+                }
+                else {
+                    // An error has occured
+                    $('.alert-danger.proposal-detail-alert').removeClass('hide');
+                }
+            });
+        });
+
+        var hideProposalDetailAlerts = function () {
+            $('.proposal-detail-alert').each(function () {
+                if (!$(this).hasClass('hide')) {
+                    $(this).addClass('hide');
+                }
+            });
+        };
+
+    });
 </script>
 {% endblock %}
