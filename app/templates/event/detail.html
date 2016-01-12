@@ -11,11 +11,12 @@
 {% set can_edit = can_edit(event) %}
 
 {% block body %}
-	<h2>{{ event.title }}</h2>
+<div class="well round-borders">
+    <h2>{{ event.title }}</h2>
     {% if can_edit %}
-        <div style="margin-bottom: 10px;">
-            <a href="{{ url_for('events.edit', id=event.id) }}">Edit Class</a>
-        </div>        
+    <div style="margin-bottom: 10px;">
+        <a href="{{ url_for('events.edit', id=event.id) }}">Edit Class</a>
+    </div>
     {% endif %}
 
     <p><em>{{ event.short_description }}</em></p>
@@ -47,30 +48,31 @@
         <dt>Other classes:</dt>
         <dd>
             {% for event in other_events %}
-    <li>
-        <a href="{{ url_for('events.detail', id=event.id) }}">{{ event.start | datetime }}</a>
-        {% if event.title %}
-        {{ event.title }}
+            <li>
+                <a href="{{ url_for('events.detail', id=event.id) }}">{{ event.start | datetime }}</a>
+                {% if event.title %}
+                {{ event.title }}
+                {% endif %}
+            </li>
+            {% endfor %}
+        </dd>
         {% endif %}
-    </li>
-    {% endfor %}
-    </dd>
-    {% endif %}
 
-    <dt>Created by:</dt>
-    <dd>{{ event.creator.display_name }}</dd>
+        <dt>Created by:</dt>
+        <dd>{{ event.creator.display_name }}</dd>
 
-    <dt>Teacher:</dt>
-    <dd>{{ event.teacher }}</dd>
+        <dt>Teacher:</dt>
+        <dd>{{ event.teacher }}</dd>
 
-    <dt>Organized by:</dt>
-    <dd>{{ event.created | datetime }}</dd>
+        <dt>Organized by:</dt>
+        <dd>{{ event.created | datetime }}</dd>
 
-    <!--<dt>Happening at:</dt>
-    <dd>{{ list_schools(event.schools) }}</dd>-->
+        <!--<dt>Happening at:</dt>
+        <dd>{{ list_schools(event.schools) }}</dd>-->
 
-    <dt>Updated:</dt>
-    <dd>{{ event.updated | datetime }}</dd>
+        <dt>Updated:</dt>
+        <dd>{{ event.updated | datetime }}</dd>
 
     </dl>
-    {% endblock %}
+</div>
+{% endblock %}

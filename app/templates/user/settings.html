@@ -7,12 +7,14 @@
 {% block body_classes %}{% endblock %}
 
 {% block body %}
-<h2>Settings for: {{ user.username }}</h2>
-<div>
-	To change your password, <a href="{{ url_for('users.password') }}">click here</a>
-</div>
-<div>
-    {{ render_form(url_for('users.edit', id=user.id), form)}}
+<div class="well round-borders">
+    <h2>Settings for: {{ user.username }}</h2>
+    <div>
+        To change your password, <a href="{{ url_for('users.password') }}">click here</a>
+    </div>
+    <div>
+        {{ render_form(url_for('users.edit', id=user.id), form)}}
+    </div>
 </div>
 {% endblock %}
 
