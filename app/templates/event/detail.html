@@ -21,8 +21,11 @@
     <p><em>{{ event.short_description }}</em></p>
     <p><em>{{ event.description }}</em></p>
     <dl>
-        <dt>Date:</dt>
+        <dt>Start:</dt>
         <dd>{{ event.start | datetime }}</dd>
+
+        <dt>End:</dt>
+        <dd>{{ event.end | datetime }}</dd>
 
         {% if event.places %}
         <dt>Location:</dt>
@@ -57,14 +60,14 @@
     <dt>Created by:</dt>
     <dd>{{ event.creator.display_name }}</dd>
 
-    <dt>Created:</dt>
-    <dd>{{ event.created }}</dd>
+    <dt>Organized by:</dt>
+    <dd>{{ event.created | datetime }}</dd>
 
-    <dt>Happening at:</dt>
-    <dd>{{ list_schools(event.schools) }}</dd>
+    <!--<dt>Happening at:</dt>
+    <dd>{{ list_schools(event.schools) }}</dd>-->
 
     <dt>Updated:</dt>
-    <dd>{{ event.updated }}</dd>
+    <dd>{{ event.updated | datetime }}</dd>
 
     </dl>
     {% endblock %}

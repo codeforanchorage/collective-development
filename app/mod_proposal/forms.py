@@ -4,7 +4,7 @@ from flask.ext.login import current_user
 
 from app.utils.form import model_form, BaseForm, TagListField
 from app.mod_school import user_schools
-from .models import Proposal
+from .models import Proposal, OrganizeProposal
 
 
 class ProposalBase(BaseForm):
@@ -17,6 +17,14 @@ class ProposalBase(BaseForm):
 		if hasattr(self, 'schools'):
 			self.schools.queryset = user_schools()
 
+class OrganizeProposalBase(BaseForm):
+    """ Full event form """
+    field_order = ('*', 'submit')
+
+    def __init__(self, *args, **kwargs):
+        super(OrganizeProposalBase, self).__init__(*args, **kwargs)
+        if hasattr(self, 'schools'):
+            self.schools.queryset = user_schools()
 
 AddProposalForm = model_form( Proposal,
 	base_class=ProposalBase,
@@ -57,3 +65,7 @@ ProposalForm = model_form( Proposal,
 		'tags'))
 submit_save = SubmitField('Save')
 ProposalForm.submit = submit_save
+
+OrganizeProposalForm = model_form(OrganizeProposal, base_class=OrganizeProposalBase)
+submit_organize = SubmitField('Organize')
+OrganizeProposalForm.submit = submit_organize

@@ -1,25 +1,24 @@
-{% from "macros/_form.html" import render_form %}
+﻿{% from "macros/_form.html" import render_form %}
 
-{% set page_title = event.title or "Edit class" %}
+{% set page_title = "Organize proposal" %}
 
 {% extends "layouts/base.html" %}
 
 {% block body_classes %}{% endblock %}
 
 {% block body %}
-<h2>Edit class</h2>
-<div class="container">
-    {{ render_form(request.url, form)}}
+<h2>Organize Proposal</h2>
+<div>
+    {{ render_form(request.path, form)}}
 </div>
 {% endblock %}
 
-{# extra JS and CSS for the datepicker #}
 {% block css_style %}
 <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
 <style type="text/css">
-	.form-group {
-		position: relative;
-	}
+    .form-group {
+        position: relative;
+    }
 </style>
 {% endblock %}
 
@@ -42,7 +41,9 @@ $(function () {
 	$('#places').select2({
 		tags: true
 	});
-	$('#schools').select2();
+	$('#tags').select2({
+	    tags: true
+	});
 });
-</script>    
+</script>
 {% endblock %}

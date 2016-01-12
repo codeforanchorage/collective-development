@@ -12,11 +12,11 @@ from app.database import db
 from app.mod_user import User
 from app.mod_interest import Interested
 from app.mod_school import School
-from app.mod_proposal import Proposal, BaseProposal
+from app.mod_proposal import Proposal
 from app.mod_event import Event
 
 
-class Collection(BaseProposal):
+class Collection():
 	""" A collection object """
 
 	meta = {'collection': 'app_collection'}
