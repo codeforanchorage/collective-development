@@ -26,19 +26,17 @@ class Event(db.Document):
 	This class does not handle repeating - it is very simple.
 	Instead, it will provide a clone method and the logic of
 	repeating or continuing events will be handled by the application."""
-	#Required fields
 	start = db.DateTimeField(default=datetime.datetime.now(), required=True)
-	end = db.DateTimeField()
-	title = db.StringField(max_length=255)
-	schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
+	end = db.DateTimeField(required=True)
+	title = db.StringField(max_length=255, required=True)
 	creator = db.ReferenceField(User, reverse_delete_rule = NULLIFY)
 	created = db.DateTimeField(default=datetime.datetime.now())
 	updated = db.DateTimeField(default=datetime.datetime.now())
-	# Optional fields
-	short_description = db.StringField(max_length=255)
-	description = db.StringField()
+	short_description = db.StringField(max_length=255, required=True)
+	description = db.StringField(required=True)
+	teacher = db.StringField(max_length=255, required=True)
 	places = db.ListField(db.ReferenceField(Place))
-
+	schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
 
 	def save(self, *args, **kwargs):
 		""" Update the updated field before saving """

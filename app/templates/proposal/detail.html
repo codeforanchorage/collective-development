@@ -87,7 +87,7 @@
                   <input type="radio" value="1" /> I am interested in this proposal
               </label>
               <label class="btn btn-default remove">
-                  <input type="radio" value="2" /> I am not interested in this proposal
+                  <input type="radio" value="2" /> I am <strong>not</strong> interested in this proposal
               </label>
           {% else %}
               <label class="btn btn-default add">
@@ -107,13 +107,16 @@
 			<dt>Proposed:</dt>
 			<dd>{{ proposal.created }}</dd>
 
-			<dt>Proposed to school:</dt>
-			<dd>{{ list_schools(proposal.schools) }}</dd>
+			<!--<dt>Proposed to school:</dt>
+			<dd>{{ list_schools(proposal.schools) }}</dd>-->
 
 			<dt>Updated:</dt>
 			<dd>{{ proposal.updated }}</dd>
 
 			<dt>Tags:</dt>
+            {% if proposal.tags|length == 0 %}
+            <dd>None</dd>
+            {% endif %}
 			<dd>{{ proposal.tags | join(', ') }}</dd>
 
 			<dt>Number of interested users:</dt>
