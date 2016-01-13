@@ -19,11 +19,9 @@
 
 
 {% macro list_users(users) %}
-<ul>
 	{% for user in users %}
-		<li>{{ user.display_name }}</li>
+		<div>{{ user.display_name }}</div>
 	{% endfor %}
-</ul>
 {% endmacro %}
 
 

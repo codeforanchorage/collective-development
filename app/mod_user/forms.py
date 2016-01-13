@@ -53,8 +53,6 @@ class BaseAddUserForm(BaseForm):
 	field_order = ('username', 'email', '*', 'captcha', 'gotcha', 'submit')
 	new_password = PasswordField('New password', [Required(), Length(PASSWORD_LEN_MIN, PASSWORD_LEN_MAX)])
 	password_again = PasswordField('Password again', [Required(), Length(PASSWORD_LEN_MIN, PASSWORD_LEN_MAX), EqualTo('new_password')])
-	# 2 basic anti registration spam measures. add more
-	captcha = TextField('Captcha') # This is a honeypot
 	gotcha = TextField('Gotcha', [validate_gotcha])
 
 
@@ -83,6 +81,7 @@ UserAddForm = model_form( User,
 		'active'),
 	field_args = {
 		'username': { 'validators': [Required(), validate_username]} ,
+		'display_name': { 'validators': [Required()]} ,
 		'email': { 'validators': [Required(), validate_email]} ,
 		'schools': { 'label': 'Schools you are interested in'}
 		})
