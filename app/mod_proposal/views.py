@@ -44,7 +44,7 @@ def search():
 		proposals = Proposal.objects.filter(Q(schools=g.school)&Q(published=True)&(Q(title__icontains=query)|Q(description__icontains=query))).order_by('-created')
 	return render_template('proposal/list.html',
 		title=_('Search results'),
-		proposals=proposals)
+		proposals=proposals, query=query)
 
 
 @proposals.route('/<id>', methods=['GET'])
@@ -65,7 +65,8 @@ def detail(id):
 		proposal = p,
 		other_schools = other_schools,
 		events = p.events,
-		discussions = p.discussions))
+		discussions = p.discussions,
+		is_admin=current_user.is_admin()))
     # Disable cache on this page (toggle button needs to update properly)
 	resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
 	resp.headers['Pragma'] = 'no-cache'
@@ -132,6 +133,20 @@ def organize(id):
 		return redirect(url_for('events.detail', id=e.id))
 
 	return render_template("proposal/organize.html", form=form)
+
+@proposals.route('/<id>/delete', methods=['DELETE'])
+@login_required
+@can_organize
+def delete(id):
+	import json
+	p = Proposal.objects.get_or_404(id=id)
+
+	# Throw 403 if user isn't an admin
+	if not current_user.is_admin():
+		abort(403)
+	
+	p.delete()
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 @proposals.route('/<id>/create/discussion', methods=['GET','POST'])
 @login_required

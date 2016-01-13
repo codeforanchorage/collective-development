@@ -45,8 +45,6 @@ class Proposal(db.Document, InterestedMixin):
 	# A copy of the original description is kept
 	description = db.StringField(max_length=1000)
 	edited_description = db.StringField()
-	# School the proposal was made to
-	schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
 	# Person who made the proposal
 	proposer = db.ReferenceField(User, reverse_delete_rule = NULLIFY)
 	created = db.DateTimeField(default=datetime.datetime.now())

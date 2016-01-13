@@ -53,7 +53,7 @@ class BaseAddUserForm(BaseForm):
 	field_order = ('username', 'email', '*', 'captcha', 'gotcha', 'submit')
 	new_password = PasswordField('New password', [Required(), Length(PASSWORD_LEN_MIN, PASSWORD_LEN_MAX)])
 	password_again = PasswordField('Password again', [Required(), Length(PASSWORD_LEN_MIN, PASSWORD_LEN_MAX), EqualTo('new_password')])
-	gotcha = TextField('Gotcha', [validate_gotcha])
+	#gotcha = TextField('Gotcha', [validate_gotcha])
 
 
 UserSettingsForm = model_form( User,
@@ -63,7 +63,8 @@ UserSettingsForm = model_form( User,
 		'password',
 		'role',
 		'created',
-		'active'),
+		'active', 
+        'schools'),
 	field_args = {
 		'email': { 'validators': [validate_email]} ,
 		'schools': { 'label': 'Schools you are following'}
@@ -78,7 +79,9 @@ UserAddForm = model_form( User,
 		'password',
 		'role',
 		'created',
-		'active'),
+		'active',
+        'schools',
+        'gotcha'),
 	field_args = {
 		'username': { 'validators': [Required(), validate_username]} ,
 		'display_name': { 'validators': [Required()]} ,

@@ -80,13 +80,13 @@ def create():
 		flash(_("Welcome %(user)s!", user=u.display_name), 'success')
 		return redirect(form.next.data or url_for_school('schools.home', user_school=True))
 	# Our simple custom captcha implementation
-	gotcha = 'which letter in this sentence is uppercase?'
-	gotcha_cap = '-'
-	while gotcha_cap not in string.letters:
-		idx = randint(0, len(gotcha)-1)
-		gotcha_cap = gotcha[idx]
-	form.gotcha.label = gotcha[:idx].lower() + gotcha[idx:].capitalize()
-	session['gotcha'] = gotcha_cap
+	#gotcha = 'which letter in this sentence is uppercase?'
+	#gotcha_cap = '-'
+	#while gotcha_cap not in string.letters:
+	#	idx = randint(0, len(gotcha)-1)
+	#	gotcha_cap = gotcha[idx]
+	#form.gotcha.label = gotcha[:idx].lower() + gotcha[idx:].capitalize()
+	#session['gotcha'] = gotcha_cap
 	return render_template('user/create.html',
 		title=_('Create an account'),
 		form=form)

@@ -62,7 +62,7 @@ def detail(id):
 	return render_template('event/detail.html',
 		title = e.title,
 		event = e,
-		other_events = []) #other_events(e))
+		is_admin=current_user.is_admin()) #other_events(e))
 
 
 @events.route('/<id>/edit', methods=['GET','POST'])
@@ -81,6 +81,18 @@ def edit(id):
 		event = e,
 		form=form)
 
+@events.route('/<id>/delete', methods=['DELETE'])
+@login_required
+def delete(id):
+	import json
+	e = Event.objects.get_or_404(id=id)
+
+	# Throw 403 if user isn't an admin
+	if not current_user.is_admin():
+		abort(403)
+	
+	e.delete()
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 # detail (place)
 
