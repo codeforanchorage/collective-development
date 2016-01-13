@@ -8,12 +8,7 @@
 
 
 {% block secondary %}
-<form action="{{ url_for('proposals.search') }}" method="get">
-	<div class="form-group inner-addon left-addon">
-	    <span class="glyphicon glyphicon-search"></span>
-	    <input type="text" name="query" class="form-control">
-	</div>
-</form>
+
 {% endblock %}
 
 
@@ -21,6 +16,18 @@
 
 <div class="well round-borders">
 	<h2>Proposals</h2>
+    <form action="{{ url_for('proposals.search') }}" method="get">
+        <div class="form-group inner-addon left-addon">
+            <span class="glyphicon glyphicon-search"></span>
+            <input type="text" name="query" class="form-control">
+        </div>
+    </form>
+    {% if query is defined %}
+    <div style="margin-bottom: 10px">
+        <p>You searched for: <em>{{ query }}</em></p>
+        <a href="/proposals" >Clear Search</a>
+    </div>
+    {% endif %}
 	{{ proposals_list(proposals) }}
 </div>
 {% endblock %}
