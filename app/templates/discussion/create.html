@@ -7,9 +7,11 @@
 {% block body_classes %}{% endblock %}
 
 {% block body %}
-<h2>Start a discussion</h2>
-<div>
-    {{ render_form(request.path, form)}}
+<div class="well round-borders">
+    <h2>Start a discussion</h2>
+    <div>
+        {{ render_form(request.path, form)}}
+    </div>
 </div>
 {% endblock %}
 

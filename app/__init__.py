@@ -12,6 +12,8 @@ from app.utils import pretty_date, format_datetime, url_for_school
 from app.database import db
 from app import config
 
+from datetime import timedelta
+
 from app.mod_auth import login_manager, auth
 from app.mod_school import load_school, load_all_schools, schools
 from app.mod_user import users
@@ -25,7 +27,9 @@ from app.mod_interest import interested
 def create_app(config=config.dev_config, school_name=None):
 	""" The main entry point where the application is created """
 	# Create the application
-	app = Flask(__name__)
+	app = Flask(__name__)    
+    # User only logged in for 5 minutes before getting auto logged out
+	app.permanent_session_lifetime = timedelta(seconds=300)
 	# Default configurations
 	app.config.from_object(config)
 	# Configuration overrides
