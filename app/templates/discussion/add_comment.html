@@ -7,9 +7,11 @@
 {% block body_classes %}{% endblock %}
 
 {% block body %}
-<h2>Comment on {{ title }}</h2>
-<div>
-    {{ render_form(url_for('discussions.add_comment', id=discussion.id), form)}}
+<div class="well round-borders">
+    <h2>Comment on {{ title }}</h2>
+    <div>
+        {{ render_form(url_for('discussions.add_comment', id=discussion.id), form)}}
+    </div>
 </div>
 {% endblock %}
 

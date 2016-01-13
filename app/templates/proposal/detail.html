@@ -26,11 +26,6 @@
 	<li role="presentation">
 		<a href="#discussions" aria-controls="discussions" role="tab" data-toggle="tab">Comments</a>
 	</li>
-	{% if events or can_organize %}
-	<li role="presentation">
-		<a href="#events" aria-controls="events" role="tab" data-toggle="tab">Events</a>
-	</li>
-	{% endif %}
 </ul>
 {% endblock %}
 
@@ -57,104 +52,92 @@
 
 <div id="proposal-detail-div" class="tab-content" data-user-unknown="{{ current_user.is_anonymous() }}">
 
-  <div role="tabpanel" class="tab-pane active" id="description">
-  	
-		<h2>{{ proposal.title }}</h2>
+
+<div role="tabpanel" class="tab-pane active" id="description">
+    <div class="well round-borders">
+        <h2>{{ proposal.title }}</h2>
 
         {% if can_edit or can_organize %}
-            <div style="margin-bottom: 10px;">      
-                {% if can_edit %}
-                    <a href="{{ url_for('proposals.edit', id=proposal.id) }}">Edit Proposal</a>
-                {% endif %}
+        <div style="margin-bottom: 10px;">
+            {% if can_edit %}
+            <a href="{{ url_for('proposals.edit', id=proposal.id) }}">Edit Proposal</a>
+            {% endif %}
 
-                {% if can_organize %}
-      
-                    {% if can_edit %}
-                        <a href="{{ url_for('proposals.organize', id=proposal.id) }}" style="margin-left: 10px;">Organize Proposal</a>
-                    {% else %}
-                        <a href="{{ url_for('proposals.organize', id=proposal.id) }}">Organize Proposal</a>
-                    {% endif %}
-                {% endif %}     
-            </div>
-        {% endif %}  
+            {% if can_organize %}
 
-      {#{ interested_counter(proposal) }#}
+            {% if can_edit %}
+            <a href="{{ url_for('proposals.organize', id=proposal.id) }}" style="margin-left: 10px;">Organize Proposal</a>
+            {% else %}
+            <a href="{{ url_for('proposals.organize', id=proposal.id) }}">Organize Proposal</a>
+            {% endif %}
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {#{ interested_counter(proposal) }#}
 
 
-      <div class="btn-group interested-status" data-toggle="buttons" style="margin-bottom: 10px;" obj-id="{{ proposal.id }}" obj-type="proposal">
-          {% if proposal.user_is_interested(current_user) %}    
-              <label class="btn btn-default active add">
-                  <input type="radio" value="1" /> I am interested in this proposal
-              </label>
-              <label class="btn btn-default remove">
-                  <input type="radio" value="2" /> I am <strong>not</strong> interested in this proposal
-              </label>
-          {% else %}
-              <label class="btn btn-default add">
-                  <input type="radio" value="1" /> I am interested in this proposal
-              </label>
-              <label class="btn btn-default active remove">
-                  <input type="radio" value="2" /> I am not interested in this proposal
-              </label>
-          {% endif %}
-      </div>
+        <div class="btn-group interested-status" data-toggle="buttons" style="margin-bottom: 10px;" obj-id="{{ proposal.id }}" obj-type="proposal">
+            {% if proposal.user_is_interested(current_user) %}
+            <label class="btn btn-default active add">
+                <input type="radio" value="1" /> I am interested in this proposal
+            </label>
+            <label class="btn btn-default remove">
+                <input type="radio" value="2" /> I am <strong>not</strong> interested in this proposal
+            </label>
+            {% else %}
+            <label class="btn btn-default add">
+                <input type="radio" value="1" /> I am interested in this proposal
+            </label>
+            <label class="btn btn-default active remove">
+                <input type="radio" value="2" /> I am not interested in this proposal
+            </label>
+            {% endif %}
+        </div>
 
-		<p><em>{{ proposal.description }}</em></p>
-		<dl>
-			<dt>Proposed by:</dt>
-			<dd>{{ proposal.proposer.display_name }}</dd>
+        <p><em>{{ proposal.description }}</em></p>
+        <dl>
+            <dt>Proposed by:</dt>
+            <dd>{{ proposal.proposer.display_name }}</dd>
 
-			<dt>Proposed:</dt>
-			<dd>{{ proposal.created }}</dd>
+            <dt>Proposed:</dt>
+            <dd>{{ proposal.created }}</dd>
 
-			<!--<dt>Proposed to school:</dt>
-			<dd>{{ list_schools(proposal.schools) }}</dd>-->
+            <!--<dt>Proposed to school:</dt>
+        <dd>{{ list_schools(proposal.schools) }}</dd>-->
 
-			<dt>Updated:</dt>
-			<dd>{{ proposal.updated }}</dd>
+            <dt>Updated:</dt>
+            <dd>{{ proposal.updated }}</dd>
 
-			<dt>Tags:</dt>
+            <dt>Tags:</dt>
             {% if proposal.tags|length == 0 %}
             <dd>None</dd>
             {% endif %}
-			<dd>{{ proposal.tags | join(', ') }}</dd>
+            <dd>{{ proposal.tags | join(', ') }}</dd>
 
-			<dt>Number of interested users:</dt>
-			<dd><span class="counter {{ proposal.id }}">{{ proposal.num_interested }}</span></dd>
+            <dt>Number of interested users:</dt>
+            <dd><span class="counter {{ proposal.id }}">{{ proposal.num_interested }}</span></dd>
 
-			<dt>Interested users:</dt>
-			<dd id="interested-users-list">{{ list_users(proposal.interested_users) }}</dd>
+            <dt>Interested users:</dt>
+            <dd id="interested-users-list">{{ list_users(proposal.interested_users) }}</dd>
 
-			<dt>Stage:</dt>
-			<dd>{{ show_stage(proposal) }}</dd>
-		</dl>
+            <dt>Stage:</dt>
+            <dd>{{ show_stage(proposal) }}</dd>
+        </dl>
+    </div>	
+		
   </div>
 
   <div role="tabpanel" class="tab-pane" id="discussions">
-	<a href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">add a discussion</a>
-	{% if discussions %}
-		{{ discussions_list(discussions) }}
-	{% endif %}
+      <div class="well round-borders">
+          <a href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">add a discussion</a>
+          {% if discussions %}
+                {{ discussions_list(discussions) }}
+          {% endif %}
+      </div>
+	
   </div>
   
-  <div role="tabpanel" class="tab-pane" id="events">
-  	{% if events or can_organize %}
-		{% if can_organize %}
-		<a href="{{ url_for('proposals.create_event', id=proposal.id) }}">add a class event</a>
-		{% endif %}
-		<ul>
-		{% for event in events %}
-			<li>
-				<a href="{{ url_for('events.detail', id=event.id) }}">{{ event.start | datetime }}</a>
-				{% if event.title %}
-				{{ event.title }}
-				{% endif %}
-			</li>
-		{% endfor %}
-		</ul>
-		{% endif %}
-  </div>
-
 </div>
 		
 {% endblock %}
