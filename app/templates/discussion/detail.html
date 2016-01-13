@@ -23,7 +23,7 @@
             <ul>
                 {% for comment in comments %}
                 <li>
-                    <p>{{ comment.creator.display_name }} on {{ comment.created | datetime }}</p>
+                    <p style="margin-bottom:0px">{{ comment.creator.display_name }} on {{ comment.created | datetime }}</p>
                     {% set can_edit = can_edit_comment(comment) %}
                     {% if can_edit %}
                     <a href="{{ url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id) }}">Edit Comment</a>
