@@ -129,7 +129,7 @@ def organize(id):
 		e.creator = current_user._get_current_object()
 		form.populate_obj(e)
 		e.save()	
-		p.delete()
+		#p.delete()
 		return redirect(url_for('events.detail', id=e.id))
 
 	return render_template("proposal/organize.html", form=form)
