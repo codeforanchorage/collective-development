@@ -11,25 +11,22 @@
 {% set can_edit = can_edit(event) %}
 
 {% block body %}
-<div class="well round-borders">
+<div>
     <h2>{{ event.title }}</h2>
     {% if can_edit or is_admin%}
     <div style="margin-bottom: 10px;">
         {% if can_edit %}
-        <a href="{{ url_for('events.edit', id=event.id) }}" style="margin-right: 10px;">Edit Class</a>
+        <a class="btn btn-primary" href="{{ url_for('events.edit', id=event.id) }}" style="margin-right: 10px;">Edit Class</a>
         {% endif %}
 
         {% if is_admin %}
-        <a id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;">Delete Class</a>      
+        <a class="btn btn-danger" id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;">Delete Class</a>      
         {% endif %}
     </div>
     {% endif %}
 
                 
     <dl>
-        <dt>Summary:</dt>
-        <dd><p><em>{{ event.short_description }}</em></p></dd>
-
         <dt>Description:</dt>
         <dd><p><em>{{ event.description }}</em></p></dd>
 

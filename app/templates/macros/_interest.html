@@ -15,12 +15,11 @@
 
 
 {% macro interested_check(obj, type='proposal') %}
-<div class="interested interested-checker interested-status" obj-id="{{ obj.id }}" obj-type="{{ type }}">
-	<div class="counter">{{obj.num_interested}}</div>
+<div class="interested interested-checker interested-status col-md-1" obj-id="{{ obj.id }}" obj-type="{{ type }}" style="padding-left:0px; margin-top:15px">
 	{% if obj.user_is_interested(current_user) %}	
-    <span class="remove button glyphicon glyphicon-ok"></span>
+    <span class="remove button glyphicon glyphicon-ok" style="font-size: 20px;"></span>
 	{% else %}
-	<span class="add button glyphicon glyphicon-ok"></span>
+	<span class="add button glyphicon glyphicon-ok" style="font-size: 20px;"></span>
 	{% endif %}
 </div>
 {% endmacro %}

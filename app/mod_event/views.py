@@ -4,8 +4,8 @@ from flask import Blueprint, g, current_app, render_template, flash, redirect, r
 from flask.ext.login import current_user, login_required
 from flask.ext.babel import gettext as _
 
-from app.utils import url_for_school, model_form
-from app.mod_school import get_school_context
+from app.utils import  model_form
+#from app.mod_school import get_school_context
 from .forms import AddEventForm, EventForm
 from .models import Event, Place
 from .services import can_edit_place, can_edit_event, can_create_event, can_edit, can_create
@@ -53,10 +53,10 @@ def create():
 def detail(id):
 	""" Show a detail of an event """
 	e = Event.objects.get_or_404(id=id)
-	c = get_school_context(e)
-	if not g.school==c:
-		flash(_("You've been redirected to the school where the class is happening."))
-		return redirect(url_for_school('events.detail', school=c, id=e.id), code=301)
+	#c = get_school_context(e)
+	#if not g.school==c:
+		#flash(_("You've been redirected to the school where the class is happening."))
+		#return redirect(url_for_school('events.detail', school=c, id=e.id), code=301)
 	# Passing some permissions related functions on to Jinja
 	current_app.jinja_env.globals['can_edit'] = can_edit
 	return render_template('event/detail.html',

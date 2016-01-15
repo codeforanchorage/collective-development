@@ -9,12 +9,12 @@ from app.mod_school import School
 class Place(db.Document):
 	""" A place where an event might happen """
 	name = db.StringField(max_length=255, required=True)
-	address = db.StringField()
-	geo = db.PointField()
-	information = db.StringField()
-	schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
-	creator = db.ReferenceField(User, reverse_delete_rule = NULLIFY)
-	created = db.DateTimeField(default=datetime.datetime.now())
+	#address = db.StringField()
+	#geo = db.PointField()
+	#information = db.StringField()
+	#schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
+	#creator = db.ReferenceField(User, reverse_delete_rule = NULLIFY)
+	#created = db.DateTimeField(default=datetime.datetime.now())
 
 
 	def __str__(self):
@@ -32,11 +32,11 @@ class Event(db.Document):
 	creator = db.ReferenceField(User, reverse_delete_rule = NULLIFY)
 	created = db.DateTimeField(default=datetime.datetime.now())
 	updated = db.DateTimeField(default=datetime.datetime.now())
-	short_description = db.StringField(max_length=255, required=True)
-	description = db.StringField(required=True)
+	#short_description = db.StringField(max_length=255, required=True)
+	description = db.StringField(max_length=1000, required=True)
 	teacher = db.StringField(max_length=255, required=True)
 	places = db.ListField(db.ReferenceField(Place))
-	schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
+	#schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
 
 	def save(self, *args, **kwargs):
 		""" Update the updated field before saving """

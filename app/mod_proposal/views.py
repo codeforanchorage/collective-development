@@ -3,8 +3,8 @@ from flask import Blueprint, g, current_app, render_template, flash, redirect, r
 from flask.ext.login import current_user, login_required
 from flask.ext.babel import gettext as _
 
-from app.utils import url_for_school
-from app.mod_school import get_school_context
+#from app.utils import url_for_school
+#from app.mod_school import get_school_context
 from app.mod_event import AddEventForm, Event
 from app.mod_discussion import Discussion, Comment, AddDiscussionForm, start_discussion
 from .forms import AddProposalForm, ProposalForm, OrganizeProposalForm
@@ -51,11 +51,11 @@ def search():
 def detail(id):
 	""" Show a single proposal, redirecting to the appropriate school if necessary """
 	p = Proposal.objects.get_or_404(id=id)
-	c = get_school_context(p)
-	if not g.school==c:
-		flash(_("You've been redirected to where the proposal was made."))
-		return redirect(url_for_school('proposals.detail', school=c, id=p.id), code=301)
-	other_schools = [school for school in p.schools if not school==c]
+	#c = get_school_context(p)
+	#if not g.school==c:
+	#	flash(_("You've been redirected to where the proposal was made."))
+	#	return redirect(url_for_school('proposals.detail', school=c, id=p.id), code=301)
+	#other_schools = [school for school in p.schools if not school==c]
 	# Passing some permissions related functions on to Jinja
 	current_app.jinja_env.globals['can_edit_proposal'] = can_edit_proposal
 	current_app.jinja_env.globals['can_organize_proposal'] = can_organize_proposal
@@ -63,7 +63,7 @@ def detail(id):
 	resp = Response(render_template('proposal/detail.html',
 		title = p.title,
 		proposal = p,
-		other_schools = other_schools,
+		#other_schools = other_schools,
 		events = p.events,
 		discussions = p.discussions,
 		is_admin=current_user.is_admin()))
@@ -132,7 +132,7 @@ def organize(id):
 		p.delete()
 		return redirect(url_for('events.detail', id=e.id))
 
-	return render_template("proposal/organize.html", form=form)
+	return render_template("proposal/organize.html", form=form, proposal_title=p.title, proposal_description=p.description)
 
 @proposals.route('/<id>/delete', methods=['DELETE'])
 @login_required

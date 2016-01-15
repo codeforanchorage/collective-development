@@ -32,8 +32,8 @@ class Stage(db.EmbeddedDocument):
 class Proposal(db.Document, InterestedMixin):
 	""" A proposal object """
 	meta = {'collection': 'proposal'}
-	# Tags
-	tags = db.ListField(db.StringField(max_length=30))
+	## Tags
+	#tags = db.ListField(db.StringField(max_length=30))
 	# School the proposal was made to
 	schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
 	# Context in which the proposal was made
@@ -41,17 +41,17 @@ class Proposal(db.Document, InterestedMixin):
 	# Which stage in the organizing process
 	stage = db.ListField(db.EmbeddedDocumentField(Stage))
 
-	title = db.StringField(max_length=255)
+	title = db.StringField(max_length=255, required=True)
 	# A copy of the original description is kept
-	description = db.StringField(max_length=1000)
-	edited_description = db.StringField()
+	description = db.StringField(max_length=1000, required=True)
+	#edited_description = db.StringField()
 	# Person who made the proposal
 	proposer = db.ReferenceField(User, reverse_delete_rule = NULLIFY)
 	created = db.DateTimeField(default=datetime.datetime.now())
 	updated = db.DateTimeField(default=datetime.datetime.now())
 	published = db.BooleanField(default=True)
 	# The proposal that this proposal "copies"
-	copy_of = db.ReferenceField("self", reverse_delete_rule = NULLIFY)
+	#copy_of = db.ReferenceField("self", reverse_delete_rule = NULLIFY)
 	# Events
 	events = db.ListField(db.ReferenceField(Event, reverse_delete_rule = NULLIFY))
 	# Discussions
@@ -95,7 +95,7 @@ class OrganizeProposal(db.Document):
     start = db.DateTimeField(required=True)
     end = db.DateTimeField(required=True)
     title = db.StringField(max_length=255, required=True)
-    short_description = db.StringField(max_length=255, required=True)
-    description = db.StringField(max_length=100, required=True)
+    #short_description = db.StringField(max_length=255, required=True)
+    description = db.StringField(max_length=1000, required=True)
     teacher = db.StringField(max_length=255, required=True)
     places = db.ListField(db.ReferenceField(Place), required=True)

@@ -8,7 +8,7 @@ New schools:
 from flask import Flask, g, request, url_for
 from flask.ext.babel import Babel
 
-from app.utils import pretty_date, format_datetime, url_for_school
+from app.utils import pretty_date, format_datetime
 from app.database import db
 from app import config
 
@@ -83,7 +83,7 @@ def register_template_filters(app):
 	def datetime_filter(value, format='medium'):
 		return format_datetime(value, format)
 	# Register global template functions here too
-	app.jinja_env.globals.update(url_for_school=url_for_school)
+	#app.jinja_env.globals.update(url_for_school=url_for_school)
 
 
 def configure_hooks(app):

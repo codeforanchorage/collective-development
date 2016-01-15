@@ -9,8 +9,9 @@ from .models import Proposal, OrganizeProposal
 
 class ProposalBase(BaseForm):
 	""" Full event form """
-	tags = TagListField('Tags')
-	field_order = ('*', 'tags', 'submit')
+	#tags = TagListField('Tags')
+	#field_order = ('*', 'tags', 'submit')
+	field_order = ('*', 'submit')
 
 	def __init__(self, *args, **kwargs):
 		super(ProposalBase, self).__init__(*args, **kwargs)
@@ -62,7 +63,8 @@ ProposalForm = model_form( Proposal,
 		'events',
 		'discussions',
 		'copy_of',
-		'tags'))
+		'tags', 
+		'schools'))
 submit_save = SubmitField('Save')
 ProposalForm.submit = submit_save
 

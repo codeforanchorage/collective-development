@@ -53,21 +53,21 @@
 
 
 <div role="tabpanel" class="tab-pane active" id="description">
-    <div class="well round-borders">
+    <div>
         <h2>{{ proposal.title }}</h2>
 
         {% if can_edit or can_organize %}
         <div style="margin-bottom: 10px;">
             {% if can_edit %}
-            <a href="{{ url_for('proposals.edit', id=proposal.id) }}" style="margin-right: 10px;">Edit Proposal</a>
+            <a class="btn btn-primary" href="{{ url_for('proposals.edit', id=proposal.id) }}" style="margin-right: 10px;">Edit Proposal</a>
             {% endif %}
 
             {% if can_organize %}
-            <a href="{{ url_for('proposals.organize', id=proposal.id) }}" style="margin-right: 10px;">Organize Proposal</a>
+            <a class="btn btn-success" href="{{ url_for('proposals.organize', id=proposal.id) }}" style="margin-right: 10px;">Organize Proposal</a>
             {% endif %}
 
             {% if is_admin %}
-            <a id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;">Delete Proposal</a>
+            <a class="btn btn-danger" id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;">Delete Proposal</a>
             {% endif %}
         </div>
         {% endif %}
@@ -78,7 +78,7 @@
         <div class="btn-group interested-status" data-toggle="buttons" style="margin-bottom: 10px;" obj-id="{{ proposal.id }}" obj-type="proposal">
             {% if proposal.user_is_interested(current_user) %}
             <label class="btn btn-default active add">
-                <input type="radio" value="1" /> I am interested
+                <input class="btn-default" type="radio" value="1" /> I am interested
             </label>
             <label class="btn btn-default remove">
                 <input type="radio" value="2" /> I am <strong>not</strong> interested
@@ -96,38 +96,43 @@
         <p><em>{{ proposal.description }}</em></p>
         <dl>
             <dt>Proposed by:</dt>
-            <dd>{{ proposal.proposer.display_name }}</dd>
+            <dd>{{ proposal.proposer.display_name}}</dd>
 
             <dt>Proposed:</dt>
-            <dd>{{ proposal.created }}</dd>
+            <dd>{{ proposal.created | datetime }}</dd>
 
             <!--<dt>Proposed to school:</dt>
         <dd>{{ list_schools(proposal.schools) }}</dd>-->
 
             <dt>Updated:</dt>
-            <dd>{{ proposal.updated }}</dd>
+            <dd>{{ proposal.updated | datetime }}</dd>
 
-            <dt>Tags:</dt>
-            {% if proposal.tags|length == 0 %}
-            <dd>None</dd>
-            {% endif %}
-            <dd>{{ proposal.tags | join(', ') }}</dd>
+            <!--<dt>Tags:</dt>-->
+            {# % if proposal.tags|length == 0 % #}
+            <!--<dd>None</dd>-->
+            {# % endif % #}
+            <!--<dd>{{ proposal.tags | join(', ') }}</dd>-->
 
             <dt>Number of interested users:</dt>
             <dd><span class="counter {{ proposal.id }}">{{ proposal.num_interested }}</span></dd>
 
             <dt>Interested users:</dt>
-            <dd id="interested-users-list">{{ list_users(proposal.interested_users) }}</dd>
+            <dd id="interested-users">
+                {{ proposal.interested_users | join (', ')}}
+                {% if proposal.interested_users | length == 0 %}
+                None
+                {% endif %}
+            </dd>            
 
-            <dt>Stage:</dt>
-            <dd>{{ show_stage(proposal) }}</dd>
+            <!--<dt>When:</dt>
+            <dd>{{ show_stage(proposal) }}</dd>-->
         </dl>
     </div>	
 		
   </div>
 
   <div role="tabpanel" class="tab-pane" id="discussions">
-      <div class="well round-borders">
+      <div>
           <a href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">add a discussion</a>
           {% if discussions %}
                 {{ discussions_list(discussions) }}
@@ -138,9 +143,9 @@
   
 </div>
 		
-<div class="well round-borders col-md-6">
+<div class="col-md-6">
     <h2>Discussions</h2>
-    <div style="margin-top: 10px"><a href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">Add Discussion</a></div>
+    <div style="margin-top: 10px"><a class="btn btn-success" href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">Add Discussion</a></div>
     {{ discussions_list(discussions) }}
 </div>
 
@@ -210,12 +215,16 @@
                 $('.counter.' + id).text(data.num_interested);
 
                 // Update interested users list           
-                var appendUsers = "<ul>";
+                var appendUsers = "";
                 for (var i = 0; i < data.interested_users.length; i++) {
-                    appendUsers += '<li>' + data.interested_users[i] + '</li>';
+                    appendUsers += data.interested_users[i] + ', ';
                 }
-                appendUsers += "</ul>";
-                $('#interested-users-list').html(appendUsers);
+                appendUsers = appendUsers.substring(0, appendUsers.length - 3);
+                $('#interested-users').html(appendUsers);
+
+                if (data.interested_users.length === 0) {
+                    $('#interested-users').html('None');
+                }
 
                 // Display appropriate message
                 if (action === 'add') {

@@ -7,7 +7,7 @@
 {% block body_classes %}{% endblock %}
 
 {% block body %}
-<div class="well round-borders">
+<div>
     <h2>Organize Proposal</h2>
     <div>
         {{ render_form(request.path, form)}}
@@ -40,12 +40,31 @@ $(function () {
 		'format':'lll',
 		'extraFormats': [ 'YYYY-MM-DD HH:mm:ss' ]
 	});
-	$('#places').select2({
-		tags: true
-	});
-	$('#tags').select2({
-	    tags: true
-	});
+
+    // Sort options alphabetically: http://stackoverflow.com/a/26232541/5573838
+	var sel = $('#places');
+	var opts_list = sel.find('option');
+	opts_list.sort(function (a, b) { return $(a).text() > $(b).text() ? 1 : -1; });
+	sel.html('').append(opts_list);
+
+    // Remove attribute multiple to prevent the user from picking more than one place
+	$('#places').removeAttr('multiple');
+
+    // Convert description to textarea to make it appear bigger
+	var parent = $('#description').parent();
+	$('#description').remove();
+	parent.prepend("<textarea class=\"form-control\" id=\"description\" name=\"description\" rows=\"4\"></textarea><span class=\"help-inline\"></span>");
+
+    // Set title and description of class to be the same as the proposal. The user may change it if they want to.
+	$('#title').val("{{ proposal_title }}");
+	$('#description').val("{{ proposal_description }}");
+
+	//$('#places').select2({
+	//	tags: true
+	//});
+	//$('#tags').select2({
+	//    tags: true
+	//});
 });
 </script>
 {% endblock %}

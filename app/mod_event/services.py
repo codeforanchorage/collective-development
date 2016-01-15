@@ -62,9 +62,13 @@ def can_create(user=None):
 def can_edit(obj, user=None):
 	""" Can a user organize a proposal (adding events to it)?
 	Allow the school committee and admins """
-	user = user or current_user._get_current_object()
-	dans = [load_dan(school) for school in obj.schools]
-	return user_is_a_dan(user, dans) or obj.creator==user or user.is_admin()
+	#user = user or current_user._get_current_object()
+	#dans = [load_dan(school) for school in obj.schools]
+	#return user_is_a_dan(user, dans) or obj.creator==user or user.is_admin()
+	if user is None:
+		return obj.creator==user
+	else:
+		return obj.creator==user or user.is_admin()
 
 
 #
