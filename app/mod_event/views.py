@@ -24,7 +24,7 @@ def list():
 		events = Event.objects.filter(schools=g.school).order_by('-start')
 	return render_template('event/list.html',
 		title=_('Events'),
-		events=events)
+		events=events, current_user=current_user)
 
 
 # @todo: calendar
@@ -62,11 +62,11 @@ def detail(id):
 	return render_template('event/detail.html',
 		title = e.title,
 		event = e,
-		is_admin=current_user.is_admin()) #other_events(e))
+        current_user = current_user)
+		#is_admin=current_user.is_admin()) #other_events(e))
 
 
 @events.route('/<id>/edit', methods=['GET','POST'])
-@can_edit_event
 def edit(id):
 	""" Edit an event """
 	e = Event.objects.get_or_404(id=id)

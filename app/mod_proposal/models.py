@@ -41,9 +41,9 @@ class Proposal(db.Document, InterestedMixin):
 	# Which stage in the organizing process
 	stage = db.ListField(db.EmbeddedDocumentField(Stage))
 
-	title = db.StringField(max_length=255, required=True)
+	title = db.StringField(max_length=1000, required=True)
 	# A copy of the original description is kept
-	description = db.StringField(max_length=1000, required=True)
+	description = db.StringField(max_length=1000000, required=True)
 	#edited_description = db.StringField()
 	# Person who made the proposal
 	proposer = db.ReferenceField(User, reverse_delete_rule = NULLIFY)
@@ -94,8 +94,8 @@ class Proposal(db.Document, InterestedMixin):
 class OrganizeProposal(db.Document):
     start = db.DateTimeField(required=True)
     end = db.DateTimeField(required=True)
-    title = db.StringField(max_length=255, required=True)
+    title = db.StringField(max_length=1000, required=True)
     #short_description = db.StringField(max_length=255, required=True)
-    description = db.StringField(max_length=1000, required=True)
-    teacher = db.StringField(max_length=255, required=True)
+    description = db.StringField(max_length=1000000, required=True)
+    teacher = db.StringField(max_length=1000, required=True)
     places = db.ListField(db.ReferenceField(Place), required=True)

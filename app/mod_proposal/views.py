@@ -26,7 +26,7 @@ def list():
 
 	resp = Response(render_template('proposal/list.html',
 		title=_('Proposals'),
-		proposals=proposals))
+		proposals=proposals, current_user=current_user))
 
     # Disable cache on this page (checkmarks need to update properly)
 	resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
@@ -129,7 +129,7 @@ def organize(id):
 		e.creator = current_user._get_current_object()
 		form.populate_obj(e)
 		e.save()	
-		p.delete()
+		#p.delete()
 		return redirect(url_for('events.detail', id=e.id))
 
 	return render_template("proposal/organize.html", form=form, proposal_title=p.title, proposal_description=p.description)

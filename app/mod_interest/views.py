@@ -13,13 +13,13 @@ interested = Blueprint('interested', __name__, url_prefix='/interested')
 def toggle(type, id):
 	""" Toggles current user's interest in a proposal """
 	from app.mod_proposal import Proposal
-	from app.mod_collection import Collection
+	from app.mod_event import Event
 
 	u = current_user._get_current_object()
 	remove = request.form.get('action','add')=='remove'
 	attribute = request.form.get('attribute', None) or None
-	if type=='collection':
-		cls = Collection
+	if type=='event':
+		cls = Event
 	else:
 		cls = Proposal
 	# Now try and load the document

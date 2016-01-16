@@ -23,13 +23,12 @@ from app.mod_proposal import proposals
 from app.mod_collection import collections
 from app.mod_interest import interested
 
-
 def create_app(config=config.dev_config, school_name=None):
 	""" The main entry point where the application is created """
 	# Create the application
 	app = Flask(__name__)    
-    # User only logged in for 5 minutes before getting auto logged out
-	app.permanent_session_lifetime = timedelta(seconds=300)
+    # User only logged in for 10 minutes before getting auto logged out
+	app.permanent_session_lifetime = timedelta(seconds=600)
 	# Default configurations
 	app.config.from_object(config)
 	# Configuration overrides
@@ -82,6 +81,32 @@ def register_template_filters(app):
 	@app.template_filter('datetime')
 	def datetime_filter(value, format='medium'):
 		return format_datetime(value, format)
+    # Mostly from http://stackoverflow.com/a/18900930/5573838
+	from jinja2 import Markup
+	_js_escapes = {
+        '\\': '\\u005C',
+        '\'': '\\u0027',
+        '"': '\\u0022',
+        '>': '\\u003E',
+        '<': '\\u003C',
+        '&': '\\u0026',
+        '=': '\\u003D',
+        '-': '\\u002D',
+        ';': '\\u003B',
+        u'\u2028': '\\u2028',
+        u'\u2029': '\\u2029'
+	}
+	# Escape every ASCII character with a value less than 32.
+	_js_escapes.update(('%c' % z, '\\u%04X' % z) for z in xrange(32))
+	@app.template_filter('escapejs')
+	def escapejs(value):
+		retval = []
+		for letter in value:
+			if _js_escapes.has_key(letter):
+				retval.append(_js_escapes[letter])
+			else:
+				retval.append(letter)
+		return Markup("".join(retval))
 	# Register global template functions here too
 	#app.jinja_env.globals.update(url_for_school=url_for_school)
 

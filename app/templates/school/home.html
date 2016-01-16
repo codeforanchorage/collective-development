@@ -24,11 +24,11 @@
     </div>
     <div class="col-md-5" style="margin-top:15px;">
         <h3>Classes</h3>
-        {{ events_list(events) }}
+        {{ events_list(events, current_user) }}
     </div>
     <div class="col-md-5 col-md-offset-1" style="margin-top:15px;">
         <h3>Proposals</h3>
-        {{ proposals_list(proposals) }}
+        {{ proposals_list(proposals, current_user) }}
     </div>   
 </div>
 

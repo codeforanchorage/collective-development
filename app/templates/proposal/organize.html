@@ -56,8 +56,8 @@ $(function () {
 	parent.prepend("<textarea class=\"form-control\" id=\"description\" name=\"description\" rows=\"4\"></textarea><span class=\"help-inline\"></span>");
 
     // Set title and description of class to be the same as the proposal. The user may change it if they want to.
-	$('#title').val("{{ proposal_title }}");
-	$('#description').val("{{ proposal_description }}");
+	$('#title').val("{{ proposal_title | escapejs }}");
+	$('#description').val("{{ proposal_description | escapejs }}");
 
 	//$('#places').select2({
 	//	tags: true

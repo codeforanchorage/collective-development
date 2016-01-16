@@ -22,7 +22,7 @@ def home():
     else:
         proposals = Proposal.objects.filter(schools=g.school, published=True).order_by('-created')
 
-    return render_template('school/home.html', school=g.school, events=events, proposals=proposals)
+    return render_template('school/home.html', school=g.school, events=events, proposals=proposals, current_user=current_user)
 
 @schools.route('/schools/add', methods=['GET', 'POST'])
 def add_school():

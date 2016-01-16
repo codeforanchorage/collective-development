@@ -49,28 +49,12 @@
     You have been added to the list of interested users.
 </div>
 
-<div id="proposal-detail-div" class="tab-content col-md-6" data-user-unknown="{{ current_user.is_anonymous() }}">
 
 
-<div role="tabpanel" class="tab-pane active" id="description">
+
+<div id="proposal-detail-div" class="col-md-6" data-user-unknown="{{ current_user.is_anonymous() }}">
     <div>
         <h2>{{ proposal.title }}</h2>
-
-        {% if can_edit or can_organize %}
-        <div style="margin-bottom: 10px;">
-            {% if can_edit %}
-            <a class="btn btn-primary" href="{{ url_for('proposals.edit', id=proposal.id) }}" style="margin-right: 10px;">Edit Proposal</a>
-            {% endif %}
-
-            {% if can_organize %}
-            <a class="btn btn-success" href="{{ url_for('proposals.organize', id=proposal.id) }}" style="margin-right: 10px;">Organize Proposal</a>
-            {% endif %}
-
-            {% if is_admin %}
-            <a class="btn btn-danger" id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;">Delete Proposal</a>
-            {% endif %}
-        </div>
-        {% endif %}
 
         {#{ interested_counter(proposal) }#}
 
@@ -93,7 +77,7 @@
             {% endif %}
         </div>
 
-        <p><em>{{ proposal.description }}</em></p>
+        <p><em style="white-space: pre-wrap;">{{ proposal.description }}</em></p>
         <dl>
             <dt>Proposed by:</dt>
             <dd>{{ proposal.proposer.display_name}}</dd>
@@ -128,25 +112,30 @@
             <dd>{{ show_stage(proposal) }}</dd>-->
         </dl>
     </div>	
-		
-  </div>
 
-  <div role="tabpanel" class="tab-pane" id="discussions">
-      <div>
-          <a href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">add a discussion</a>
-          {% if discussions %}
-                {{ discussions_list(discussions) }}
-          {% endif %}
-      </div>
-	
-  </div>
-  
-</div>
+    {% if can_edit or can_organize or is_admin%}
+    <div style="margin-bottom: 10px;">
+        {% if can_edit %}
+        <a class="btn btn-primary" href="{{ url_for('proposals.edit', id=proposal.id) }}" style="margin-right: 10px;"><span class="glyphicon glyphicon-edit"></span> Edit Proposal</a>
+        {% endif %}
+
+        {% if can_organize %}
+        <a class="btn btn-success" href="{{ url_for('proposals.organize', id=proposal.id) }}" style="margin-right: 10px;"><span class="glyphicon glyphicon-thumbs-up"></span> Organize Proposal</a>
+        {% endif %}
+
+        {% if is_admin %}
+        <a class="btn btn-danger" id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;"><span class="glyphicon glyphicon-trash"></span> Delete Proposal</a>
+        {% endif %}
+    </div>
+    {% endif %}
 		
+    </div>
+  
+
 <div class="col-md-6">
-    <h2>Discussions</h2>
-    <div style="margin-top: 10px"><a class="btn btn-success" href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">Add Discussion</a></div>
-    {{ discussions_list(discussions) }}
+    <h2 style="display:inline-block">Discussions</h2>
+    <a class="btn btn-success glyphicon glyphicon-plus" href="{{ url_for('proposals.create_discussion', id=proposal.id) }}" style="display:inline-block;margin-bottom:10px"></a>
+    {{ discussions_list(discussions, proposal.id) }}
 </div>
 
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -173,11 +162,6 @@
 {% block extra_js %}
 <script>    
     $(document).ready(function () {
-
-        $('#secondary a').click(function (e) {
-            e.preventDefault()
-            $(this).tab('show')
-        })
 
         // Attach event to handle the closing of alerts
         $('body').on('click', '.alert-close', function () {

@@ -10,7 +10,7 @@
 <div>
     <h2>Edit Comment on {{ title }}</h2>
     <div>
-        {{ render_form(url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id), form)}}
+        {{ render_form(url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id, proposal_id=proposal_id), form)}}
     </div>
 </div>
 <div class="json-hide">
