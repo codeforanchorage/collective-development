@@ -1,15 +1,16 @@
 from mongoengine import Q
-from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify, Response
+from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify, Response, Markup, abort
 from flask.ext.login import current_user, login_required
 from flask.ext.babel import gettext as _
 
 from app.utils import url_for_school
 from app.mod_school import get_school_context
-from app.mod_event import AddEventForm
+from app.mod_event import AddEventForm, Event
 from app.mod_discussion import Discussion, Comment, AddDiscussionForm, start_discussion
-from .forms import AddProposalForm, ProposalForm
+from .forms import AddProposalForm, ProposalForm, OrganizeProposalForm
 from .models import Proposal
 from .services import can_edit, can_organize, can_edit_proposal, can_organize_proposal
+
 
 # Blueprint definition
 proposals = Blueprint('proposals', __name__, url_prefix='/proposals')
@@ -26,6 +27,7 @@ def list():
 	resp = Response(render_template('proposal/list.html',
 		title=_('Proposals'),
 		proposals=proposals))
+
     # Disable cache on this page (checkmarks need to update properly)
 	resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
 	resp.headers['Pragma'] = 'no-cache'
@@ -42,7 +44,7 @@ def search():
 		proposals = Proposal.objects.filter(Q(schools=g.school)&Q(published=True)&(Q(title__icontains=query)|Q(description__icontains=query))).order_by('-created')
 	return render_template('proposal/list.html',
 		title=_('Search results'),
-		proposals=proposals)
+		proposals=proposals, query=query)
 
 
 @proposals.route('/<id>', methods=['GET'])
@@ -63,7 +65,8 @@ def detail(id):
 		proposal = p,
 		other_schools = other_schools,
 		events = p.events,
-		discussions = p.discussions))
+		discussions = p.discussions,
+		is_admin=current_user.is_admin()))
     # Disable cache on this page (toggle button needs to update properly)
 	resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
 	resp.headers['Pragma'] = 'no-cache'
@@ -108,8 +111,42 @@ def edit(id):
 @login_required
 @can_organize
 def organize(id):
-	return "organizing!"
+	p = Proposal.objects.get_or_404(id=id)
 
+	# Throw 403 if user isn't an admin
+	if not current_user.is_admin():
+		abort(403)
+
+    # You can only organize proposals with interested users
+	if p.num_interested == 0:
+		flash(Markup("<span class=\"glyphicon glyphicon-exclamation-sign\"></span> You cannot " 
+        + "organize a proposal that has no interested users."), "danger")
+		return redirect(url_for('proposals.detail', id=p.id))
+
+	form = OrganizeProposalForm()
+	if form.validate_on_submit():
+		e = Event()
+		e.creator = current_user._get_current_object()
+		form.populate_obj(e)
+		e.save()	
+		#p.delete()
+		return redirect(url_for('events.detail', id=e.id))
+
+	return render_template("proposal/organize.html", form=form)
+
+@proposals.route('/<id>/delete', methods=['DELETE'])
+@login_required
+@can_organize
+def delete(id):
+	import json
+	p = Proposal.objects.get_or_404(id=id)
+
+	# Throw 403 if user isn't an admin
+	if not current_user.is_admin():
+		abort(403)
+	
+	p.delete()
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 @proposals.route('/<id>/create/discussion', methods=['GET','POST'])
 @login_required

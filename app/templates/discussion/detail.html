@@ -6,40 +6,37 @@
 {% block body_classes %}discussion{% endblock %}
 
 {% block body %}
-
-	<h2>{{ discussion.title }}</h2>
+<div class="well round-borders">
+    <h2>{{ discussion.title }}</h2>
     <div style="margin-bottom: 10px;"><a href="{{ url_for('discussions.add_comment', id=discussion.id) }}">Add Comment</a></div>
-	<dl>
+    <dl>
 
-		<dt>Created</dt>
-		<dd>{{ discussion.created | datetime }}</dd>
+        <dt>Created:</dt>
+        <dd>{{ discussion.created | datetime }}</dd>
 
-		<dt>Last comment time</dt>
-		<dd>{{ discussion.last_comment_time | datetime }}</dd>
+        <dt>Last comment time:</dt>
+        <dd>{{ discussion.last_comment_time | datetime }}</dd>
 
-		{% if comments %}
-		<dt>Comments</dt>
-		<dd>
-			{% for comment in comments %}
-				<div class="comment">
-					<p>
-						<b>{{ comment.creator.display_name }} on {{ comment.created | datetime }}</b>
-	                    {% set can_edit = can_edit_comment(comment) %}
-	                    {% if can_edit %}
-	                        <a href="{{ url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id) }}">Edit Comment</a>
-	                    {% endif %}
-						<br/>
-						{{ comment.text }}
-					</p>
-				</div>
-			{% endfor %}
-		</dd>
-		{% endif %}
-
-
-
-
-	</dl>
+        {% if comments %}
+        <dt>Comments:</dt>
+        <dd>
+            <ul>
+                {% for comment in comments %}
+                <li>
+                    <p style="margin-bottom:0px">{{ comment.creator.display_name }} on {{ comment.created | datetime }}</p>
+                    {% set can_edit = can_edit_comment(comment) %}
+                    {% if can_edit %}
+                    <a href="{{ url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id) }}">Edit Comment</a>
+                    {% endif %}
+                    <p>{{ comment.text }}</p>
+                </li>
+                {% endfor %}
+            </ul>
+        </dd>
+        {% endif %}
+    </dl>
+</div>
+	
 
 <div class="json-hide">
     <h3>Discussion JSON</h3>

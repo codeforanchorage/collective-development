@@ -11,62 +11,92 @@
 {% set can_edit = can_edit(event) %}
 
 {% block body %}
-	<h2>{{ event.title }}</h2>
-    {% if can_edit %}
-        <div style="margin-bottom: 10px;">
-            <a href="{{ url_for('events.edit', id=event.id) }}">Edit Class</a>
-        </div>
+<div class="well round-borders">
+    <h2>{{ event.title }}</h2>
+    {% if can_edit or is_admin%}
+    <div style="margin-bottom: 10px;">
+        {% if can_edit %}
+        <a href="{{ url_for('events.edit', id=event.id) }}" style="margin-right: 10px;">Edit Class</a>
+        {% endif %}
+
+        {% if is_admin %}
+        <a id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;">Delete Class</a>
+        {% endif %}
+    </div>
     {% endif %}
 
-    <p><em>{{ event.short_description }}</em></p>
-    <p><em>{{ event.description }}</em></p>
+
     <dl>
-        <dt>Date:</dt>
+        <dt>Summary:</dt>
+        <dd><p><em>{{ event.short_description }}</em></p></dd>
+
+        <dt>Description:</dt>
+        <dd><p><em>{{ event.description }}</em></p></dd>
+
+        <dt>Start:</dt>
         <dd>{{ event.start | datetime }}</dd>
 
-        {% if event.places %}
+        <dt>End:</dt>
+        <dd>{{ event.end | datetime }}</dd>
+
         <dt>Location:</dt>
-        <dd>
-            <ul>
-                {% for place in event.places %}
-                <li>{{ place.name }}</li>
-                {% endfor %}
-            </ul>
-        </dd>
+        {% if event.places|length == 0 %}
+        <dd>Unknown</dd>
         {% endif %}
+        <dd>{{ event.places | join(', ') }}</dd>
 
-        {% if event.proposals %}
-        <dt>Proposal:</dt>
-        <dd>{{ proposals_list(event.proposals) }}</dd>
-        {% endif %}
+        <dt>Created by:</dt>
+        <dd>{{ event.creator.display_name }}</dd>
 
-        {% if other_events %}
-        <dt>Other classes:</dt>
-        <dd>
-            {% for event in other_events %}
-    <li>
-        <a href="{{ url_for('events.detail', id=event.id) }}">{{ event.start | datetime }}</a>
-        {% if event.title %}
-        {{ event.title }}
-        {% endif %}
-    </li>
-    {% endfor %}
-    </dd>
-    {% endif %}
+        <dt>Teacher:</dt>
+        <dd>{{ event.teacher }}</dd>
 
-    <dt>Created by:</dt>
-    <dd>{{ event.creator.display_name }}</dd>
+        <dt>Organized on:</dt>
+        <dd>{{ event.created | datetime }}</dd>
 
-    <dt>Created:</dt>
-    <dd>{{ event.created }}</dd>
+    	{% if g.all_schools.count()>1 %}
+        <dt>Happening at:</dt>
+        <dd>{{ list_schools(event.schools) }}</dd>
+    	{% endif %}
 
-	{% if g.all_schools.count()>1 %}
-    <dt>Happening at:</dt>
-    <dd>{{ list_schools(event.schools) }}</dd>
-	{% endif %}
-
-    <dt>Updated:</dt>
-    <dd>{{ event.updated }}</dd>
+        <dt>Updated:</dt>
+        <dd>{{ event.updated | datetime }}</dd>
 
     </dl>
-    {% endblock %}
+</div>
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Class</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this class?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                <button id="confirm-delete-class" class="btn btn-danger btn-ok">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function () {
+        $('#confirm-delete').on('click', '#confirm-delete-class', function () {
+            // Request delete
+            $.ajax({
+                url: '/events/{{event.id}}/delete',
+                type: 'DELETE',
+                success: function () {
+                    // Redirect to classes
+                    window.location.href = '/events';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

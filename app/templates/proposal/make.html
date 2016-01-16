@@ -7,8 +7,8 @@
 {% block body_classes %}{% endblock %}
 
 {% block body %}
-<h2>Propose a class</h2>
-<div>
+<div class="well round-borders">
+    <h2>Propose a class</h2>
     {{ render_form(url_for('proposals.make'), form)}}
 </div>
 {% endblock %}

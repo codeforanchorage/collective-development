@@ -16,22 +16,16 @@
 {% set can_edit = can_edit_proposal(proposal) %}
 {% set can_organize = can_organize_proposal(proposal) %}
 
-
 {# secondary navigation #}
 {% block secondary %}
-<ul class="nav nav-pills row second-nav-margin-fix" id="secondary">
+<!--<ul class="nav nav-pills row second-nav-margin-fix" id="secondary">
 	<li role="presentation" class="active">
 		<a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a>
 	</li>
 	<li role="presentation">
 		<a href="#discussions" aria-controls="discussions" role="tab" data-toggle="tab">Comments</a>
 	</li>
-	{% if events or can_organize %}
-	<li role="presentation">
-		<a href="#events" aria-controls="events" role="tab" data-toggle="tab">Events</a>
-	</li>
-	{% endif %}
-</ul>
+</ul>-->
 {% endblock %}
 
 {# main body class #}
@@ -55,105 +49,119 @@
     You have been added to the list of interested users.
 </div>
 
-<div id="proposal-detail-div" class="tab-content" data-user-unknown="{{ current_user.is_anonymous() }}">
 
-  <div role="tabpanel" class="tab-pane active" id="description">
+<div id="proposal-detail-div" class="tab-content col-md-6" data-user-unknown="{{ current_user.is_anonymous() }}">
 
-		<h2>{{ proposal.title }}</h2>
+
+<div role="tabpanel" class="tab-pane active" id="description">
+    <div class="well round-borders">
+        <h2>{{ proposal.title }}</h2>
 
         {% if can_edit or can_organize %}
-            <div style="margin-bottom: 10px;">
-                {% if can_edit %}
-                    <a href="{{ url_for('proposals.edit', id=proposal.id) }}">Edit Proposal</a>
-                {% endif %}
+        <div style="margin-bottom: 10px;">
+            {% if can_edit %}
+            <a href="{{ url_for('proposals.edit', id=proposal.id) }}" style="margin-right: 10px;">Edit Proposal</a>
+            {% endif %}
 
-                {% if can_organize %}
+            {% if can_organize %}
+            <a href="{{ url_for('proposals.organize', id=proposal.id) }}" style="margin-right: 10px;">Organize Proposal</a>
+            {% endif %}
 
-                    {% if can_edit %}
-                        <a href="{{ url_for('proposals.organize', id=proposal.id) }}" style="margin-left: 10px;">Organize Proposal</a>
-                    {% else %}
-                        <a href="{{ url_for('proposals.organize', id=proposal.id) }}">Organize Proposal</a>
-                    {% endif %}
-                {% endif %}
-            </div>
+            {% if is_admin %}
+            <a id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;">Delete Proposal</a>
+            {% endif %}
+        </div>
         {% endif %}
 
-      {#{ interested_counter(proposal) }#}
+        {#{ interested_counter(proposal) }#}
 
 
-      <div class="btn-group interested-status" data-toggle="buttons" style="margin-bottom: 10px;" obj-id="{{ proposal.id }}" obj-type="proposal">
-          {% if proposal.user_is_interested(current_user) %}
-              <label class="btn btn-default active add">
-                  <input type="radio" value="1" /> I am interested in this proposal
-              </label>
-              <label class="btn btn-default remove">
-                  <input type="radio" value="2" /> I am not interested in this proposal
-              </label>
-          {% else %}
-              <label class="btn btn-default add">
-                  <input type="radio" value="1" /> I am interested in this proposal
-              </label>
-              <label class="btn btn-default active remove">
-                  <input type="radio" value="2" /> I am not interested in this proposal
-              </label>
-          {% endif %}
-      </div>
+        <div class="btn-group interested-status" data-toggle="buttons" style="margin-bottom: 10px;" obj-id="{{ proposal.id }}" obj-type="proposal">
+            {% if proposal.user_is_interested(current_user) %}
+            <label class="btn btn-default active add">
+                <input type="radio" value="1" /> I am interested
+            </label>
+            <label class="btn btn-default remove">
+                <input type="radio" value="2" /> I am <strong>not</strong> interested
+            </label>
+            {% else %}
+            <label class="btn btn-default add">
+                <input type="radio" value="1" /> I am interested
+            </label>
+            <label class="btn btn-default active remove">
+                <input type="radio" value="2" /> I am <strong>not</strong> interested
+            </label>
+            {% endif %}
+        </div>
 
-		<p><em>{{ proposal.description }}</em></p>
-		<dl>
-			<dt>Proposed by:</dt>
-			<dd>{{ proposal.proposer.display_name }}</dd>
+        <p><em>{{ proposal.description }}</em></p>
+        <dl>
+            <dt>Proposed by:</dt>
+            <dd>{{ proposal.proposer.display_name }}</dd>
 
-			<dt>Proposed:</dt>
-			<dd>{{ proposal.created }}</dd>
+            <dt>Proposed:</dt>
+            <dd>{{ proposal.created }}</dd>
 
-			{% if g.all_schools.count()>1 %}
-			<dt>Proposed to school:</dt>
-			<dd>{{ list_schools(proposal.schools) }}</dd>
-			{% endif %}
+            {% if g.all_schools.count()>1 %}
+            <dt>Proposed to school:</dt>
+            <dd>{{ list_schools(proposal.schools) }}</dd>
+            {% endif %}
 
-			<dt>Updated:</dt>
-			<dd>{{ proposal.updated }}</dd>
+            <dt>Updated:</dt>
+            <dd>{{ proposal.updated }}</dd>
 
-			<dt>Tags:</dt>
-			<dd>{{ proposal.tags | join(', ') }}</dd>
+            <dt>Tags:</dt>
+            {% if proposal.tags|length == 0 %}
+            <dd>None</dd>
+            {% endif %}
+            <dd>{{ proposal.tags | join(', ') }}</dd>
 
-			<dt>Number of interested users:</dt>
-			<dd><span class="counter {{ proposal.id }}">{{ proposal.num_interested }}</span></dd>
+            <dt>Number of interested users:</dt>
+            <dd><span class="counter {{ proposal.id }}">{{ proposal.num_interested }}</span></dd>
 
-			<dt>Interested users:</dt>
-			<dd id="interested-users-list">{{ list_users(proposal.interested_users) }}</dd>
+            <dt>Interested users:</dt>
+            <dd id="interested-users-list">{{ list_users(proposal.interested_users) }}</dd>
 
-			<dt>Stage:</dt>
-			<dd>{{ show_stage(proposal) }}</dd>
-		</dl>
+            <dt>Stage:</dt>
+            <dd>{{ show_stage(proposal) }}</dd>
+        </dl>
+    </div>
+
   </div>
 
   <div role="tabpanel" class="tab-pane" id="discussions">
-	<a href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">add a discussion</a>
-	{% if discussions %}
-		{{ discussions_list(discussions) }}
-	{% endif %}
+      <div class="well round-borders">
+          <a href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">add a discussion</a>
+          {% if discussions %}
+                {{ discussions_list(discussions) }}
+          {% endif %}
+      </div>
+
   </div>
 
-  <div role="tabpanel" class="tab-pane" id="events">
-  	{% if events or can_organize %}
-		{% if can_organize %}
-		<a href="{{ url_for('proposals.create_event', id=proposal.id) }}">add a class event</a>
-		{% endif %}
-		<ul>
-		{% for event in events %}
-			<li>
-				<a href="{{ url_for('events.detail', id=event.id) }}">{{ event.start | datetime }}</a>
-				{% if event.title %}
-				{{ event.title }}
-				{% endif %}
-			</li>
-		{% endfor %}
-		</ul>
-		{% endif %}
-  </div>
+</div>
 
+<div class="well round-borders col-md-6">
+    <h2>Discussions</h2>
+    <div style="margin-top: 10px"><a href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">Add Discussion</a></div>
+    {{ discussions_list(discussions) }}
+</div>
+
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Proposal</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this proposal?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                <button id="confirm-delete-proposal" class="btn btn-danger btn-ok">Delete</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
@@ -241,6 +249,18 @@
                 }
             });
         };
+
+        $('#confirm-delete').on('click', '#confirm-delete-proposal', function () {
+            // Request delete
+            $.ajax({
+                url: '/proposals/{{proposal.id}}/delete',
+                type: 'DELETE',
+                success: function () {
+                    // Redirect to proposals
+                    window.location.href = '/proposals';
+                }
+            });
+        });
 
     });
 </script>

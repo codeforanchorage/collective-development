@@ -1,4 +1,5 @@
 {% from "proposal/_macros.html" import proposals_list, interested_counter with context %}
+{% from "event/_macros.html" import events_list %}
 
 {% set page_title = "Proposals" %}
 
@@ -7,7 +8,74 @@
 {% block body_classes %}{% endblock %}
 
 {% block body %}
-	<a href="{{ url_for('proposals.list') }}">{{ _('see all proposals') }}</a>
-	<h2>{{ school.name }}</h2>
-	This is the school homepage
+<div class="col-md-12">
+    <!--<div class="col-md-6">
+        <h1 class="text-align-center extra-bottom-margin">Welcome to Elective</h1>
+        <div class="text-align-center extra-bottom-margin"><h4>create an account</h4></div>
+        <div class="text-align-center"><input class="text-align-left corners" placeholder="EMAIL" /></div>
+    </div>-->
+    <div class="col-md-12 well round-borders">
+        <h3 style="text-align:center;margin-top:0px"><i>True citizens are not the audience of its government, they are its makers.</i></h3>
+        <h4>
+            Remember in school when you could take an elective? You wanted to take them out of curiosity, to see what would reveal itself there. Elective is a place where you can propose a program at the Anchorage Public Library, and your own interest in others' proposals can make them happen. This could be a class or workshop that you dream about taking, or something you want to teach others. Or it could be a working group formed to address a problem in our community. So what do you want to do? We're here for you. 
+        </h4>      
+    </div>
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <div class="col-md-11 well round-borders">
+                <h3>Classes</h3>
+                {{ events_list(events) }}
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <div class="col-md-6">
+            <div class="col-md-11 well round-borders">
+                <h3>Proposals</h3>
+                {{ proposals_list(proposals) }}
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+    </div>    
+</div>
+
+<div>
+
+</div>
+{% endblock %}
+
+{% block css_style %}
+<style type="text/css">
+    .text-align-center {
+        text-align: center;
+    }
+    .text-align-left {
+        text-align: left;
+    }
+    .corners {
+        border: 1px solid #ccc;
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+        border-radius: 30px;
+        -moz-box-shadow: 2px 2px 3px #666;
+        -webkit-box-shadow: 2px 2px 3px #666;
+        box-shadow: 2px 2px 3px #666;
+        font-size: 28px;
+        padding: 32px 32px;
+        outline: 0;
+        -webkit-appearance: none;
+    }
+    .extra-bottom-margin {
+        margin-bottom: 10px;
+    }
+
+
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    
+    $(document).ready(function () {
+    });
+</script>
 {% endblock %}

@@ -12,7 +12,7 @@ from app.utils import pretty_date
 from app.database import db
 from app.mod_user import User
 from app.mod_school import School
-from app.mod_event import Event
+from app.mod_event import Event, Place
 from app.mod_discussion import Discussion
 from app.mod_interest import InterestedMixin, Interested
 
@@ -29,19 +29,22 @@ class Stage(db.EmbeddedDocument):
 	def pretty_date(self):
 		return pretty_date(self.date)
 
-
-class BaseProposal(db.Document, InterestedMixin):
-	meta = {
-		'allow_inheritance': True,
-		'abstract': True,
-	}
+class Proposal(db.Document, InterestedMixin):
+	""" A proposal object """
+	meta = {'collection': 'proposal'}
+	# Tags
+	tags = db.ListField(db.StringField(max_length=30))
+	# School the proposal was made to
+	schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
+	# Context in which the proposal was made
+	source = db.IntField(default=SOURCE_WEBSITE)
+	# Which stage in the organizing process
+	stage = db.ListField(db.EmbeddedDocumentField(Stage))
 
 	title = db.StringField(max_length=255)
 	# A copy of the original description is kept
 	description = db.StringField(max_length=1000)
 	edited_description = db.StringField()
-	# School the proposal was made to
-	schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
 	# Person who made the proposal
 	proposer = db.ReferenceField(User, reverse_delete_rule = NULLIFY)
 	created = db.DateTimeField(default=datetime.datetime.now())
@@ -54,6 +57,20 @@ class BaseProposal(db.Document, InterestedMixin):
 	# Discussions
 	discussions = db.ListField(db.ReferenceField(Discussion, reverse_delete_rule = NULLIFY))
 
+	def __init__(self, *args, **kwargs):
+		super(Proposal, self).__init__(*args, **kwargs)
+		if not self.id:
+			self.interested.append(Interested(user=self.proposer))
+			self.num_interested = 1
+			self.stage.append(Stage(creator=self.proposer, date=self.created))
+
+	@property
+	def current_stage(self):
+		current_stage = None
+		for s in self.stage:
+			if current_stage is None or s.date>current_stage.date:
+				current_stage = s
+		return current_stage
 
 	def add_event(self, event):
 		self.update(add_to_set__events=event)
@@ -74,33 +91,11 @@ class BaseProposal(db.Document, InterestedMixin):
 	def __str__(self):
 		return self.title
 
-
-
-class Proposal(BaseProposal):
-	""" A proposal object """
-	meta = {'collection': 'proposal'}
-	# Tags
-	tags = db.ListField(db.StringField(max_length=30))
-	# School the proposal was made to
-	schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
-	# Context in which the proposal was made
-	source = db.IntField(default=SOURCE_WEBSITE)
-	# Which stage in the organizing process
-	stage = db.ListField(db.EmbeddedDocumentField(Stage))
-
-
-	def __init__(self, *args, **kwargs):
-		super(Proposal, self).__init__(*args, **kwargs)
-		if not self.id:
-			self.interested.append(Interested(user=self.proposer))
-			self.num_interested = 1
-			self.stage.append(Stage(creator=self.proposer, date=self.created))
-
-
-	@property
-	def current_stage(self):
-		current_stage = None
-		for s in self.stage:
-			if current_stage is None or s.date>current_stage.date:
-				current_stage = s
-		return current_stage
+class OrganizeProposal(db.Document):
+    start = db.DateTimeField(required=True)
+    end = db.DateTimeField(required=True)
+    title = db.StringField(max_length=255, required=True)
+    short_description = db.StringField(max_length=255, required=True)
+    description = db.StringField(max_length=100, required=True)
+    teacher = db.StringField(max_length=255, required=True)
+    places = db.ListField(db.ReferenceField(Place), required=True)

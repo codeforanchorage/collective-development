@@ -9,7 +9,20 @@ schools = Blueprint('schools', __name__)
 
 @schools.route('/', methods=['GET'])
 def home():
-	return render_template('school/home.html', title='Home', school=g.school)
+    from app.mod_event import Event
+    from app.mod_proposal import Proposal
+
+    if g.is_default_school:
+        events = Event.objects.filter().order_by('-start')
+    else:
+        events = Event.objects.filter(schools=g.school).order_by('-start')
+
+    if g.is_default_school:
+        proposals = Proposal.objects.filter(published=True).order_by('-created')
+    else:
+        proposals = Proposal.objects.filter(schools=g.school, published=True).order_by('-created')
+
+    return render_template('school/home.html', school=g.school, events=events, proposals=proposals)
 
 @schools.route('/schools/add', methods=['GET', 'POST'])
 def add_school():

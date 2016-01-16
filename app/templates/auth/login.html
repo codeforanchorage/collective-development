@@ -5,8 +5,10 @@
 {% extends "layouts/base.html" %}
 
 {% block body %}
-<h2>Sign in</h2>
-<div>
-    {{ render_form(url_for('auth.login'), form)}}
+<div class="well round-borders">
+    <h2>Sign in</h2>
+    <div>
+        {{ render_form(url_for('auth.login'), form)}}
+    </div>
 </div>
 {% endblock %}
