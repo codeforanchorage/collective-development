@@ -49,6 +49,7 @@
     You have been added to the list of interested users.
 </div>
 
+
 <div id="proposal-detail-div" class="tab-content col-md-6" data-user-unknown="{{ current_user.is_anonymous() }}">
 
 
@@ -101,8 +102,10 @@
             <dt>Proposed:</dt>
             <dd>{{ proposal.created }}</dd>
 
-            <!--<dt>Proposed to school:</dt>
-        <dd>{{ list_schools(proposal.schools) }}</dd>-->
+            {% if g.all_schools.count()>1 %}
+            <dt>Proposed to school:</dt>
+            <dd>{{ list_schools(proposal.schools) }}</dd>
+            {% endif %}
 
             <dt>Updated:</dt>
             <dd>{{ proposal.updated }}</dd>
@@ -122,8 +125,8 @@
             <dt>Stage:</dt>
             <dd>{{ show_stage(proposal) }}</dd>
         </dl>
-    </div>	
-		
+    </div>
+
   </div>
 
   <div role="tabpanel" class="tab-pane" id="discussions">
@@ -133,11 +136,11 @@
                 {{ discussions_list(discussions) }}
           {% endif %}
       </div>
-	
+
   </div>
-  
+
 </div>
-		
+
 <div class="well round-borders col-md-6">
     <h2>Discussions</h2>
     <div style="margin-top: 10px"><a href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">Add Discussion</a></div>
@@ -166,7 +169,7 @@
 
 {# add page-specific javascript #}
 {% block extra_js %}
-<script>    
+<script>
     $(document).ready(function () {
 
         $('#secondary a').click(function (e) {
@@ -209,7 +212,7 @@
                 // Update all number interested counters
                 $('.counter.' + id).text(data.num_interested);
 
-                // Update interested users list           
+                // Update interested users list
                 var appendUsers = "<ul>";
                 for (var i = 0; i < data.interested_users.length; i++) {
                     appendUsers += '<li>' + data.interested_users[i] + '</li>';

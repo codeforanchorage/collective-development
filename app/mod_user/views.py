@@ -5,8 +5,8 @@ from flask.ext.login import current_user, login_required, login_user
 from flask.ext.babel import gettext as _
 
 from app.utils import url_for_school
-from app.mod_school import get_school_context
-from .forms import UserSettingsForm, PasswordForm, UserAddForm
+from app.mod_school import get_school_context, all_schools
+from .forms import UserSettingsForm, PasswordForm, UserAddForm, UserAddFormOneSchool, UserSettingsFormOneSchool
 from .models import User
 from .services import can_edit, can_edit_user
 
@@ -39,7 +39,11 @@ def edit(id=None):
 		u = User.objects.get_or_404(id=id)
 	else:
 		u = current_user._get_current_object()
-	form = UserSettingsForm(request.form, u)
+
+	if len(all_schools()) > 1:
+		form = UserSettingsForm(request.form, u)
+	else:
+		form = UserSettingsFormOneSchool(request.form, u)
 	# submit
 	if form.validate_on_submit():
 		form.populate_obj(u)
@@ -70,7 +74,11 @@ def password():
 def create():
 	""" Register a new user """
 	# create the form
-	form = UserAddForm(request.form, schools=[g.school,], next=request.args.get('next'))
+	if len(all_schools()) > 1:
+		form = UserAddForm(request.form, schools=[g.school,], next=request.args.get('next'))
+	else:
+		form = UserAddFormOneSchool(request.form, next=request.args.get('next'))
+
 	# submit
 	if form.validate_on_submit():
 		u = User(password=form.new_password.data)

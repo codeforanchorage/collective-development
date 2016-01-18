@@ -72,6 +72,22 @@ UserSettingsForm = model_form( User,
 submit_add = SubmitField('Save')
 UserSettingsForm.submit = submit_add
 
+UserSettingsFormOneSchool = model_form( User,
+	base_class=Form,
+	exclude=(
+		'schools',
+		'username',
+		'password',
+		'role',
+		'created',
+		'active'),
+	field_args = {
+		'email': { 'validators': [validate_email]} ,
+		'schools': { 'label': 'Schools you are following'}
+		})
+submit_add = SubmitField('Save')
+UserSettingsFormOneSchool.submit = submit_add
+
 
 UserAddForm = model_form( User,
 	base_class=BaseAddUserForm,
@@ -90,3 +106,21 @@ UserAddForm = model_form( User,
 		})
 submit_add = SubmitField('Sign up')
 UserAddForm.submit = submit_add
+
+
+UserAddFormOneSchool = model_form( User,
+	base_class=BaseAddUserForm,
+	exclude=(
+		'schools',
+		'password',
+		'role',
+		'created',
+		'active'),
+	field_args = {
+		'username': { 'validators': [Required(), validate_username]} ,
+		'display_name': { 'validators': [Required()]} ,
+		'email': { 'validators': [Required(), validate_email]} ,
+		'schools': { 'label': 'Schools you are interested in'}
+		})
+submit_add = SubmitField('Sign up')
+UserAddFormOneSchool.submit = submit_add
