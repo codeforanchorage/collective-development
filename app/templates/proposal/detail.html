@@ -50,6 +50,8 @@
 </div>
 
 
+<div id="proposal-detail-div" class="tab-content col-md-6" data-user-unknown="{{ current_user.is_anonymous() }}">
+
 
 
 <div id="proposal-detail-div" class="col-md-6" data-user-unknown="{{ current_user.is_anonymous() }}">
@@ -85,8 +87,10 @@
             <dt>Proposed:</dt>
             <dd>{{ proposal.created | datetime }}</dd>
 
-            <!--<dt>Proposed to school:</dt>
-        <dd>{{ list_schools(proposal.schools) }}</dd>-->
+            {% if g.all_schools.count()>1 %}
+            <dt>Proposed to school:</dt>
+            <dd>{{ list_schools(proposal.schools) }}</dd>
+            {% endif %}
 
             <dt>Updated:</dt>
             <dd>{{ proposal.updated | datetime }}</dd>
@@ -130,12 +134,30 @@
     {% endif %}
 		
     </div>
+
+    </div>
   
 
 <div class="col-md-6">
     <h2 style="display:inline-block">Discussions</h2>
     <a class="btn btn-success glyphicon glyphicon-plus" href="{{ url_for('proposals.create_discussion', id=proposal.id) }}" style="display:inline-block;margin-bottom:10px"></a>
     {{ discussions_list(discussions, proposal.id) }}
+  <div role="tabpanel" class="tab-pane" id="discussions">
+      <div class="well round-borders">
+          <a href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">add a discussion</a>
+          {% if discussions %}
+                {{ discussions_list(discussions) }}
+          {% endif %}
+      </div>
+
+  </div>
+
+</div>
+
+<div class="well round-borders col-md-6">
+    <h2>Discussions</h2>
+    <div style="margin-top: 10px"><a href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">Add Discussion</a></div>
+    {{ discussions_list(discussions) }}
 </div>
 
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -195,7 +217,7 @@
 
 {# add page-specific javascript #}
 {% block extra_js %}
-<script>    
+<script>
     $(document).ready(function () {
 
         // Attach event to handle the closing of alerts
@@ -239,7 +261,7 @@
                 // Update all number interested counters
                 $('.counter.' + id).text(data.num_interested);
 
-                // Update interested users list           
+                // Update interested users list
                 var appendUsers = "";
                 for (var i = 0; i < data.interested_users.length; i++) {
                     appendUsers += data.interested_users[i] + ', ';

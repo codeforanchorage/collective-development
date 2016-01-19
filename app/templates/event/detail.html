@@ -47,8 +47,11 @@
         <label class="btn btn-default active remove">
             <input type="radio" value="2" /> I am <strong>not</strong> interested
         </label>
+        {% if is_admin %}
+        <a id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;">Delete Class</a>
         {% endif %}
     </div>
+
 
     <dl>
         <dt>Description:</dt>
@@ -86,8 +89,10 @@
         <dt>Organized on:</dt>
         <dd>{{ event.created | datetime }}</dd>
 
-        <!--<dt>Happening at:</dt>
-        <dd>{{ list_schools(event.schools) }}</dd>-->
+    	{% if g.all_schools.count()>1 %}
+        <dt>Happening at:</dt>
+        <dd>{{ list_schools(event.schools) }}</dd>
+    	{% endif %}
 
         <dt>Updated:</dt>
         <dd>{{ event.updated | datetime }}</dd>
