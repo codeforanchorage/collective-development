@@ -8,7 +8,7 @@ from flask.ext.babel import gettext as _
 #from app.mod_school import get_school_context
 from .forms import UserSettingsForm, PasswordForm, UserAddForm
 #from app.utils import url_for_school
-from app.mod_school import get_school_context, all_schools
+#from app.mod_school import get_school_context, all_schools
 from .forms import UserSettingsForm, PasswordForm, UserAddForm, UserAddFormOneSchool, UserSettingsFormOneSchool
 from .models import User
 from .services import can_edit, can_edit_user
