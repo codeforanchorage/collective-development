@@ -6,10 +6,10 @@
 {% else %}
     <div class="row">
 {% endif %}
-        <p>{{ interested_check(obj=proposal, current_user=current_user) }}</p>
+        <p>{{ interested_check(obj=proposal, type='proposal', current_user=current_user) }}</p>
         <div class="col-md-11" style="padding-left:0px;margin-top:-17px">
-            <h3><a href="{{url_for('proposals.detail', id=proposal.id)}}">{{proposal.title}}</a></h3>
-            <p>{{proposal.description}}</p>
+            <h3><a href="{{url_for('proposals.detail', id=proposal.id)}}">{{proposal.title | ellipsis }}</a></h3>
+            <p>{{proposal.description | ellipsis}}</p>
         </div>
     </div>
     {% endmacro %}

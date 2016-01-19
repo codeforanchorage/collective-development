@@ -19,6 +19,7 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,800)' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Lora' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datetimepicker.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
@@ -173,7 +174,7 @@
     {% block js_top %}
     {% endblock %}
 </head>
-<body class='tps-{{ g.school.name }} {% block body_classes %}{% endblock %}'>
+<body id="body" class='tps-{{ g.school.name }} {% block body_classes %}{% endblock %}' data-user-id="{{ current_user.id }}">
     {% block topbar %}
     <div class="container-fluid" style="margin-top: -20px;">
         <nav class="navbar navbar-default row">

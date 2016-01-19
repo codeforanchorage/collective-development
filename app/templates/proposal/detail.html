@@ -59,7 +59,7 @@
         {#{ interested_counter(proposal) }#}
 
 
-        <div class="btn-group interested-status" data-toggle="buttons" style="margin-bottom: 10px;" obj-id="{{ proposal.id }}" obj-type="proposal">
+        <div id="interested-toggle" class="btn-group interested-status" data-toggle="buttons" style="margin-bottom: 10px;" obj-id="{{ proposal.id }}" obj-type="proposal">
             {% if proposal.user_is_interested(current_user) %}
             <label class="btn btn-default active add">
                 <input class="btn-default" type="radio" value="1" /> I am interested
@@ -155,6 +155,41 @@
     </div>
 </div>
 
+<div class="modal fade" id="anon-interested" tabindex="-1" role="dialog" aria-labelledby="anon_myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Are you interested in this proposal?</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Would you like to show your interest in this proposal? By showing your interest, it helps us decide which proposals to facilitate into a class.
+                    If you already have an account, please sign in. Otherwise, you can create an account.
+
+                </p>
+                <div style="margin-bottom:10px">
+                    <a class="btn btn-primary" href="/login?next={{ current_url }}"><span class="glyphicon glyphicon-log-in"></span> Sign in</a>
+                    <a class="btn btn-primary" href="/users/create?=next={{ current_url }}"><span class="glyphicon glyphicon-chevron-up"></span> Sign up</a>
+                </div>
+                <p>
+                    If you don't have to deal with the hassle with creating an account, you can just give us your email address and we'll contact you if there's enough interest.
+                </p>
+                <div style="margin-bottom:10px">
+                    <label>
+                        Email Address:
+                    </label>
+                    <input />
+                    <br />                    
+                </div>
+                <button type="button" class="btn btn-success"><span class="glyphicon glyphicon-thumbs-up"></span> Contact me!</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 
@@ -173,6 +208,12 @@
 
         // Attach event to handle toggle between interested and not interested
         $('.interested-status').on('click', '.add, .remove', function () {
+            if ("{{ current_user.is_anonymous() }}" === "True") {
+                $('#anon-interested').modal('show');
+
+                return;
+            }
+
             var action = $(this).attr('class').indexOf('add') > -1 ? 'add' : 'remove';
             var parent = $(this).parent();
             var id = parent.attr('obj-id');
@@ -203,7 +244,8 @@
                 for (var i = 0; i < data.interested_users.length; i++) {
                     appendUsers += data.interested_users[i] + ', ';
                 }
-                appendUsers = appendUsers.substring(0, appendUsers.length - 3);
+                appendUsers = appendUsers.substring(0, appendUsers.length - 2);
+                
                 $('#interested-users').html(appendUsers);
 
                 if (data.interested_users.length === 0) {
@@ -251,6 +293,8 @@
                 }
             });
         });
+
+
 
     });
 </script>

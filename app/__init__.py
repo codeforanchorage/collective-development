@@ -107,6 +107,13 @@ def register_template_filters(app):
 			else:
 				retval.append(letter)
 		return Markup("".join(retval))
+	
+	@app.template_filter('ellipsis')
+	def ellipsis(value):
+		if(len(value) > 150):
+			return value[:150] + '...'
+		return value
+
 	# Register global template functions here too
 	#app.jinja_env.globals.update(url_for_school=url_for_school)
 

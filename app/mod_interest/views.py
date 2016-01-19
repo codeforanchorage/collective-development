@@ -1,4 +1,4 @@
-from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify
+from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify, Markup
 from flask.ext.login import current_user, login_required
 from flask.ext.babel import gettext as _
 
@@ -9,8 +9,12 @@ interested = Blueprint('interested', __name__, url_prefix='/interested')
 
 
 @interested.route('/<type>/<id>', methods=['POST'])
-@login_required
 def toggle(type, id):
+	#if current_user.is_anonymous():
+	#	flash(Markup("<span class=\"glyphicon glyphicon-info-sign\"></span> You have to login before."), "info")
+	#	return ""
+	#	#return redirect('/login?next=' + str(request.path))
+
 	""" Toggles current user's interest in a proposal """
 	from app.mod_proposal import Proposal
 	from app.mod_event import Event

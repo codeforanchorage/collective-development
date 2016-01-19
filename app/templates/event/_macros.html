@@ -8,9 +8,9 @@
 {% endif %}
     <p>{{ interested_check(obj=event, type='event', current_user=current_user) }}</p>
     <div class="col-md-11" style="padding-left:0px;margin-top:-17px">
-        <h3><a href="{{url_for('events.detail', id=event.id)}}">{{ event.title }}</a></h3>
+        <h3><a href="{{url_for('events.detail', id=event.id)}}">{{ event.title | ellipsis }}</a></h3>
         <h4>{{ event.start | datetime }}</h4>
-        <p>{{event.description}}</p>
+        <p>{{event.description | ellipsis }}</p>
     </div>
     
 </div>

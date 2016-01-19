@@ -14,6 +14,27 @@ from .services import can_edit, can_edit_user
 # Blueprint definition
 users = Blueprint('users', __name__, url_prefix='/users')
 
+@users.route('/<user_id>/proposals/<proposal_id>/proposal_get_interested_status')
+def proposal_get_interested_status(user_id, proposal_id):
+	from app.mod_proposal import Proposal
+	u = User.objects.get_or_404(id=user_id)
+	p = Proposal.objects.get_or_404(id=proposal_id)
+	
+	for interest in p.interested:
+		if(u.id == interest.user.id):
+			return "true"
+	return "false"
+
+@users.route('/<user_id>/events/<event_id>/event_get_interested_status')
+def event_get_interested_status(user_id, event_id):
+	from app.mod_event import Event
+	u = User.objects.get_or_404(id=user_id)
+	p = Event.objects.get_or_404(id=event_id)
+	
+	for interest in p.interested:
+		if(u.id == interest.user.id):
+			return "true"
+	return "false"
 
 @users.route('/<id>', methods=['GET'])
 def detail(id):

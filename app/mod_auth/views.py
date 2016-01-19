@@ -40,4 +40,4 @@ def reauth():
 def logout():
 	logout_user()
 	flash(Markup('<span class=\"glyphicon glyphicon-ok\"></span> Logged out'), 'success')
-	return redirect(url_for('proposals.list'))
+	return redirect(url_for('schools.home'))
