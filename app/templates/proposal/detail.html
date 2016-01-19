@@ -53,33 +53,18 @@
 <div id="proposal-detail-div" class="tab-content col-md-6" data-user-unknown="{{ current_user.is_anonymous() }}">
 
 
-<div role="tabpanel" class="tab-pane active" id="description">
-    <div class="well round-borders">
+
+<div id="proposal-detail-div" class="col-md-6" data-user-unknown="{{ current_user.is_anonymous() }}">
+    <div>
         <h2>{{ proposal.title }}</h2>
-
-        {% if can_edit or can_organize %}
-        <div style="margin-bottom: 10px;">
-            {% if can_edit %}
-            <a href="{{ url_for('proposals.edit', id=proposal.id) }}" style="margin-right: 10px;">Edit Proposal</a>
-            {% endif %}
-
-            {% if can_organize %}
-            <a href="{{ url_for('proposals.organize', id=proposal.id) }}" style="margin-right: 10px;">Organize Proposal</a>
-            {% endif %}
-
-            {% if is_admin %}
-            <a id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;">Delete Proposal</a>
-            {% endif %}
-        </div>
-        {% endif %}
 
         {#{ interested_counter(proposal) }#}
 
 
-        <div class="btn-group interested-status" data-toggle="buttons" style="margin-bottom: 10px;" obj-id="{{ proposal.id }}" obj-type="proposal">
+        <div id="interested-toggle" class="btn-group interested-status" data-toggle="buttons" style="margin-bottom: 10px;" obj-id="{{ proposal.id }}" obj-type="proposal">
             {% if proposal.user_is_interested(current_user) %}
             <label class="btn btn-default active add">
-                <input type="radio" value="1" /> I am interested
+                <input class="btn-default" type="radio" value="1" /> I am interested
             </label>
             <label class="btn btn-default remove">
                 <input type="radio" value="2" /> I am <strong>not</strong> interested
@@ -94,13 +79,13 @@
             {% endif %}
         </div>
 
-        <p><em>{{ proposal.description }}</em></p>
+        <p><em style="white-space: pre-wrap;">{{ proposal.description }}</em></p>
         <dl>
             <dt>Proposed by:</dt>
-            <dd>{{ proposal.proposer.display_name }}</dd>
+            <dd>{{ proposal.proposer.display_name}}</dd>
 
             <dt>Proposed:</dt>
-            <dd>{{ proposal.created }}</dd>
+            <dd>{{ proposal.created | datetime }}</dd>
 
             {% if g.all_schools.count()>1 %}
             <dt>Proposed to school:</dt>
@@ -108,27 +93,55 @@
             {% endif %}
 
             <dt>Updated:</dt>
-            <dd>{{ proposal.updated }}</dd>
+            <dd>{{ proposal.updated | datetime }}</dd>
 
-            <dt>Tags:</dt>
-            {% if proposal.tags|length == 0 %}
-            <dd>None</dd>
-            {% endif %}
-            <dd>{{ proposal.tags | join(', ') }}</dd>
+            <!--<dt>Tags:</dt>-->
+            {# % if proposal.tags|length == 0 % #}
+            <!--<dd>None</dd>-->
+            {# % endif % #}
+            <!--<dd>{{ proposal.tags | join(', ') }}</dd>-->
 
             <dt>Number of interested users:</dt>
             <dd><span class="counter {{ proposal.id }}">{{ proposal.num_interested }}</span></dd>
 
             <dt>Interested users:</dt>
-            <dd id="interested-users-list">{{ list_users(proposal.interested_users) }}</dd>
+            <dd id="interested-users">
+                {{ proposal.interested_users | join (', ')}}
+                {% if proposal.interested_users | length == 0 %}
+                None
+                {% endif %}
+            </dd>            
 
-            <dt>Stage:</dt>
-            <dd>{{ show_stage(proposal) }}</dd>
+            <!--<dt>When:</dt>
+            <dd>{{ show_stage(proposal) }}</dd>-->
         </dl>
+    </div>	
+
+    {% if can_edit or can_organize or is_admin%}
+    <div style="margin-bottom: 10px;">
+        {% if can_edit %}
+        <a class="btn btn-primary" href="{{ url_for('proposals.edit', id=proposal.id) }}" style="margin-right: 10px;"><span class="glyphicon glyphicon-edit"></span> Edit Proposal</a>
+        {% endif %}
+
+        {% if can_organize %}
+        <a class="btn btn-success" href="{{ url_for('proposals.organize', id=proposal.id) }}" style="margin-right: 10px;"><span class="glyphicon glyphicon-thumbs-up"></span> Organize Proposal</a>
+        {% endif %}
+
+        {% if is_admin %}
+        <a class="btn btn-danger" id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;"><span class="glyphicon glyphicon-trash"></span> Delete Proposal</a>
+        {% endif %}
+    </div>
+    {% endif %}
+		
     </div>
 
-  </div>
+    </div>
+  
 
+<div class="col-md-6">
+    <h2 style="display:inline-block">Discussions</h2>
+    <a class="btn btn-success glyphicon glyphicon-plus" href="{{ url_for('proposals.create_discussion', id=proposal.id) }}" style="display:inline-block;margin-bottom:10px"></a>
+    {{ discussions_list(discussions, proposal.id) }}
   <div role="tabpanel" class="tab-pane" id="discussions">
       <div class="well round-borders">
           <a href="{{ url_for('proposals.create_discussion', id=proposal.id) }}">add a discussion</a>
@@ -164,6 +177,41 @@
     </div>
 </div>
 
+<div class="modal fade" id="anon-interested" tabindex="-1" role="dialog" aria-labelledby="anon_myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Are you interested in this proposal?</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Would you like to show your interest in this proposal? By showing your interest, it helps us decide which proposals to facilitate into a class.
+                    If you already have an account, please sign in. Otherwise, you can create an account.
+
+                </p>
+                <div style="margin-bottom:10px">
+                    <a class="btn btn-primary" href="/login?next={{ current_url }}"><span class="glyphicon glyphicon-log-in"></span> Sign in</a>
+                    <a class="btn btn-primary" href="/users/create?=next={{ current_url }}"><span class="glyphicon glyphicon-chevron-up"></span> Sign up</a>
+                </div>
+                <p>
+                    If you don't have to deal with the hassle with creating an account, you can just give us your email address and we'll contact you if there's enough interest.
+                </p>
+                <div style="margin-bottom:10px">
+                    <label>
+                        Email Address:
+                    </label>
+                    <input />
+                    <br />                    
+                </div>
+                <button type="button" class="btn btn-success"><span class="glyphicon glyphicon-thumbs-up"></span> Contact me!</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 
@@ -171,11 +219,6 @@
 {% block extra_js %}
 <script>
     $(document).ready(function () {
-
-        $('#secondary a').click(function (e) {
-            e.preventDefault()
-            $(this).tab('show')
-        })
 
         // Attach event to handle the closing of alerts
         $('body').on('click', '.alert-close', function () {
@@ -187,6 +230,12 @@
 
         // Attach event to handle toggle between interested and not interested
         $('.interested-status').on('click', '.add, .remove', function () {
+            if ("{{ current_user.is_anonymous() }}" === "True") {
+                $('#anon-interested').modal('show');
+
+                return;
+            }
+
             var action = $(this).attr('class').indexOf('add') > -1 ? 'add' : 'remove';
             var parent = $(this).parent();
             var id = parent.attr('obj-id');
@@ -213,12 +262,17 @@
                 $('.counter.' + id).text(data.num_interested);
 
                 // Update interested users list
-                var appendUsers = "<ul>";
+                var appendUsers = "";
                 for (var i = 0; i < data.interested_users.length; i++) {
-                    appendUsers += '<li>' + data.interested_users[i] + '</li>';
+                    appendUsers += data.interested_users[i] + ', ';
                 }
-                appendUsers += "</ul>";
-                $('#interested-users-list').html(appendUsers);
+                appendUsers = appendUsers.substring(0, appendUsers.length - 2);
+                
+                $('#interested-users').html(appendUsers);
+
+                if (data.interested_users.length === 0) {
+                    $('#interested-users').html('None');
+                }
 
                 // Display appropriate message
                 if (action === 'add') {
@@ -261,6 +315,8 @@
                 }
             });
         });
+
+
 
     });
 </script>

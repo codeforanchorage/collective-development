@@ -14,28 +14,22 @@
         <div class="text-align-center extra-bottom-margin"><h4>create an account</h4></div>
         <div class="text-align-center"><input class="text-align-left corners" placeholder="EMAIL" /></div>
     </div>-->
-    <div class="col-md-12 well round-borders">
-        <h3 style="text-align:center;margin-top:0px"><i>True citizens are not the audience of its government, they are its makers.</i></h3>
-        <h4>
-            Remember in school when you could take an elective? You wanted to take them out of curiosity, to see what would reveal itself there. Elective is a place where you can propose a program at the Anchorage Public Library, and your own interest in others' proposals can make them happen. This could be a class or workshop that you dream about taking, or something you want to teach others. Or it could be a working group formed to address a problem in our community. So what do you want to do? We're here for you. 
-        </h4>      
+    <div class="col-md-12" style="padding-left: 0px;">
+        <div class="col-md-8">
+            <h2 style="margin-top:50px;font-weight:800"><i>True citizens are not the audience of its government, they are its makers.</i></h2>
+            <h4 style="line-height:1.5">
+                Remember in school when you could take an elective? You wanted to take them out of curiosity, to see what would reveal itself there. Elective is a place where you can propose a program at the Anchorage Public Library, and your own interest in others' proposals can make them happen. This could be a class or workshop that you dream about taking, or something you want to teach others. Or it could be a working group formed to address a problem in our community. So what do you want to do? We're here for you.
+            </h4>
+        </div>
     </div>
-    <div class="col-md-12">
-        <div class="col-md-6">
-            <div class="col-md-11 well round-borders">
-                <h3>Classes</h3>
-                {{ events_list(events) }}
-            </div>
-            <div class="col-md-1"></div>
-        </div>
-        <div class="col-md-6">
-            <div class="col-md-11 well round-borders">
-                <h3>Proposals</h3>
-                {{ proposals_list(proposals) }}
-            </div>
-            <div class="col-md-1"></div>
-        </div>
-    </div>    
+    <div class="col-md-5" style="margin-top:15px;">
+        <h3>Classes</h3>
+        {{ events_list(events, current_user) }}
+    </div>
+    <div class="col-md-5 col-md-offset-1" style="margin-top:15px;">
+        <h3>Proposals</h3>
+        {{ proposals_list(proposals, current_user) }}
+    </div>   
 </div>
 
 <div>

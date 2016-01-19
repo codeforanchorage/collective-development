@@ -7,8 +7,8 @@
 {% block body_classes %}{% endblock %}
 
 {% block body %}
-<div class="well round-borders">
-    <h2>Edit</h2>
+<div>
+    <h2>Edit Proposal</h2>
     <div>
         {{ render_form(url_for('proposals.edit', id=proposal.id), form)}}
     </div>
@@ -25,10 +25,18 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 <script>
 $(function () {
-	$('#schools').select2();
-	$('#tags').select2({
-		tags: true
-	});
+	//$('#schools').select2();
+	//$('#tags').select2({
+	//	tags: true
+    //});
+
+    // Convert description to textarea to make it appear bigger
+    var descriptionVal = $('#description').val();
+    descriptionVal = descriptionVal.replace(/(?:\r\n|\r|\n)/g, '<br />');
+    var parent = $('#description').parent();    
+    $('#description').remove();
+    parent.prepend("<textarea class=\"form-control\" id=\"description\" name=\"description\" rows=\"4\"></textarea><span class=\"help-inline\"></span>");
+    $('#description').val(descriptionVal);
 });
 </script>    
 {% endblock %}

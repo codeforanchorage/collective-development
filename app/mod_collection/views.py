@@ -2,8 +2,8 @@ from flask import Blueprint, g, current_app, render_template, flash, redirect, r
 from flask.ext.login import current_user, login_required
 from flask.ext.babel import gettext as _
 
-from app.utils import url_for_school
-from app.mod_school import get_school_context
+#from app.utils import url_for_school
+#from app.mod_school import get_school_context
 from .models import Collection
 
 # Blueprint definition
@@ -26,11 +26,11 @@ def list():
 def detail(id):
 	""" Show a single collection, redirecting to the appropriate school if necessary """
 	c = Collection.objects.get_or_404(id=id)
-	context = get_school_context(c)
-	if not g.school==context:
-		flash(_("You've been redirected to where the proposal was made."))
-		return redirect(url_for_school('collections.detail', school=context, id=c.id), code=301)
-	other_schools = [school for school in c.schools if not school==context]
+	#context = get_school_context(c)
+	#if not g.school==context:
+	#	flash(_("You've been redirected to where the proposal was made."))
+	#	return redirect(url_for_school('collections.detail', school=context, id=c.id), code=301)
+	#other_schools = [school for school in c.schools if not school==context]
 	# Passing some permissions related functions on to Jinja
 	#current_app.jinja_env.globals['can_edit_proposal'] = can_edit_proposal
 	#current_app.jinja_env.globals['can_organize_proposal'] = can_organize_proposal

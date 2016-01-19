@@ -7,9 +7,9 @@
 {% block body_classes %}event{% endblock %}
 
 {% block body %}
-<div class="well round-borders">
+<div>
     <h2>Classes</h2>
-    {{ events_list(events) }}
+    {{ events_list(events, current_user) }}
 </div>
 
 {% endblock %}

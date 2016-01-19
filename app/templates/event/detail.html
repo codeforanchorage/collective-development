@@ -8,28 +8,52 @@
 {% block body_classes %}event{% endblock %}
 
 {# setting variables for permissions #}
-{% set can_edit = can_edit(event) %}
+{% set can_edit = can_edit(event, current_user) %}
 
 {% block body %}
-<div class="well round-borders">
-    <h2>{{ event.title }}</h2>
-    {% if can_edit or is_admin%}
-    <div style="margin-bottom: 10px;">
-        {% if can_edit %}
-        <a href="{{ url_for('events.edit', id=event.id) }}" style="margin-right: 10px;">Edit Class</a>
-        {% endif %}
+<div class="alert alert-danger proposal-detail-alert hide">
+    <a class="alert-close close pull-right" title="Close">&times;</a>
+    <span class="glyphicon glyphicon-exclamation-sign"></span>
+    An error occured. Please contact the site administrator.
+</div>
 
+<div class="alert alert-warning proposal-detail-alert hide">
+    <a class="alert-close close pull-right" title="Close">&times;</a>
+    <span class="glyphicon glyphicon-warning-sign"></span>
+    You have been removed from the list of interested users.
+</div>
+
+<div class="alert alert-success proposal-detail-alert hide">
+    <a class="alert-close close pull-right" title="Close">&times;</a>
+    <span class="glyphicon glyphicon-ok"></span>
+    You have been added to the list of interested users.
+</div>
+
+<div>
+    <h2>{{ event.title }}</h2>
+
+    <div id="interested-toggle" class="btn-group interested-status" data-toggle="buttons" style="margin-bottom: 10px;" obj-id="{{ event.id }}" obj-type="event">
+        {% if event.user_is_interested(current_user) %}
+        <label class="btn btn-default active add">
+            <input class="btn-default" type="radio" value="1" /> I am interested
+        </label>
+        <label class="btn btn-default remove">
+            <input type="radio" value="2" /> I am <strong>not</strong> interested
+        </label>
+        {% else %}
+        <label class="btn btn-default add">
+            <input type="radio" value="1" /> I am interested
+        </label>
+        <label class="btn btn-default active remove">
+            <input type="radio" value="2" /> I am <strong>not</strong> interested
+        </label>
         {% if is_admin %}
         <a id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;">Delete Class</a>
         {% endif %}
     </div>
-    {% endif %}
 
 
     <dl>
-        <dt>Summary:</dt>
-        <dd><p><em>{{ event.short_description }}</em></p></dd>
-
         <dt>Description:</dt>
         <dd><p><em>{{ event.description }}</em></p></dd>
 
@@ -51,6 +75,17 @@
         <dt>Teacher:</dt>
         <dd>{{ event.teacher }}</dd>
 
+        <dt>Number of interested users:</dt>
+        <dd><span>{{ event.num_interested }}</span></dd>
+
+        <dt>Interested users:</dt>
+        <dd id="interested-users">
+            {{ event.interested_users | join (', ')}}
+            {% if event.interested_users | length == 0 %}
+            None
+            {% endif %}
+        </dd>  
+
         <dt>Organized on:</dt>
         <dd>{{ event.created | datetime }}</dd>
 
@@ -64,6 +99,18 @@
 
     </dl>
 </div>
+
+{% if can_edit or current_user.is_admin()%}
+<div style="margin-bottom: 10px;">
+    {% if can_edit %}
+    <a class="btn btn-primary" href="{{ url_for('events.edit', id=event.id) }}" style="margin-right: 10px;"><span class="glyphicon glyphicon-edit"></span> Edit Class</a>
+    {% endif %}
+
+    {% if current_user.is_admin() %}
+    <a class="btn btn-danger" id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;"><span class="glyphicon glyphicon-trash"></span> Delete Class</a>
+    {% endif %}
+</div>
+{% endif %}
 
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -86,6 +133,85 @@
 {% block extra_js %}
 <script>
     $(document).ready(function () {
+
+        // Attach event to handle the closing of alerts
+        $('body').on('click', '.alert-close', function () {
+            var parent = $(this).parent();
+            if (!parent.hasClass('hide')) {
+                parent.addClass('hide');
+            }
+        });
+
+        // Attach event to handle toggle between interested and not interested
+        $('.interested-status').on('click', '.add, .remove', function () {
+            var action = $(this).attr('class').indexOf('add') > -1 ? 'add' : 'remove';
+            var parent = $(this).parent();
+            var id = parent.attr('obj-id');
+            var type = parent.attr('obj-type');
+            var counter = parent.find('.counter');
+            var url = INTEREST_POST_URL.replace('/type', '/' + type).replace('/id', '/' + id);
+            var post_data = { action: action, attribute: null };
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: post_data,
+                dataType: 'json'
+            })
+            .always(function () {
+                // Hide all alerts after the ajax request is finished
+                hideProposalDetailAlerts();
+            })
+            .success(function (data) {
+                // Counter within the interested widget
+                counter.text(data.num_interested);
+
+                // Update all number interested counters
+                $('.counter.' + id).text(data.num_interested);
+
+                // Update interested users list           
+                var appendUsers = "";
+                for (var i = 0; i < data.interested_users.length; i++) {
+                    appendUsers += data.interested_users[i] + ', ';
+                }
+                appendUsers = appendUsers.substring(0, appendUsers.length - 2);                
+                
+                $('#interested-users').html(appendUsers);
+
+                if (data.interested_users.length === 0) {
+                    $('#interested-users').html('None');
+                }
+
+                // Display appropriate message
+                if (action === 'add') {
+                    $('.alert-success.proposal-detail-alert').removeClass('hide');
+                }
+                else {
+                    $('.alert-warning.proposal-detail-alert').removeClass('hide');
+                }
+            })
+            .error(function (jqXHR, textStatus, errorThrown) {
+                // Check is the user is anonymous and that the status code is appropriate
+                var isUserAnonymous = $('#proposal-detail-div').attr('data-user-unknown');
+                if (isUserAnonymous === 'True' && jqXHR.status === 200) {
+                    // Send them to the login screen
+                    window.location.href = INTEREST_LOGIN_URL.replace('id', id);
+                }
+                else {
+                    // An error has occured
+                    $('.alert-danger.proposal-detail-alert').removeClass('hide');
+                }
+            });
+        });
+
+        var hideProposalDetailAlerts = function () {
+            $('.proposal-detail-alert').each(function () {
+                if (!$(this).hasClass('hide')) {
+                    $(this).addClass('hide');
+                }
+            });
+        };
+
         $('#confirm-delete').on('click', '#confirm-delete-class', function () {
             // Request delete
             $.ajax({

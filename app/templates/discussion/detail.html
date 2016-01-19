@@ -6,9 +6,12 @@
 {% block body_classes %}discussion{% endblock %}
 
 {% block body %}
-<div class="well round-borders">
-    <h2>{{ discussion.title }}</h2>
-    <div style="margin-bottom: 10px;"><a href="{{ url_for('discussions.add_comment', id=discussion.id) }}">Add Comment</a></div>
+<div>
+    <div>
+        <h2 style="display:inline-block;">{{ discussion.title }}</h2>
+        <a class="btn btn-primary" style="display:inline-block;margin-bottom:10px" href="/proposals/{{proposal_id}}"><span class="glyphicon glyphicon-arrow-left"></span> Back to Proposal</a>
+    </div>
+    
     <dl>
 
         <dt>Created:</dt>
@@ -17,23 +20,27 @@
         <dt>Last comment time:</dt>
         <dd>{{ discussion.last_comment_time | datetime }}</dd>
 
-        {% if comments %}
-        <dt>Comments:</dt>
+        
+        
+        <dt>
+            <span style="display:inline-block">Comments: </span>
+            <a style="display:inline-block" class="btn btn-sm btn-success glyphicon glyphicon-plus" href="{{ url_for('discussions.add_comment', discussion_id=discussion.id, proposal_id=proposal_id) }}"></a>
+        </dt>
         <dd>
-            <ul>
-                {% for comment in comments %}
-                <li>
-                    <p style="margin-bottom:0px">{{ comment.creator.display_name }} on {{ comment.created | datetime }}</p>
-                    {% set can_edit = can_edit_comment(comment) %}
-                    {% if can_edit %}
-                    <a href="{{ url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id) }}">Edit Comment</a>
-                    {% endif %}
+            {% if comments %}
+            {% for comment in comments %}
+                <p style="margin-bottom:0px;display:inline-block">{{ comment.creator.display_name }} commented on {{ comment.created | datetime }}</p>
+                {% set can_edit = can_edit_comment(comment) %}
+                {% if can_edit %}
+                <a style="display:inline-block" class="btn btn-sm btn-primary" href="{{ url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id, proposal_id=proposal_id) }}"><span class="glyphicon glyphicon-edit"></span> Edit Comment</a>
+                {% endif %}
+                <div style="margin-left:20px">
                     <p>{{ comment.text }}</p>
-                </li>
-                {% endfor %}
-            </ul>
+                </div>
+            {% endfor %}
+            {% endif %}
         </dd>
-        {% endif %}
+        
     </dl>
 </div>
 	

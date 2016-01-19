@@ -19,7 +19,7 @@ class Comment(db.Document):
 	published = db.BooleanField(default=True)
 	discussion = db.GenericReferenceField()
 	# The actual content of the comment
-	text = db.StringField(max_length=1000, required=True)
+	text = db.StringField(max_length=5000, required=True)
 	
 	def edit_comment(self, newText):
 		self.text = newText
@@ -30,7 +30,7 @@ class Discussion(db.Document):
 	"""
 	Thread of comments.
 	"""
-	title = db.StringField(max_length=255, required=True)
+	title = db.StringField(max_length=1000, required=True)
 	# The comments and pointers to certain important comments
 	#comments = db.SortedListField(db.ReferenceField(Comment), ordering="created", reverse=True)
 	num_comments = db.IntField(default=0)

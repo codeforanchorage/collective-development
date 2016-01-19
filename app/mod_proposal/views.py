@@ -3,8 +3,8 @@ from flask import Blueprint, g, current_app, render_template, flash, redirect, r
 from flask.ext.login import current_user, login_required
 from flask.ext.babel import gettext as _
 
-from app.utils import url_for_school
-from app.mod_school import get_school_context
+#from app.utils import url_for_school
+#from app.mod_school import get_school_context
 from app.mod_event import AddEventForm, Event
 from app.mod_discussion import Discussion, Comment, AddDiscussionForm, start_discussion
 from .forms import AddProposalForm, ProposalForm, OrganizeProposalForm
@@ -26,11 +26,11 @@ def list():
 
 	resp = Response(render_template('proposal/list.html',
 		title=_('Proposals'),
-		proposals=proposals))
+		proposals=proposals, current_user=current_user))
 
     # Disable cache on this page (checkmarks need to update properly)
-	resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-	resp.headers['Pragma'] = 'no-cache'
+	#resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+	#resp.headers['Pragma'] = 'no-cache'
 
 	return resp;
 
@@ -51,11 +51,11 @@ def search():
 def detail(id):
 	""" Show a single proposal, redirecting to the appropriate school if necessary """
 	p = Proposal.objects.get_or_404(id=id)
-	c = get_school_context(p)
-	if not g.school==c:
-		flash(_("You've been redirected to where the proposal was made."))
-		return redirect(url_for_school('proposals.detail', school=c, id=p.id), code=301)
-	other_schools = [school for school in p.schools if not school==c]
+	#c = get_school_context(p)
+	#if not g.school==c:
+	#	flash(_("You've been redirected to where the proposal was made."))
+	#	return redirect(url_for_school('proposals.detail', school=c, id=p.id), code=301)
+	#other_schools = [school for school in p.schools if not school==c]
 	# Passing some permissions related functions on to Jinja
 	current_app.jinja_env.globals['can_edit_proposal'] = can_edit_proposal
 	current_app.jinja_env.globals['can_organize_proposal'] = can_organize_proposal
@@ -63,20 +63,23 @@ def detail(id):
 	resp = Response(render_template('proposal/detail.html',
 		title = p.title,
 		proposal = p,
-		other_schools = other_schools,
+		#other_schools = other_schools,
 		events = p.events,
 		discussions = p.discussions,
-		is_admin=current_user.is_admin()))
+		is_admin=current_user.is_admin(), current_user = current_user, current_url=request.path))
     # Disable cache on this page (toggle button needs to update properly)
-	resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-	resp.headers['Pragma'] = 'no-cache'
+	#resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+	#resp.headers['Pragma'] = 'no-cache'
 
 	return resp
 
 
 @proposals.route('/make', methods=['GET', 'POST'])
-@login_required
 def make():
+	if current_user.is_anonymous():
+		flash(Markup("<span class=\"glyphicon glyphicon-info-sign\"></span> You have to login before creating a proposal."), "info")
+		return redirect('/login?next=' + str(request.path))
+	
 	""" Make a proposal """
 	form = AddProposalForm()
 	if form.validate_on_submit():
@@ -90,10 +93,13 @@ def make():
 
 
 @proposals.route('/<id>/edit', methods=['GET', 'POST'])
-@login_required
 @can_edit
 def edit(id):
-	""" Edit an event """
+	if current_user.is_anonymous():
+		flash(Markup("<span class=\"glyphicon glyphicon-info-sign\"></span> You have to login before editing a proposal."), "info")
+		return redirect('/login?next=' + str(request.path))
+
+	""" Edit an proposal """
 	p = Proposal.objects.get_or_404(id=id)
 	form = ProposalForm(request.form, p)
 	# submit
@@ -108,9 +114,12 @@ def edit(id):
 
 
 @proposals.route('/<id>/organize', methods=['GET', 'POST'])
-@login_required
 @can_organize
 def organize(id):
+	if current_user.is_anonymous():
+		flash(Markup("<span class=\"glyphicon glyphicon-info-sign\"></span> You have to login before organizing a proposal."), "info")
+		return redirect('/login?next=' + str(request.path))
+
 	p = Proposal.objects.get_or_404(id=id)
 
 	# Throw 403 if user isn't an admin
@@ -132,12 +141,15 @@ def organize(id):
 		#p.delete()
 		return redirect(url_for('events.detail', id=e.id))
 
-	return render_template("proposal/organize.html", form=form)
+	return render_template("proposal/organize.html", form=form, proposal_title=p.title, proposal_description=p.description)
 
 @proposals.route('/<id>/delete', methods=['DELETE'])
-@login_required
 @can_organize
 def delete(id):
+	if current_user.is_anonymous():
+		flash(Markup("<span class=\"glyphicon glyphicon-info-sign\"></span> You have to login before deleting a proposal."), "info")
+		return redirect('/login?next=' + str(request.path))
+
 	import json
 	p = Proposal.objects.get_or_404(id=id)
 
@@ -149,37 +161,40 @@ def delete(id):
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 @proposals.route('/<id>/create/discussion', methods=['GET','POST'])
-@login_required
 def create_discussion(id):
+	if current_user.is_anonymous():
+		flash(Markup("<span class=\"glyphicon glyphicon-info-sign\"></span> You have to login before creating a discussion."), "info")
+		return redirect('/login?next=' + str(request.path))
+
 	""" Create a new discussion within the proposal """
 	p = Proposal.objects.get_or_404(id=id)
 	form = AddDiscussionForm()
 	if form.validate_on_submit():
 		d = start_discussion(request.form.get("text"), schools=p.schools, form=form)
 		p.add_discussion(d)
-		return redirect(url_for('discussions.detail', id=d.id))
+		return redirect(url_for('discussions.detail', discussion_id=d.id, proposal_id=p.id))
 	return render_template('discussion/create.html',
 		title=_('New discussion in @title', title=p.title),
 		form=form)
 
 
-@proposals.route('/<id>/create/event', methods=['GET','POST'])
-@login_required
-@can_organize
-def create_event(id):
-	""" Create an event (usually, within the context of a proposal) """
-	p = Proposal.objects.get_or_404(id=id)
-	form = AddEventForm(request.form, exclude=['end'])
-	# submit
-	if form.validate_on_submit():
-		e = Event(
-			schools = p.schools)
-		form.populate_obj(e)
-		e.save()
-		p.add_event(e)
-		flash(_('The new event has been created. Please edit it here to provide more information like its location, a title, description, etc.'))
-		flash(Markup(_('Or you can do that later and now just add more events by clicking <a href="%(url)s">here</a>', url=url_for('events.create', proposal_id=p.id))))
-		return redirect(url_for('events.edit', id=e.id))
-	return render_template('event/create.html',
-		title=_('Add a class event'),
-		form=form)
+#@proposals.route('/<id>/create/event', methods=['GET','POST'])
+#@login_required
+#@can_organize
+#def create_event(id):
+#	""" Create an event (usually, within the context of a proposal) """
+#	p = Proposal.objects.get_or_404(id=id)
+#	form = AddEventForm(request.form, exclude=['end'])
+#	# submit
+#	if form.validate_on_submit():
+#		e = Event(
+#			schools = p.schools)
+#		form.populate_obj(e)
+#		e.save()
+#		p.add_event(e)
+#		flash(_('The new event has been created. Please edit it here to provide more information like its location, a title, description, etc.'))
+#		flash(Markup(_('Or you can do that later and now just add more events by clicking <a href="%(url)s">here</a>', url=url_for('events.create', proposal_id=p.id))))
+#		return redirect(url_for('events.edit', id=e.id))
+#	return render_template('event/create.html',
+#		title=_('Add a class event'),
+#		form=form)

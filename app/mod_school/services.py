@@ -5,15 +5,15 @@ from flask.ext.login import current_user
 from .models import School
 
 
-def get_school_context(obj):
-	""" What is the school that an event or place should appear in? """
-	if not obj.schools:
-		#return None
-		return g.default_school # better to default to default context than None
-	elif len(obj.schools)==1:
-		return obj.schools[0]
-	else:
-		return g.default_school
+#def get_school_context(obj):
+#	""" What is the school that an event or place should appear in? """
+#	if not obj.schools:
+#		#return None
+#		return g.default_school # better to default to default context than None
+#	elif len(obj.schools)==1:
+#		return obj.schools[0]
+#	else:
+#		return g.default_school
 
 
 def load_school(name):

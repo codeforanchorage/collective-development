@@ -15,7 +15,7 @@ class User(db.Document, UserMixin):
 	email = db.EmailField(unique=True)
 	username = db.StringField(unique=True, max_length=64)
 	display_name = db.StringField(max_length=64)
-	password = db.StringField(max_length=255)
+	password = db.StringField(max_length=256)
 	active = db.BooleanField(default=True)
 	role = db.IntField(default=ROLE_USER)
 	created = db.DateTimeField(default=datetime.datetime.now())

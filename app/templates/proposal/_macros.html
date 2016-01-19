@@ -1,47 +1,53 @@
 {% from "macros/_interest.html" import interested_counter, interested_check with context %}
 
-{% macro proposals_list_item(proposal) %}
-<div class="list-group-item">
-	<p>{{ interested_check(proposal) }}</p>
-	<h4><a href="{{url_for('proposals.detail', id=proposal.id)}}">{{proposal.title}}</a></h4>
-	<p>{{proposal.description}}</p>
-</div>
-{% endmacro %}
+{% macro proposals_list_item(proposal, current_user) %}
+{% if current_user.is_anonymous() %}
+    <div class="row" style="margin-left:15px">
+{% else %}
+    <div class="row">
+{% endif %}
+        <p>{{ interested_check(obj=proposal, type='proposal', current_user=current_user) }}</p>
+        <div class="col-md-11" style="padding-left:0px;margin-top:-17px">
+            <h3><a href="{{url_for('proposals.detail', id=proposal.id)}}">{{proposal.title | ellipsis }}</a></h3>
+            <p>{{proposal.description | ellipsis}}</p>
+        </div>
+    </div>
+    {% endmacro %}
 
 
-{% macro proposals_list(proposals) %}
-<div class="list-group">
-	{% for proposal in proposals %}
-		{{ proposals_list_item(proposal) }}
-	{% endfor %}
-</div>
-{% endmacro %}
+    {% macro proposals_list(proposals, current_user) %}
+    <div>
+        {% for proposal in proposals %}
+        {{ proposals_list_item(proposal, current_user) }}
+        {% endfor %}
+    </div>
+    {% endmacro %}
 
 
-{% macro list_users(users) %}
-	{% for user in users %}
-		<div>{{ user.display_name }}</div>
-	{% endfor %}
-{% endmacro %}
+    {% macro list_users(users) %}
+    {% for user in users %}
+    <div>{{ user.display_name }}</div>
+    {% endfor %}
+    {% endmacro %}
 
 
-{% macro show_stage(proposal) %}
-	{% set d=proposal.current_stage.pretty_date %}
-	{% if proposal.stage.value==LIFE_ORIGIN %}
-		{% trans d %}
-			Proposed {{ d }}.
-		{% endtrans %}
-	{% elif proposal.stage.value==LIFE_PLANNING %}
-		{% trans d %}
-			Planning began {{ d }} to make this into a class.
-		{% endtrans %}
-	{% elif proposal.stage.value==LIFE_CLASS %}
-		{% trans d %}
-			Class in progress since {{ d }}.
-		{% endtrans %}
-	{% elif proposal.stage.value==LIFE_FINISHED %}
-		{% trans d %}
-			Class finished {{ d }}.
-		{% endtrans %}
-	{% endif %}
-{% endmacro %}
+    {% macro show_stage(proposal) %}
+    {% set d=proposal.current_stage.pretty_date %}
+    {% if proposal.stage.value==LIFE_ORIGIN %}
+    {% trans d %}
+    Proposed {{ d }}.
+    {% endtrans %}
+    {% elif proposal.stage.value==LIFE_PLANNING %}
+    {% trans d %}
+    Planning began {{ d }} to make this into a class.
+    {% endtrans %}
+    {% elif proposal.stage.value==LIFE_CLASS %}
+    {% trans d %}
+    Class in progress since {{ d }}.
+    {% endtrans %}
+    {% elif proposal.stage.value==LIFE_FINISHED %}
+    {% trans d %}
+    Class finished {{ d }}.
+    {% endtrans %}
+    {% endif %}
+    {% endmacro %}

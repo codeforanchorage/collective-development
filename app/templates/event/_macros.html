@@ -1,19 +1,28 @@
+{% from "macros/_interest.html" import interested_counter, interested_check with context %}
 
-{% macro events_list_item(event) %}
-<li>
-	<h3>{{ event.start | datetime }}</h3>
-	<h4><a href="{{url_for('events.detail', id=event.id)}}">{{ event.title }}</a></h4>
-	<p>{{event.short_description}}</p>
-</li>
+{% macro events_list_item(event, current_user) %}
+{% if current_user.is_anonymous() %}
+<div class="row" style="margin-left:15px">
+{% else %}
+<div class="row">
+{% endif %}
+    <p>{{ interested_check(obj=event, type='event', current_user=current_user) }}</p>
+    <div class="col-md-11" style="padding-left:0px;margin-top:-17px">
+        <h3><a href="{{url_for('events.detail', id=event.id)}}">{{ event.title | ellipsis }}</a></h3>
+        <h4>{{ event.start | datetime }}</h4>
+        <p>{{event.description | ellipsis }}</p>
+    </div>
+    
+</div>
 {% endmacro %}
 
 
-{% macro events_list(events) %}
-<ul>
+{% macro events_list(events, current_user) %}
+
 	{% for event in events %}
-		{{ events_list_item(event) }}
+		{{ events_list_item(event, current_user) }}
 	{% endfor %}
-</ul>
+
 {% endmacro %}
 
 

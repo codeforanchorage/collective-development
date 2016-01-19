@@ -1,16 +1,15 @@
 
-{% macro discussions_list_item(discussion) %}
-<li>
-	<h4><a href="{{url_for('discussions.detail', id=discussion.id)}}">{{discussion.title}}</a></h4>
-	<p>{{discussion.last_comment.text}}</p>
-</li>
+{% macro discussions_list_item(discussion, proposal_id) %}
+<!--<li>-->
+	<h4><a href="{{url_for('discussions.detail', discussion_id=discussion.id, proposal_id=proposal_id)}}">{{discussion.title}}</a></h4>
+<!--</li>-->
 {% endmacro %}
 
 
-{% macro discussions_list(discussions) %}
-<ul>
+{% macro discussions_list(discussions, proposal_id) %}
+<!--<ul>-->
 	{% for discussion in discussions %}
-		{{ discussions_list_item(discussion) }}
+		{{ discussions_list_item(discussion, proposal_id) }}
 	{% endfor %}
-</ul>
+<!--</ul>-->
 {% endmacro %}

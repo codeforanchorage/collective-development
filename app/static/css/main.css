@@ -3,7 +3,7 @@ body {
 	font-family: 'Verdana', sans-serif;
 }
 
-body.proposal {
+/*body.proposal {
 	background-color: #EFFFFF;
 }
 
@@ -13,7 +13,7 @@ body.event {
 
 body.collection {
 	background-color: #FFFFEF;
-}
+}*/
 
 /* navbar */
 .navbar {
@@ -102,6 +102,6 @@ body.collection {
 }
 
 dd {
-	margin-left: 20px;
-	margin-bottom: 10px;
+    margin-left: 20px;
+    margin-bottom: 10px;
 }

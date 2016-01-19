@@ -4,36 +4,35 @@ from flask.ext.login import current_user
 import flask.ext.babel as babel
 
 from .form import model_form, BaseForm
-from app.mod_school import get_school_context
+#from app.mod_school import get_school_context
 
-
-def url_for_school(endpoint, school=None, user_school=False, **values):
-	""" Similar to typical url for, except this will rewrite the base to the specified school """
-	url = url_for(endpoint, **values)
-	csn = g.school.name # current school name
-	fsn = school.name if hasattr(school,'name') else school # future school name
-	if fsn is None and user_school:
-		u = current_user._get_current_object()
-		c = get_school_context(u)
-		if c:
-			fsn = c.name
-	# The name of the default school never appears in the path: it is always the base url
-	if school == g.default_school:
-		fsn = None
-	# Requesting the default/ global school
-	if fsn is None:
-		if g.is_default_school:
-			return url
-		else:
-			return url.replace('/'+csn, '', 1)
-	# Requesting a particular school
-	else:
-		if csn==fsn:
-			return url
-		elif g.is_default_school:
-			return url.replace('/', '/'+fsn+'/', 1)
-		else:
-			return url.replace('/'+csn, '/'+fsn, 1)
+#def url_for_school(endpoint, school=None, user_school=False, **values):
+#	""" Similar to typical url for, except this will rewrite the base to the specified school """
+#	url = url_for(endpoint, **values)
+#	csn = g.school.name # current school name
+#	fsn = school.name if hasattr(school,'name') else school # future school name
+#	if fsn is None and user_school:
+#		u = current_user._get_current_object()
+#		c = get_school_context(u)
+#		if c:
+#			fsn = c.name
+#	# The name of the default school never appears in the path: it is always the base url
+#	if school == g.default_school:
+#		fsn = None
+#	# Requesting the default/ global school
+#	if fsn is None:
+#		if g.is_default_school:
+#			return url
+#		else:
+#			return url.replace('/'+csn, '', 1)
+#	# Requesting a particular school
+#	else:
+#		if csn==fsn:
+#			return url
+#		elif g.is_default_school:
+#			return url.replace('/', '/'+fsn+'/', 1)
+#		else:
+#			return url.replace('/'+csn, '/'+fsn, 1)
 
 
 def pretty_date(dt, default=None):

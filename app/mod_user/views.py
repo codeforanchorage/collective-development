@@ -4,6 +4,9 @@ from flask import Blueprint, g, current_app, render_template, flash, redirect, r
 from flask.ext.login import current_user, login_required, login_user
 from flask.ext.babel import gettext as _
 
+#from app.utils import url_for_school
+#from app.mod_school import get_school_context
+from .forms import UserSettingsForm, PasswordForm, UserAddForm
 from app.utils import url_for_school
 from app.mod_school import get_school_context, all_schools
 from .forms import UserSettingsForm, PasswordForm, UserAddForm, UserAddFormOneSchool, UserSettingsFormOneSchool
@@ -14,15 +17,36 @@ from .services import can_edit, can_edit_user
 # Blueprint definition
 users = Blueprint('users', __name__, url_prefix='/users')
 
+@users.route('/<user_id>/proposals/<proposal_id>/proposal_get_interested_status')
+def proposal_get_interested_status(user_id, proposal_id):
+	from app.mod_proposal import Proposal
+	u = User.objects.get_or_404(id=user_id)
+	p = Proposal.objects.get_or_404(id=proposal_id)
+	
+	for interest in p.interested:
+		if(u.id == interest.user.id):
+			return "true"
+	return "false"
+
+@users.route('/<user_id>/events/<event_id>/event_get_interested_status')
+def event_get_interested_status(user_id, event_id):
+	from app.mod_event import Event
+	u = User.objects.get_or_404(id=user_id)
+	p = Event.objects.get_or_404(id=event_id)
+	
+	for interest in p.interested:
+		if(u.id == interest.user.id):
+			return "true"
+	return "false"
 
 @users.route('/<id>', methods=['GET'])
 def detail(id):
 	""" Show a single userproposal, redirecting to the appropriate school if necessary """
 	u = User.objects.get_or_404(id=id)
-	c = get_school_context(u)
-	if not g.school==c:
-		flash(_("You've been redirected to the school the user is following."))
-		return redirect(url_for_school('users.detail', school=c, id=u.id), code=301)
+	#c = get_school_context(u)
+	#if not g.school==c:
+	#	flash(_("You've been redirected to the school the user is following."))
+	#	return redirect(url_for_school('users.detail', school=c, id=u.id), code=301)
 	return render_template('user/detail.html',
 		title = u.display_name,
 		user = u)
@@ -86,7 +110,8 @@ def create():
 		u.save()
 		login_user(u)
 		flash(_("Welcome %(user)s!", user=u.display_name), 'success')
-		return redirect(form.next.data or url_for_school('schools.home', user_school=True))
+		#return redirect(form.next.data or url_for_school('schools.home', user_school=True))
+		return redirect(form.next.data or url_for('schools.home'))
 	# Our simple custom captcha implementation
 	#gotcha = 'which letter in this sentence is uppercase?'
 	#gotcha_cap = '-'
