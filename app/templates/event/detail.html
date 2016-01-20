@@ -1,5 +1,5 @@
 {% from "school/_macros.html" import list_schools %}
-{% from "proposal/_macros.html" import proposals_list with context%}
+{% from "event/_macros.html" import events_list with context%}
 
 {% set page_title = event.title %}
 
@@ -11,22 +11,22 @@
 {% set can_edit = can_edit(event, current_user) %}
 
 {% block body %}
-<div class="alert alert-danger proposal-detail-alert hide">
+<div class="alert alert-danger event-detail-alert hide">
     <a class="alert-close close pull-right" title="Close">&times;</a>
     <span class="glyphicon glyphicon-exclamation-sign"></span>
     An error occured. Please contact the site administrator.
 </div>
 
-<div class="alert alert-warning proposal-detail-alert hide">
+<div class="alert alert-warning event-detail-alert hide">
     <a class="alert-close close pull-right" title="Close">&times;</a>
     <span class="glyphicon glyphicon-warning-sign"></span>
-    You have been removed from the list of interested users.
+    You have been removed from the list of attending users.
 </div>
 
-<div class="alert alert-success proposal-detail-alert hide">
+<div class="alert alert-success event-detail-alert hide">
     <a class="alert-close close pull-right" title="Close">&times;</a>
     <span class="glyphicon glyphicon-ok"></span>
-    You have been added to the list of interested users.
+    You have been added to the list of attending users.
 </div>
 
 <div>
@@ -35,17 +35,17 @@
     <div id="interested-toggle" class="btn-group interested-status" data-toggle="buttons" style="margin-bottom: 10px;" obj-id="{{ event.id }}" obj-type="event">
         {% if event.user_is_interested(current_user) %}
         <label class="btn btn-default active add">
-            <input class="btn-default" type="radio" value="1" /> I am interested
+            <input class="btn-default" type="radio" value="1" /> I am attending
         </label>
         <label class="btn btn-default remove">
-            <input type="radio" value="2" /> I am <strong>not</strong> interested
+            <input type="radio" value="2" /> I am <strong>not</strong> attending
         </label>
         {% else %}
         <label class="btn btn-default add">
-            <input type="radio" value="1" /> I am interested
+            <input type="radio" value="1" /> I am attending
         </label>
         <label class="btn btn-default active remove">
-            <input type="radio" value="2" /> I am <strong>not</strong> interested
+            <input type="radio" value="2" /> I am <strong>not</strong> attending
         </label>
         {% endif %}
         {% if is_admin %}
@@ -64,22 +64,25 @@
         <dt>End:</dt>
         <dd>{{ event.end | datetime }}</dd>
 
+        <dt>Organized on:</dt>
+        <dd>{{ event.created | datetime }}</dd>
+
         <dt>Location:</dt>
         {% if event.places|length == 0 %}
         <dd>Unknown</dd>
         {% endif %}
         <dd>{{ event.places | join(', ') }}</dd>
 
-        <dt>Created by:</dt>
-        <dd>{{ event.creator.display_name }}</dd>
+        <!--<dt>Created by:</dt>
+        <dd>{{ event.creator.display_name }}</dd>-->
 
         <dt>Teacher:</dt>
         <dd>{{ event.teacher }}</dd>
 
-        <dt>Number of interested users:</dt>
+        <dt>Number of attending users:</dt>
         <dd><span>{{ event.num_interested }}</span></dd>
 
-        <dt>Interested users:</dt>
+        <dt>Attending users:</dt>
         <dd id="interested-users">
             {{ event.interested_users | join (', ')}}
             {% if event.interested_users | length == 0 %}
@@ -87,29 +90,34 @@
             {% endif %}
         </dd>  
 
-        <dt>Organized on:</dt>
-        <dd>{{ event.created | datetime }}</dd>
+        {% if current_user.is_admin() %}
+        <dt>Registered user emails: <span class="label label-primary">Admin Only</span></dt>
+        <dd>
+            {% for i in event.interested %}
+                {% if loop.index == event.interested|length %}
+                    {{  i.user.email }}
+                {% else %}
+                    {{  i.user.email + ', ' }}
+                {% endif %}
+            {% endfor %}
+        </dd>
+        {% endif %}
 
     	{% if g.all_schools.count()>1 %}
         <dt>Happening at:</dt>
         <dd>{{ list_schools(event.schools) }}</dd>
     	{% endif %}
 
-        <dt>Updated:</dt>
-        <dd>{{ event.updated | datetime }}</dd>
+        <!--<dt>Updated:</dt>
+        <dd>{{ event.updated | datetime }}</dd>-->
 
     </dl>
 </div>
 
-{% if can_edit or current_user.is_admin()%}
+{% if current_user.is_admin()%}
 <div style="margin-bottom: 10px;">
-    {% if can_edit %}
     <a class="btn btn-primary" href="{{ url_for('events.edit', id=event.id) }}" style="margin-right: 10px;"><span class="glyphicon glyphicon-edit"></span> Edit Class</a>
-    {% endif %}
-
-    {% if current_user.is_admin() %}
-    <a class="btn btn-danger" id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;"><span class="glyphicon glyphicon-trash"></span> Delete Class</a>
-    {% endif %}
+    <a class="btn btn-danger" id="delete-event" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;"><span class="glyphicon glyphicon-trash"></span> Delete Class</a>
 </div>
 {% endif %}
 
@@ -161,9 +169,13 @@
             })
             .always(function () {
                 // Hide all alerts after the ajax request is finished
-                hideProposalDetailAlerts();
+                hideEventDetailAlerts();
             })
             .success(function (data) {
+                if (data.anon === true) {
+                    window.location.href = '/login?interested_user=anon';
+                }
+
                 // Counter within the interested widget
                 counter.text(data.num_interested);
 
@@ -185,28 +197,20 @@
 
                 // Display appropriate message
                 if (action === 'add') {
-                    $('.alert-success.proposal-detail-alert').removeClass('hide');
+                    $('.alert-success.event-detail-alert').removeClass('hide');
                 }
                 else {
-                    $('.alert-warning.proposal-detail-alert').removeClass('hide');
+                    $('.alert-warning.event-detail-alert').removeClass('hide');
                 }
             })
             .error(function (jqXHR, textStatus, errorThrown) {
-                // Check is the user is anonymous and that the status code is appropriate
-                var isUserAnonymous = $('#proposal-detail-div').attr('data-user-unknown');
-                if (isUserAnonymous === 'True' && jqXHR.status === 200) {
-                    // Send them to the login screen
-                    window.location.href = INTEREST_LOGIN_URL.replace('id', id);
-                }
-                else {
-                    // An error has occured
-                    $('.alert-danger.proposal-detail-alert').removeClass('hide');
-                }
+                // An error has occured
+                $('.alert-danger.event-detail-alert').removeClass('hide');               
             });
         });
 
-        var hideProposalDetailAlerts = function () {
-            $('.proposal-detail-alert').each(function () {
+        var hideEventDetailAlerts = function () {
+            $('.event-detail-alert').each(function () {
                 if (!$(this).hasClass('hide')) {
                     $(this).addClass('hide');
                 }

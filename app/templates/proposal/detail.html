@@ -49,6 +49,7 @@
     You have been added to the list of interested users.
 </div>
 
+<div id="anon-email-success-alert" class="alert alert-success hide"></div>
 
 <div id="proposal-detail-div" class="tab-content col-md-6" data-user-unknown="{{ current_user.is_anonymous() }}">
 
@@ -112,22 +113,37 @@
                 {% endif %}
             </dd>            
 
+            {% if current_user.is_admin() %}
+            <dt>Registered user emails: <span class="label label-primary">Admin Only</span></dt>
+            <dd>                                
+                {% for i in proposal.interested %}
+                    {% if loop.index == proposal.interested|length %}
+                        {{  i.user.email }}
+                    {% else %}                
+                        {{  i.user.email + ', ' }}
+                    {% endif %}                
+                {% endfor %}
+                
+            </dd>  
+
+            <dt>Anonymous user emails: <span class="label label-primary">Admin Only</span></dt>
+            <dd>
+                {{ proposal.anon_emails | join (', ')}}
+            </dd>  
+            {% endif %}
+
+
+
             <!--<dt>When:</dt>
             <dd>{{ show_stage(proposal) }}</dd>-->
         </dl>
     </div>	
 
-    {% if can_edit or can_organize or is_admin%}
+    {% if current_user.is_admin() or current_user.id == proposal.proposer.id%}
     <div style="margin-bottom: 10px;">
-        {% if can_edit %}
         <a class="btn btn-primary" href="{{ url_for('proposals.edit', id=proposal.id) }}" style="margin-right: 10px;"><span class="glyphicon glyphicon-edit"></span> Edit Proposal</a>
-        {% endif %}
-
-        {% if can_organize %}
+        {% if current_user.is_admin() %}
         <a class="btn btn-success" href="{{ url_for('proposals.organize', id=proposal.id) }}" style="margin-right: 10px;"><span class="glyphicon glyphicon-thumbs-up"></span> Organize Proposal</a>
-        {% endif %}
-
-        {% if is_admin %}
         <a class="btn btn-danger" id="delete-proposal" data-toggle="modal" data-target="#confirm-delete" style="margin-right: 10px;"><span class="glyphicon glyphicon-trash"></span> Delete Proposal</a>
         {% endif %}
     </div>
@@ -197,13 +213,18 @@
                     If you don't have to deal with the hassle with creating an account, you can just give us your email address and we'll contact you if there's enough interest.
                 </p>
                 <div style="margin-bottom:10px">
+                    <div id="anon-email-validation-alert" class="alert alert-danger hide">
+                        <a class="alert-close close pull-right" title="Close">&times;</a>
+                        <span class="glyphicon glyphicon-exclamation-sign"></span>
+                        Please enter a valid email address.
+                    </div>
                     <label>
                         Email Address:
-                    </label>
-                    <input />
+                    </label>                    
+                    <input id="anon-email" />               
                     <br />                    
                 </div>
-                <button type="button" class="btn btn-success"><span class="glyphicon glyphicon-thumbs-up"></span> Contact me!</button>
+                <button id="anon-contact-me" type="button" class="btn btn-success"><span class="glyphicon glyphicon-thumbs-up"></span> Contact me!</button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
@@ -314,6 +335,40 @@
                     window.location.href = '/proposals';
                 }
             });
+        });
+       
+        $('#anon-interested').on('click', '#anon-contact-me', function () {
+
+            // This should only be a temporary solution (due to time constraints)
+            // Do actual validation on the server
+            // http://stackoverflow.com/a/9204568/5573838
+            var validateEmail = function(email) {
+                var re = /\S+@\S+\.\S+/;
+                return re.test(email);
+            }
+            
+            var anonEmail = $('#anon-email').val();
+            // {{ proposal.id }}/add_anon_email/anonEmail
+            console.log();
+
+            if (validateEmail(anonEmail)) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ proposal.id }}/add_anon_email/' + anonEmail,
+                    dataType: 'json'
+                })
+                .success(function () {
+                    $('#anon-email-success-alert').html(
+                        '<a class="alert-close close pull-right" title="Close">&times;</a>' +
+                        '<span class="glyphicon glyphicon-ok"></span>' +
+                        ' The email "' + anonEmail + '" will be contacted if enough interest is generated for this proposal.');
+                    $('#anon-email-success-alert').removeClass('hide');
+                    $('#anon-interested').modal('hide');
+                });
+            }
+            else {
+                $('#anon-email-validation-alert').removeClass('hide');
+            }
         });
 
 

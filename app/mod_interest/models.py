@@ -31,7 +31,7 @@ class InterestedMixin(object):
 
 	interested = db.ListField(db.EmbeddedDocumentField(Interested))
 	num_interested = db.IntField(default=0)
-
+	anon_emails = db.ListField(db.StringField(max_length=50))
 
 	def add_interested_user(self, user):
 		self.update(add_to_set__interested=Interested(user=user))
