@@ -66,6 +66,6 @@ AddEventForm = model_form( Event,
 
 
 EventForm = model_form(Event,
-	exclude=('updated','created','creator', 'num_interested', 'interested'))
+	exclude=('updated','created','creator', 'num_interested', 'interested', 'anon_emails'))
 submit_edit = SubmitField('Edit Class')
 EventForm.submit = submit_edit

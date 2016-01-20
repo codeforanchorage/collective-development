@@ -26,6 +26,10 @@ def login():
 			return redirect(form.next.data or url_for('schools.home'))
 		else:
 			flash(Markup('<span class="glyphicon glyphicon-exclamation-sign"></span> Sorry, invalid login'), 'danger')
+
+	if 'login?interested_user=anon' in request.url:
+		flash(Markup("<span class=\"glyphicon glyphicon-info-sign\"></span> You have to login before attending a class."), "info")
+
 	return render_template('auth/login.html', title='login', form=form)
 
 

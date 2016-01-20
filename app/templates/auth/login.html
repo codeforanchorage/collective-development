@@ -7,8 +7,10 @@
 {% block body %}
 <div>
     <h2>Sign in</h2>
+    <p>Don't have an account? <a class="btn btn-primary" href="/users/create"><span class="glyphicon glyphicon-chevron-up"></span> Sign up</a></p>
     <div>
         {{ render_form(url_for('auth.login'), form)}}
     </div>
+    
 </div>
 {% endblock %}

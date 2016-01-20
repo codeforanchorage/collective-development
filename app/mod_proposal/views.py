@@ -59,14 +59,13 @@ def detail(id):
 	# Passing some permissions related functions on to Jinja
 	current_app.jinja_env.globals['can_edit_proposal'] = can_edit_proposal
 	current_app.jinja_env.globals['can_organize_proposal'] = can_organize_proposal
-
 	resp = Response(render_template('proposal/detail.html',
 		title = p.title,
 		proposal = p,
 		#other_schools = other_schools,
 		events = p.events,
 		discussions = p.discussions,
-		is_admin=current_user.is_admin(), current_user = current_user, current_url=request.path))
+		current_user = current_user, current_url=request.path))
     # Disable cache on this page (toggle button needs to update properly)
 	#resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
 	#resp.headers['Pragma'] = 'no-cache'
@@ -93,7 +92,6 @@ def make():
 
 
 @proposals.route('/<id>/edit', methods=['GET', 'POST'])
-@can_edit
 def edit(id):
 	if current_user.is_anonymous():
 		flash(Markup("<span class=\"glyphicon glyphicon-info-sign\"></span> You have to login before editing a proposal."), "info")
@@ -102,6 +100,16 @@ def edit(id):
 	""" Edit an proposal """
 	p = Proposal.objects.get_or_404(id=id)
 	form = ProposalForm(request.form, p)
+
+	if not current_user.is_admin() and current_user.id == p.proposer.id:        
+		interested_list = p.interested[:] # Deep copy to manipulate
+		for interested in interested_list:
+			if interested.user.id == current_user.id:
+				interested_list.remove(interested)
+		if len(interested_list) > 0:
+			flash(Markup("<span class=\"glyphicon glyphicon-info-sign\"></span> You cannot edit a proposal that has interested users."), "info")
+			return redirect(url_for('proposals.detail', id=p.id))
+
 	# submit
 	if form.validate_on_submit():
 		form.populate_obj(p)
@@ -177,6 +185,14 @@ def create_discussion(id):
 		title=_('New discussion in @title', title=p.title),
 		form=form)
 
+@proposals.route('/<id>/add_anon_email/<email>', methods=['POST'])
+def add_anon_email(id, email):
+	p = Proposal.objects.get_or_404(id=id)
+	p.anon_emails.append(email)
+	p.save()
+	#flash(Markup("<span class=\"glyphicon glyphicon-ok\"></span> The email \"" + email + "\" will be contacted if enough interest is generated for this proposal."), "success")
+	import json
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 #@proposals.route('/<id>/create/event', methods=['GET','POST'])
 #@login_required
