@@ -24,6 +24,12 @@
 {% block extra_js %}
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 <script>
-$('#schools').select2();
+    $('#schools').select2();
+
+    $(document).ready(function () {
+        var firstCheckbox = $('[class="checkbox"]:first');
+        var availabilityLabel = '<p><b>Availability for classes. This will allow us to schedule classes based on the majority\'s availability.</b></p>';
+        firstCheckbox.html(availabilityLabel + firstCheckbox.html());
+    });
 </script>
 {% endblock %}

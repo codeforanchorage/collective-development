@@ -41,6 +41,20 @@ $(function () {
 		'extraFormats': [ 'YYYY-MM-DD HH:mm:ss' ]
 	});
 
+    // Fix for IE Bug: Select box is all blank! 
+	$('#places > option').each(function () {
+	    var placeID = $(this).val();
+	    var that = $(this);
+
+	    $.ajax({
+	        url: '/events/places/' + placeID,
+	        type: 'GET',
+	        success: function (data) {
+	            that.text(data);
+	        }
+	    });
+	});
+
     // Sort options alphabetically: http://stackoverflow.com/a/26232541/5573838
 	var sel = $('#places');
 	var opts_list = sel.find('option');
@@ -58,6 +72,9 @@ $(function () {
     // Set title and description of class to be the same as the proposal. The user may change it if they want to.
 	$('#title').val("{{ proposal_title | escapejs }}");
 	$('#description').val("{{ proposal_description | escapejs }}");
+
+    // Changes a label from "Teacher" to "Teacher / Convener". Should be done on the back end where the form comes in, but time constraints are tight.
+	$('[for="teacher"]').text("Teacher / Convener");
 
 	//$('#places').select2({
 	//	tags: true

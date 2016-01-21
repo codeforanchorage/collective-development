@@ -22,6 +22,10 @@ class User(db.Document, UserMixin):
 	# School/s the user is following
 	schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
 
+	available_weekday_morning = db.BooleanField(default=False)
+	available_weekday_night = db.BooleanField(default=False)
+	available_weekend_morning = db.BooleanField(default=False)
+	available_weekend_night = db.BooleanField(default=False)
 
 	# following which schools? (list of schools)
 	# committee memberships (list)

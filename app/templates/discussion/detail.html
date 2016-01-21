@@ -30,20 +30,25 @@
             {% if comments %}
             {% for comment in comments %}
                 <p style="margin-bottom:0px;display:inline-block">{{ comment.creator.display_name }} commented on {{ comment.created | datetime }}</p>
-                {% set can_edit = can_edit_comment(comment) %}
-                {% if can_edit %}
-                <a style="display:inline-block" class="btn btn-sm btn-primary" href="{{ url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id, proposal_id=proposal_id) }}"><span class="glyphicon glyphicon-edit"></span> Edit Comment</a>
+                {% if current_user.id==comment.creator.id or current_user.is_admin()%}
+                    <a style="display:inline-block;margin-right:8px" class="btn btn-sm btn-primary" href="{{ url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id, proposal_id=proposal_id) }}"><span class="glyphicon glyphicon-edit"></span> Edit Comment</a>
+                    {% if not comment.is_deleted %}
+                        <a style="display:inline-block" class="btn btn-sm btn-danger" href="{{ url_for('discussions.delete_comment', discussion_id=discussion.id, comment_id=comment.id, proposal_id=proposal_id) }}"><span class="glyphicon glyphicon-trash"></span> Delete Comment</a>
+                    {% endif %}
                 {% endif %}
                 <div style="margin-left:20px">
-                    <p>{{ comment.text }}</p>
+                    {% if not comment.is_deleted %}
+                        <p>{{ comment.text }}</p>
+                    {% else %}
+                        <p><em>This comment has been deleted.</em></p>
+                    {% endif %}
                 </div>
             {% endfor %}
             {% endif %}
         </dd>
         
     </dl>
-</div>
-	
+</div>	
 
 <div class="json-hide">
     <h3>Discussion JSON</h3>

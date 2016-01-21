@@ -105,3 +105,8 @@ def delete(id):
 	
 	e.delete()
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+@events.route('/places/<id>', methods=['GET'])
+def get_place(id):
+	pl = Place.objects.get_or_404(id=id)
+	return pl.name
