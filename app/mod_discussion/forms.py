@@ -47,7 +47,7 @@ AddCommentForm = model_form( Comment,
 		'updated',
 		'created',
 		'creator',
-		'discussion'))
+		'discussion', 'is_deleted'))
 submit_add = SubmitField('Comment')
 AddCommentForm.submit = submit_add
 
@@ -58,6 +58,6 @@ EditCommentForm = model_form( Comment,
 		'updated',
 		'created',
 		'creator',
-		'discussion'))
+		'discussion', 'is_deleted'))
 submit_edit = SubmitField('Edit Comment')
 EditCommentForm.submit = submit_edit

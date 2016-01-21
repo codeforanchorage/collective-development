@@ -110,6 +110,32 @@
             </dd>            
 
             {% if current_user.is_admin() %}
+            <dt>Registered user availability: <span class="label label-primary">Admin Only</span></dt>
+            <dd>
+                {% set count_wdm = [] %}
+                {% set count_wdn = [] %}
+                {% set count_wkm = [] %}
+                {% set count_wkn = [] %}
+                {% for interested in proposal.interested %}
+                {% if interested.user.available_weekday_morning == True %}
+                {% if count_wdm.append('1') %}{% endif %}
+                {% endif %}
+
+                {% if interested.user.available_weekday_night == True %}
+                {% if count_wdn.append('1') %}{% endif %}
+                {% endif %}
+
+                {% if interested.user.available_weekend_morning == True %}
+                {% if count_wkm.append('1') %}{% endif %}
+                {% endif %}
+
+                {% if interested.user.available_weekend_night == True %}
+                {% if count_wkn.append('1') %}{% endif %}
+                {% endif %}
+                {% endfor %}
+                Weekday Morning ({{count_wdm|length}}), Weekday Night ({{count_wdn|length}}), Weekend Morning ({{count_wkm|length}}), Weekend Night ({{count_wkn|length}})
+            </dd>
+
             <dt>Registered user emails: <span class="label label-primary">Admin Only</span></dt>
             <dd>                                
                 {% for i in proposal.interested %}
@@ -126,6 +152,8 @@
             <dd>
                 {{ proposal.anon_emails | join (', ')}}
             </dd>  
+
+  
             {% endif %}
 
 

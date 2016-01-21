@@ -39,6 +39,20 @@ $(function () {
 		'extraFormats': [ 'YYYY-MM-DD HH:mm:ss' ]
 	});
 
+    // Fix for IE Bug: Select box is all blank! 
+	$('#places > option').each(function () {
+	    var placeID = $(this).val();
+	    var that = $(this);
+
+	    $.ajax({
+	        url: '/events/places/' + placeID,
+	        type: 'GET',
+	        success: function (data) {
+	            that.text(data);
+	        }
+	    });
+	});
+
     // Sort options alphabetically: http://stackoverflow.com/a/26232541/5573838
 	var sel = $('#places');
 	var opts_list = sel.find('option');

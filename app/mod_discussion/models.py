@@ -20,6 +20,7 @@ class Comment(db.Document):
 	discussion = db.GenericReferenceField()
 	# The actual content of the comment
 	text = db.StringField(max_length=5000, required=True)
+	is_deleted = db.BooleanField(default=False)
 	
 	def edit_comment(self, newText):
 		self.text = newText
