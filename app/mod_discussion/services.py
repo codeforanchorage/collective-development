@@ -23,11 +23,15 @@ def start_discussion(text, title=None, schools=None, form=None):
 			form.populate_obj(d)
 	else:
 		return None
+	import datetime
+	d.created = datetime.datetime.now()
+	d.last_comment_time = datetime.datetime.now()
 	d.save()
 	c = Comment(
 		text = text,
 		creator = current_user._get_current_object(),
 		discussion = d)
+	c.created = d.created
 	c.save()
 	return d
 

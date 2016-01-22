@@ -1,14 +1,17 @@
 
 {% macro discussions_list_item(discussion, proposal_id) %}
 <!--<li>-->
-	<h4><a href="{{url_for('discussions.detail', discussion_id=discussion.id, proposal_id=proposal_id)}}">{{discussion.title}}</a></h4>
+	<h4>
+        <a href="{{url_for('discussions.detail', discussion_id=discussion.id, proposal_id=proposal_id)}}">{{discussion.title}}</a>
+    </h4>
+    <p style="margin-left:20px"><em>Last comment time: {{discussion.last_comment_time | datetime}}</em></p>
 <!--</li>-->
 {% endmacro %}
 
 
 {% macro discussions_list(discussions, proposal_id) %}
 <!--<ul>-->
-	{% for discussion in discussions %}
+	{% for discussion in discussions|sort(attribute='last_comment_time')|reverse %}
 		{{ discussions_list_item(discussion, proposal_id) }}
 	{% endfor %}
 <!--</ul>-->

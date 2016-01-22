@@ -73,8 +73,12 @@ def add_comment(discussion_id, proposal_id):
 		c = Comment(
 			creator = current_user._get_current_object(),
 			discussion = d)
+		import datetime
+		c.created = datetime.datetime.now()
+		d.last_comment_time = c.created
 		form.populate_obj(c)
 		c.save()
+		d.save()
 		return redirect(url_for('discussions.detail', discussion_id=d.id, proposal_id=proposal_id))
 	return render_template('discussion/add_comment.html',
 		discussion = d,

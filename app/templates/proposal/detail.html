@@ -77,6 +77,9 @@
             </label>
             {% endif %}
         </div>
+        <p>
+            <a class="btn btn-success" href="/proposals/{{proposal.id}}/teach_class"><span class="glyphicon glyphicon-thumbs-up"></span> I'd like to teach this class</a>
+        </p>
 
         <p><em style="white-space: pre-wrap;">{{ proposal.description }}</em></p>
         <dl>
@@ -107,9 +110,33 @@
                 {% if proposal.interested_users | length == 0 %}
                 None
                 {% endif %}
-            </dd>            
+            </dd>         
+            
+            {% if not current_user.is_admin() %}
+            <dt>Possible teachers:</dt>
+            <dd>
+                {% for teacher in proposal.teachers %}
+                    {% if loop.index == proposal.teachers|length %}
+                        {{  teacher.display_name }}
+                    {% else %}
+                        {{  teacher.display_name + ', '}}
+                    {% endif %}
+                {% endfor %}
+            </dd>
+            {% endif %}   
 
             {% if current_user.is_admin() %}
+            <dt>Possible teachers with email: <span class="label label-primary">Admin Only</span></dt>
+            <dd>
+                {% for teacher in proposal.teachers %}
+                    {% if loop.index == proposal.teachers|length %}
+                        {{  teacher.display_name + ' (' + teacher.email + ')' }}
+                    {% else %}
+                        {{  teacher.display_name + ' (' + teacher.email + ')' + ', ' }}
+                    {% endif %}
+                {% endfor %}
+            </dd>
+
             <dt>Registered user availability: <span class="label label-primary">Admin Only</span></dt>
             <dd>
                 {% set count_wdm = [] %}
@@ -354,8 +381,6 @@
             }
             
             var anonEmail = $('#anon-email').val();
-            // {{ proposal.id }}/add_anon_email/anonEmail
-            console.log();
 
             if (validateEmail(anonEmail)) {
                 $.ajax({
