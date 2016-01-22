@@ -30,9 +30,9 @@
             {% if comments %}
             {% for comment in comments %}
                 <p style="margin-bottom:0px;display:inline-block">{{ comment.creator.display_name }} commented on {{ comment.created | datetime }}</p>
-                {% if current_user.id==comment.creator.id or current_user.is_admin()%}
-                    <a style="display:inline-block;margin-right:8px" class="btn btn-sm btn-primary" href="{{ url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id, proposal_id=proposal_id) }}"><span class="glyphicon glyphicon-edit"></span> Edit Comment</a>
+                {% if current_user.id==comment.creator.id or current_user.is_admin()%}                    
                     {% if not comment.is_deleted %}
+                        <a style="display:inline-block;margin-right:8px" class="btn btn-sm btn-primary" href="{{ url_for('discussions.edit_comment', discussion_id=discussion.id, comment_id=comment.id, proposal_id=proposal_id) }}"><span class="glyphicon glyphicon-edit"></span> Edit Comment</a>
                         <a style="display:inline-block" class="btn btn-sm btn-danger" href="{{ url_for('discussions.delete_comment', discussion_id=discussion.id, comment_id=comment.id, proposal_id=proposal_id) }}"><span class="glyphicon glyphicon-trash"></span> Delete Comment</a>
                     {% endif %}
                 {% endif %}

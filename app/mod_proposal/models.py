@@ -56,6 +56,7 @@ class Proposal(db.Document, InterestedMixin):
 	events = db.ListField(db.ReferenceField(Event, reverse_delete_rule = NULLIFY))
 	# Discussions
 	discussions = db.ListField(db.ReferenceField(Discussion, reverse_delete_rule = NULLIFY))
+	teachers = db.ListField(db.ReferenceField(User, reverse_delete_rule = NULLIFY))
 
 	def __init__(self, *args, **kwargs):
 		super(Proposal, self).__init__(*args, **kwargs)

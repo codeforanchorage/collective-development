@@ -113,6 +113,8 @@ def edit(id):
 	# submit
 	if form.validate_on_submit():
 		form.populate_obj(p)
+		import datetime
+		p.updated = datetime.datetime.now()
 		p.save()
 		return redirect(url_for('proposals.detail', id=p.id))
 	return render_template('proposal/edit.html',
@@ -193,6 +195,24 @@ def add_anon_email(id, email):
 	#flash(Markup("<span class=\"glyphicon glyphicon-ok\"></span> The email \"" + email + "\" will be contacted if enough interest is generated for this proposal."), "success")
 	import json
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+@proposals.route('/<id>/teach_class', methods=['GET'])
+def teach_class(id):
+	if current_user.is_anonymous():
+		flash(Markup("<span class=\"glyphicon glyphicon-info-sign\"></span> You have to login before becoming a teacher."), "info")
+		return redirect('/login?next=' + str(request.path))
+	
+	p = Proposal.objects.get_or_404(id=id)
+
+	for teacher in p.teachers:
+		if teacher.id == current_user.id:
+			flash(Markup("<span class=\"glyphicon glyphicon-info-sign\"></span> You have already volunteered to become a teacher for this proposal."), "info")
+			return detail(id)
+	
+	p.teachers.append(current_user.to_dbref())
+	p.save()
+	flash(Markup("<span class=\"glyphicon glyphicon-ok\"></span> Thank you for volunteering to become a teacher for this proposal. We will contact you if there is enough interest generated for this proposal."), "success")
+	return detail(id)
 
 #@proposals.route('/<id>/create/event', methods=['GET','POST'])
 #@login_required
