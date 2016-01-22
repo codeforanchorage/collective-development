@@ -44,7 +44,7 @@ AddProposalForm = model_form( Proposal,
 		'copy_of',
 		'events',
 		'discussions',
-		'tags'))
+		'tags', 'teachers'))
 submit_add = SubmitField('Propose')
 AddProposalForm.submit = submit_add
 
@@ -66,7 +66,7 @@ ProposalForm = model_form( Proposal,
 		'discussions',
 		'copy_of',
 		'tags', 
-		'schools'))
+		'schools', 'teachers'))
 submit_save = SubmitField('Save')
 ProposalForm.submit = submit_save
 
