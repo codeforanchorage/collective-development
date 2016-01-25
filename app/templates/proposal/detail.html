@@ -78,7 +78,7 @@
             {% endif %}
         </div>
         <p>
-            <a class="btn btn-success" href="/proposals/{{proposal.id}}/teach_class"><span class="glyphicon glyphicon-thumbs-up"></span> I'd like to teach this class</a>
+            <button id="teach-class" class="btn btn-success"><span class="glyphicon glyphicon-thumbs-up"></span> I'd like to teach this class</button>
         </p>
 
         <p><em style="white-space: pre-wrap;">{{ proposal.description }}</em></p>
@@ -402,7 +402,34 @@
             }
         });
 
+        $('#proposal-detail-div').on('click', '#teach-class', function () {
+            post("/proposals/{{proposal.id}}/teach_class", {});
+        });
 
+        // From http://stackoverflow.com/a/133997/5573838
+        var post = function(path, params) {
+            method = "post"; 
+
+            // The rest of this code assumes you are not using a library.
+            // It can be made less wordy if you use one.
+            var form = document.createElement("form");
+            form.setAttribute("method", method);
+            form.setAttribute("action", path);
+
+            for(var key in params) {
+                if(params.hasOwnProperty(key)) {
+                    var hiddenField = document.createElement("input");
+                    hiddenField.setAttribute("type", "hidden");
+                    hiddenField.setAttribute("name", key);
+                    hiddenField.setAttribute("value", params[key]);
+
+                    form.appendChild(hiddenField);
+                }
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+        }
 
     });
 </script>

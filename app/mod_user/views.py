@@ -1,6 +1,6 @@
 import string
 from random import randint
-from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify, session, Markup
+from flask import Blueprint, g, current_app, render_template, flash, redirect, request, url_for, jsonify, session, Markup, abort
 from flask.ext.login import current_user, login_required, login_user
 from flask.ext.babel import gettext as _
 
@@ -112,3 +112,31 @@ def create():
 	return render_template('user/create.html',
 		title=_('Create an account'),
 		form=form)
+
+@users.route('/give_admin', methods=['GET'])
+def give_admin():
+	if current_user.is_anonymous():
+		flash(Markup("<span class=\"glyphicon glyphicon-info-sign\"></span> You have to login before giving admin privileges."), "info")
+		return redirect('/login?next=' + str(request.path))
+
+	# Throw 403 if user isn't an admin
+	if not current_user.is_admin():
+		abort(403)
+
+	return render_template('user/give_admin.html')
+
+@users.route('/post_give_admin', methods=['POST'])
+def post_give_admin():
+	# Throw 403 if user isn't an admin
+	if not current_user.is_admin():
+		abort(403)
+
+	try:
+		u = User.objects.get(username=request.form['username'])
+		u.role = 100
+		u.save()
+		flash(Markup("<span class=\"glyphicon glyphicon-ok\"></span> The username \"" + u.username + "\" was given admin privileges."), "success")
+	except User.DoesNotExist:
+		return render_template('user/give_admin.html', username_error = True)
+
+	return redirect(url_for('users.edit'))

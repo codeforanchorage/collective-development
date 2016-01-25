@@ -62,6 +62,13 @@
 
         <dt>Organized on:</dt>
         <dd>{{ event.created | datetime }}</dd>
+        
+        <dt>Class Difficulty:</dt>
+        {% if event.class_difficulty %}
+        <dd>{{ event.class_difficulty }}</dd>
+        {% else %}
+        <dd>Unknown</dd>
+        {% endif %}
 
         <dt>Location:</dt>
         {% if event.places|length == 0 %}
