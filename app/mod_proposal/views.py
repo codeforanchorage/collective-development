@@ -196,11 +196,11 @@ def add_anon_email(id, email):
 	import json
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
-@proposals.route('/<id>/teach_class', methods=['GET'])
+@proposals.route('/<id>/teach_class', methods=['POST'])
 def teach_class(id):
 	if current_user.is_anonymous():
 		flash(Markup("<span class=\"glyphicon glyphicon-info-sign\"></span> You have to login before becoming a teacher."), "info")
-		return redirect('/login?next=' + str(request.path))
+		return redirect('/login?next=/proposals/' + id)
 	
 	p = Proposal.objects.get_or_404(id=id)
 

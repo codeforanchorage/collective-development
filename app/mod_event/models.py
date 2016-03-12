@@ -37,6 +37,7 @@ class Event(db.Document, InterestedMixin):
 	#short_description = db.StringField(max_length=255, required=True)
 	description = db.StringField(max_length=1000000, required=True)
 	teacher = db.StringField(max_length=1000, required=True)
+	class_difficulty = db.StringField(max_length=1000)
 	places = db.ListField(db.ReferenceField(Place))
 	#schools = db.ListField(db.ReferenceField(School, reverse_delete_rule = NULLIFY))
 

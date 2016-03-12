@@ -12,6 +12,12 @@
     <div style="margin-bottom:10px">
         To change your password, <a href="{{ url_for('users.password') }}">click here</a>
     </div>
+    {% if current_user.is_admin() %}
+    <div style="margin-bottom:10px">        
+        <a href="/users/give_admin" class="btn btn-primary">Give Admin Privileges</a>    
+    </div>
+    {% endif %}
+
     <div>
         {{ render_form(url_for('users.edit', id=user.id), form)}}
     </div>
